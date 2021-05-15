@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Character extends Model
 {
     use HasFactory;
+
+    // @NOTE: bottom four id's need to be removed - belongsToMany(), not belongsTo() (requires relational table)
+
+    protected $fillable = [
+        'alias',
+        'real_name',
+        'sex',
+        'character_thumb_url',
+        'morality',
+        'type_id',
+        'series_id',
+        'movies_id',
+        'teams_id',
+    ];
 }
