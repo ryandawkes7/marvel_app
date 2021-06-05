@@ -60,4 +60,16 @@ class CharactersController extends Controller
         ]);
     }
 
+    /**
+     * Delete a specific character
+     */
+    public function show($id)
+    {
+        $character = Character::where('id', $id)->get();
+        return response()->json([
+            'data' => CharacterResource::collection($character),
+            'message' => 'Successfully fetched specified character'
+        ], 200);
+    }
+
 }
