@@ -72,4 +72,25 @@ class CharactersController extends Controller
         ], 200);
     }
 
+    /**
+     * Delete a specific character
+     */
+    public function destroy($id)
+    {
+        $character = Character::where('id', $id)->first();
+
+        if (!$character) {
+            return response()->json([
+                'data' => null,
+                'message' => 'Character not found'
+            ]);
+        }
+        $character->delete();
+        return response()->json([
+            'data' => null,
+            'message' => 'Successfully deleted character'
+        ]);
+
+    }
+
 }
