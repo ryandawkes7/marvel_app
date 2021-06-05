@@ -73,6 +73,29 @@ class CharactersController extends Controller
     }
 
     /**
+     * Update a specific character
+     */
+    public function update(StoreCharacterRequest $request, $character_id)
+    {
+        $character = Character::where('id', $character_id)->first();
+        $requested_character = $request->validated();
+
+        if (!$character) {
+            return response()->json([
+                'data' => null,
+                'message' => 'Character not found'
+            ]);
+        }
+
+        $updated_character = $character->update($requested_character);
+        return response()->json([
+            'data' => $character,
+            'message' => 'Successfully updated character'
+        ]);
+
+    }
+
+    /**
      * Delete a specific character
      */
     public function destroy($id)
