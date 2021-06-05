@@ -20,7 +20,7 @@ class CreateCharactersTable extends Migration
             $table->string('real_name')->nullable();
             $table->enum('sex', ['unknown', 'male', 'female', 'none'])->nullable();
             $table->text('character_thumb_url')->nullable();
-            $table->enum('morality', ['hero', 'neutral', 'evil', 'anti-hero', 'anti-villian', 'unknown'])->default('unknown');
+            $table->enum('morality', ['hero', 'neutral', 'evil', 'anti-hero', 'anti-villain', 'unknown'])->default('unknown');
             $table->integer('type_id')->unsigned()->nullable();
             $table->integer('series_id')->unsigned()->nullable();
             $table->integer('movies_id')->unsigned()->nullable();
