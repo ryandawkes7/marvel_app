@@ -20,6 +20,9 @@
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </jet-nav-link>
+                                <jet-nav-link :href="route('characters')" :active="route().current('characters')">
+                                    Characters
+                                </jet-nav-link>
                             </div>
                         </div>
 
@@ -222,7 +225,7 @@
             </header>
 
             <!-- Page Content -->
-            <main>
+            <main class="max-w-7xl mx-auto py-10">
                 <slot></slot>
             </main>
         </div>
