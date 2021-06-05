@@ -19,4 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('characters', CharactersController::class)->middleware('auth:sanctum');
+Route::apiResource('characters', CharactersController::class);
