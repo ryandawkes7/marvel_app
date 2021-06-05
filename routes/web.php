@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CharactersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,19 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::get('/welcome', function() {
+    return Inertia::render('Welcome', [
+        'foo' => 'bar',
+    ]);
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function() {
+
+    // Characters
+    Route::get('/characters', [CharactersController::class, 'index']);
+
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+});

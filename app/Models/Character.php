@@ -18,8 +18,5 @@ class Character extends Model
         'character_thumb_url',
         'morality',
         'type_id',
-        'series_id',
-        'movies_id',
-        'teams_id',
     ];
 }
