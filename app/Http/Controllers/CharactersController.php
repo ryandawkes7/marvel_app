@@ -3,29 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCharacterRequest;
+use App\Http\Resources\CharacterResource;
 use App\Models\Character;
 use Inertia\Inertia;
 
 class CharactersController extends Controller
 {  
-    public function index()
-    {
-        return Inertia::render('Characters/Index');
-    }
+    // public function index()
+    // {
+    //     return Inertia::render('Characters/Index');
+    // }
 
     /**
      * Fetch all characters
+     * 
+     * @group Characters
      */
-    public function fetch()
+    public function index()
     {
         $characters = Character::all();
+        return response()->json([
+            'data' => CharacterResource::collection($characters),
+            'message' => 'Successfully fetched all characters'
+        ], 200);
     }
 
     /**
      * Creates a new character
+     * 
+     * @group Characters
      * @authenticated
      * 
-     * @bodyParam 
+     * @response 200 {
+     *   "data": {
+     *     "alias": "Iron Man",
+     *     "real_name": "Tony Stark",
+     *     "sex": "male",
+     *     "character_thumb_url": "a",
+     *     "morality": "hero",
+     *     "type_id": "1",
+     *     "updated_at": "2021-06-05T14:48:05.000000Z",
+     *     "created_at": "2021-06-05T14:48:05.000000Z",
+     *     "id": 2
+     *   },
+     *   "message": "Successfully created character"
+     * }
      */
     public function store(StoreCharacterRequest $request)
     {
@@ -33,8 +55,9 @@ class CharactersController extends Controller
         $new_character = Character::create($requested_character);
 
         return response()->json([
-            'data' => new Character($new_character),
+            'data' => $new_character,
             'message' => 'Successfully created character'
         ]);
     }
+
 }
