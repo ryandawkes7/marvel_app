@@ -61,7 +61,7 @@ class CharactersController extends Controller
     }
 
     /**
-     * Delete a specific character
+     * Show a specific character
      */
     public function show($id)
     {
