@@ -15,7 +15,7 @@ class Character extends Model
         'alias',
         'real_name',
         'sex',
-        'character_thumb_url',
+        'thumb_url',
         'morality',
         'type_id',
     ];
