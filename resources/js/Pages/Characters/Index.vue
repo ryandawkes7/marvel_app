@@ -16,9 +16,11 @@
                 <div class="flex-1 flex flex-col p-8">
 
                     <!-- Image -->
-                    <img class="w-32 h-32 flex-shrink-0 mx-auto bg-white rounded-full" 
-                         :src="character.thumb_url ? character.thumb_url : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'"
-                    />
+                    <div class="w-32 h-32 flex-shrink-0 mx-auto bg-white rounded-full overflow-hidden shadow-lg">
+                        <img class="object-contain min-w-full min-h-full"
+                            :src="character.thumb_url ? character.thumb_url : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'"
+                        />
+                    </div>
 
                     <!-- Alias -->
                     <h3 class="mt-6 text-gray-900 text-md font-semibold">{{character.alias}}</h3>
