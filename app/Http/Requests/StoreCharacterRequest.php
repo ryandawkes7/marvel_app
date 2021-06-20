@@ -25,12 +25,12 @@ class StoreCharacterRequest extends FormRequest
     {
         return [
             //
-            'alias'                 => 'required|string',
-            'real_name'             => 'string',
-            'sex'                   => 'required|string',
-            'character_thumb_url'   => 'string',
-            'morality'              => 'required',
-            'type_id'               => 'string'
+            'alias'         => 'required|string',
+            'real_name'     => 'string',
+            'sex'           => 'required|string',
+            'thumb_url'     => 'string',
+            'morality'      => 'required',
+            'type_id'       => 'string'
         ];
     }
 }

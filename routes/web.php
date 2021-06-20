@@ -25,19 +25,20 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/welcome', function() {
-    return Inertia::render('Welcome', [
-        'foo' => 'bar',
-    ]);
-});
-
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
-
-    // Characters
-    Route::get('/characters', [CharactersController::class, 'index']);
 
     // Dashboard
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    /**
+     * Characters Page
+     */
+    Route::get('/characters', [CharactersController::class, 'main_page'])->name('characters');
+
+    /**
+     * Specific Character
+     */
+    Route::get('/characters/{id}', [CharactersController::class, 'show_page'])->name('character');
 });
