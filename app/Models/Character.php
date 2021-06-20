@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Character extends Model
 {
     use HasFactory;
-
-    // @NOTE: bottom four id's need to be removed - belongsToMany(), not belongsTo() (requires relational table)
 
     protected $fillable = [
         'alias',
@@ -19,4 +18,9 @@ class Character extends Model
         'morality',
         'type_id',
     ];
+
+    public function type() :BelongsTo
+    {
+        return $this->belongsTo(CharacterType::class, 'type_id', 'id');
+    }
 }
