@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CharactersController;
+use App\Http\Controllers\CharacterTypesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('characters', CharactersController::class);
+Route::apiResource('character-types', CharacterTypesController::class);
