@@ -18,14 +18,6 @@ class CreateTableTraits extends Migration
             $table->string('name');
             $table->text('description');
         });
-
-        Schema::create('character_trait', function (Blueprint $table) {
-            $table->unsignedBigInteger('character_id');
-            $table->foreign('character_id')->references('id')->on('characters');
-            $table->unsignedBigInteger('trait_id');
-            $table->foreign('trait_id')->references('id')->on('traits');
-            $table->timestamps();
-        });
     }
 
     /**
@@ -36,6 +28,5 @@ class CreateTableTraits extends Migration
     public function down()
     {
         Schema::dropIfExists('traits');
-        Schema::dropIfExists('character_trait');
     }
 }
