@@ -342,7 +342,16 @@
                                 <option class="capitalize" v-for="type in typeValues" :key="type.id" :value="type.id.toString()" :selected="type.name == character.type">{{type.name}}</option>
                               </select>
                             </div>
-                            
+
+                            <!-- Traits -->
+                            <div class="col-span-12">
+                              <label for="traits" class="block text-sm font-medium text-gray-700">Traits</label>
+
+                              <!-- Multiselect -->
+                              <MultiSelect :trait_options="traits" :char_id="this.fetchId()" @setSelectedTraits="setSelectedTraits"></MultiSelect>
+
+                            </div>
+
                           </div>
                         </div>
 
@@ -620,13 +629,14 @@
   import { Dialog, DialogOverlay, DialogTitle, Menu, MenuButton, MenuItem, MenuItems, TransitionChild, TransitionRoot } from '@headlessui/vue';
   import { BookOpenIcon, CheckCircleIcon, ChevronDownIcon, FilmIcon, PencilIcon, TrashIcon, UserCircleIcon, UserGroupIcon, XIcon } from '@heroicons/vue/solid'
   import { CheckIcon, ExternalLinkIcon } from '@heroicons/vue/outline';
+  import MultiSelect from '../Components/MultiSelect.vue';
   import axios from 'axios';
 
   export default {
     setup() {
       // Modals
       const isDeleteModalOpen = ref(false);
-      const isEditModalOpen = ref(false);
+      const isEditModalOpen = ref(true);
 
       const isSuccessToastOpen = ref(false);
 
@@ -682,8 +692,10 @@
           { id: 4, name: 'intelligence', value: 86, colour: 'blue' },
           { id: 5, name: 'speed', value: 71, colour: 'yellow' },
           { id: 6, name: 'strength', value: 57, colour: 'green' },
-        ]
-      }
+        ],
+        traits: [],
+        traitsSelected: []
+      };
     },
     components: {
         AppLayout,
@@ -693,10 +705,12 @@
         Dialog,
         DialogOverlay,
         DialogTitle,
+        ExternalLinkIcon,
         Menu,
         MenuButton,
         MenuItem,
         MenuItems,
+        MultiSelect,
         PencilIcon,
         TransitionChild,
         TransitionRoot,
@@ -705,38 +719,9 @@
     },
     created() {
       this.fetchCharacter();
-    },
-    mounted() {
-
+      this.fetchTraits();
     },
     methods: {
-      fetchId() {
-        return window.location.href.split('/').pop();
-      },
-      // Character Methods 
-      fetchCharacter() {
-        const id = this.fetchId();
-
-        // Fetch character data
-        axios.get(`/api/characters/${id}`)
-          .then(res => {
-            const data = res.data.data[0];
-            this.character = data;
-            this.character.type_id = data.type_id.toString();
-
-            // Fetch type
-            axios.get(`/api/character-types/${data.type_id}`)
-              .then(res => {
-                const data = res.data.data[0];
-                this.character.type = data.type;
-              })
-          })
-      },
-      deleteCharacter(id) {
-        this.isDeleteModalOpen = false;
-        axios.delete(`/api/characters/${id}`)
-        return window.location.href = `/characters`;
-      },
       changeEditSection(section) {
         let activeSection = '';
 
@@ -771,8 +756,79 @@
           this.isMovies = false;
         }
       },
+      fetchId() {
+        return window.location.href.split('/').pop();
+      },
+
+      // Character Methods 
+      fetchCharacter() {
+        const id = this.fetchId();
+
+        // Fetch character data
+        axios.get(`/api/characters/${id}`)
+          .then(res => {
+            const data = res.data.data[0];
+            this.character = data;
+            this.character.type_id = data.type_id.toString();
+
+            // Fetch type
+            axios.get(`/api/character-types/${data.type_id}`)
+              .then(res => {
+                const data = res.data.data[0];
+                this.character.type = data.type;
+              })
+          })
+      },
+      deleteCharacter(id) {
+        this.isDeleteModalOpen = false;
+        axios.delete(`/api/characters/${id}`)
+        return window.location.href = `/characters`;
+      },
+
+      // Trait Methods
+      fetchTraits() {
+        axios.get(`/api/traits`)
+          .then(res => {
+            this.traits = res.data.data;
+            axios.get(`/api/character-traits/${this.fetchId()}`).then(response => {
+                const existingTraits = response.data.data;
+                for (const trait of existingTraits) {
+                  const allTraits = res.data.data;
+                  allTraits.find(el => {
+                    if (el && el.id == trait.id) {
+                      let index = allTraits.indexOf(el);
+                      allTraits.splice(index, 1);
+                      this.traits = allTraits;
+                    }
+                  })
+                }
+            }).catch(e => console.log(e));
+          })
+      },
+      setSelectedTraits(sel) {
+        const items = this.traitsSelected;
+        items.includes(sel)
+          ? items.splice(items.indexOf(sel), 1)
+          : items.push(sel);
+
+        console.log(sel);
+      },
+      saveTraits(charId) {
+        axios.post(`/api/traits`, this.traitsSelected, charId);
+      },
+
       submitProfileForm() {
         const id = this.fetchId();
+
+        let traitPayload = {
+          traits: this.traitsSelected,
+          char_id: id
+        }
+
+        axios.post(`/api/traits`, { payload: traitPayload })
+          .then(res => console.log(res))
+          .catch(err => console.log(`Error: ${err}`));
+
         axios.put(`/api/characters/${id}`, this.character)
           .then(res => {
             this.isEditModalOpen = false;
