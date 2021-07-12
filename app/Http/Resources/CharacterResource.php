@@ -15,14 +15,14 @@ class CharacterResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'alias' => $this->alias,
-            'real_name' => $this->real_name,
-            'sex' => $this->sex,
-            'thumb_url' => $this->thumb_url,
-            'morality' => $this->morality,
-            'type_id' => $this->type_id,
-            'created_at' => $this->created_at ? $this->created_at : null
+            'id'            => $this->id,
+            'alias'         => $this->alias,
+            'real_name'     => $this->real_name,
+            'sex'           => $this->sex,
+            'thumb_url'     => $this->thumb_url,
+            'morality'      => $this->morality,
+            'type_id'       => $this->type_id,
+            'created_at'    => $this->created_at ? $this->created_at : null
         ];
     }
 }
