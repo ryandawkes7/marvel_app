@@ -1,13 +1,13 @@
 <template>
 
   <!-- Options Bar -->
-  <div class="mt-1 flex justify-between w-full bg-white border border-gray-300 shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm capitalize gap-1"
-    :class="isDropdownOpen && !checkAll(selected, options) ? 'rounded-b-none border-b-0' : 'rounded-md border-b'"
+  <div class="mt-1 flex flex-wrap w-full bg-white border border-gray-300 shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm capitalize gap-1"
+    :class="isDropdownOpen && !checkAll(selected, this.trait_options) ? 'rounded-b-none border-b-0' : 'rounded-md border-b'"
   >
     <div v-for="(item, index) in selected" :key="index" class="flex">
       <!-- Selected Options -->
       <div v-if="selected.includes(item)" @click="setSelected(item)" class="transition-all hover:shadow hover:bg-green-600 cursor-pointer flex justify-center items-center bg-green-500 text-green-50 text-sm px-2 py-1 rounded-2xl gap-1">
-        <p class="flex">{{item.value}}</p>
+        <p class="flex">{{item.name}}</p>
         <XIcon class="h-4 w-4" />
       </div>
     </div>
@@ -17,13 +17,13 @@
   </div>
 
   <!-- Dropdown -->
-  <div v-if="!checkAll(selected, options)">
-    <div v-if="isDropdownOpen" class="flex bg-white gap-1 py-3 px-3 border border-t-0 border-gray-300">
-      <div v-for="(option, index) in options" :key="index">
+  <div v-if="!checkAll(selected, this.trait_options)">
+    <div v-if="isDropdownOpen" class="flex flex-wrap bg-white gap-1 py-3 px-3 border border-t-0 border-gray-300">
+      <div v-for="(option, index) in this.trait_options" :key="index">
 
         <!-- Unselected Options -->
         <label v-if="!selected.includes(option)" @click="setSelected(option)" class="transition-all hover:shadow hover:bg-purple-600 cursor-pointer bg-purple-500 text-purple-100 px-2 py-1 rounded-2xl flex items-center gap-1">
-          <p class="text-sm">{{option.value}}</p>
+          <p class="text-sm">{{option.name}}</p>
           <PlusIcon class="h-4 w-4" />
         </label>
 
@@ -42,14 +42,21 @@
       PlusIcon,
       XIcon,
     },
+    created() {
+      this.fetchCharacterTraits(this.char_id);
+    },
     data() {
       return {
         value: null,
-        options: this.options,
         selected: [],
       }
     },
+    emits: ['setSelectedTraits'],
     methods: {
+
+      checkAll(arr, target) {
+        if (target.every(el => arr.includes(el))) return true;
+      },
 
       /**
        * Toggles dropdown
@@ -60,7 +67,6 @@
         this.isDropdownOpen 
           ? this.isDropdownOpen = false
           : this.isDropdownOpen = true;
-        console.log(this.isDropdownOpen);
       },
 
       /**
@@ -74,15 +80,48 @@
         items.includes(sel)
           ? items.splice(items.indexOf(sel), 1)
           : items.push(sel);
+        this.$emit('setSelectedTraits', this.selected);
       },
 
-      checkAll(arr, target) {
-        if (target.every(el => arr.includes(el))) return true;
+      /**
+       * Check saved traits on a character
+       *
+       * @param {integer} id 
+       * @return void
+       */
+      setSavedTraits(data) {
+        for (const item of data) {
+          this.selected.push(item);
+        }
+      },
+
+      checkRemovedTraits() {
+        // for (const item of this.selected) {
+        //   if (this.)
+        // }
+      },
+
+      /**
+       * Fetch Character Traits via API
+       *
+       * @param {integer} id
+       * @return array
+       */
+      fetchCharacterTraits(id) {
+        axios.get(`/api/character-traits/${id}`)
+          .then(res => {
+            const data = res.data.data;
+            this.setSavedTraits(data);
+          })
+          .catch(e => {
+            console.log(e);
+          })
       }
 
     },
     props: [
-      'options',
+      'char_id',
+      'trait_options',
     ],
     setup() {
       // Modals
