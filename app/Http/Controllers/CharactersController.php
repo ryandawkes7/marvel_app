@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCharacterRequest;
 use App\Http\Resources\CharacterResource;
 use App\Models\Character;
+use App\Models\Skill;
 use Inertia\Inertia;
 
 class CharactersController extends Controller
@@ -65,6 +66,10 @@ class CharactersController extends Controller
     {
         $requested_character = $request->validated();
         $new_character = Character::create($requested_character);
+        $skills = Skill::all();
+        foreach($skills as $skill) {
+            $new_character->skills()->attach($skill->id);
+        }
 
         return response()->json([
             'data' => $new_character,
@@ -77,9 +82,9 @@ class CharactersController extends Controller
      */
     public function show($id)
     {
-        $character = Character::where('id', $id)->get();
+        $character = Character::whereId($id)->with('skills')->first()->toArray();
         return response()->json([
-            'data' => CharacterResource::collection($character),
+            'data' => $character,
             'message' => 'Successfully fetched specified character'
         ], 200);
     }
@@ -127,5 +132,4 @@ class CharactersController extends Controller
         ]);
 
     }
-
 }

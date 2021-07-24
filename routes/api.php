@@ -3,6 +3,7 @@
 use App\Http\Controllers\CharactersController;
 use App\Http\Controllers\CharacterTraitsPivotController;
 use App\Http\Controllers\CharacterTypesController;
+use App\Http\Controllers\SkillsController;
 use App\Http\Controllers\TraitsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,3 +27,4 @@ Route::apiResource('characters', CharactersController::class);
 Route::apiResource('character-types', CharacterTypesController::class);
 Route::apiResource('traits', TraitsController::class);
 Route::apiResource('character-traits', CharacterTraitsPivotController::class);
+Route::apiResource('skills', SkillsController::class);
