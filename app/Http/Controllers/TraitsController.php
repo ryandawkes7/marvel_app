@@ -47,15 +47,13 @@ class TraitsController extends Controller
         $char = Character::whereId($data_payload->char_id)->first();
         $existing_traits = $char->traits;
 
-        $array_traits = [];
-        $array_trait_ids = [];
-        foreach($data_payload->traits as $trait_groups) {
-            foreach ($trait_groups as $item) {
-                $array_traits[] = CharTrait::whereId($item['id'])->first();
-                $array_trait_ids[] = CharTrait::whereId($item['id'])->first()->id;
-            }
+        $array_traits       = [];
+        $array_trait_ids    = [];
+        foreach($data_payload->traits as $trait) {
+            $array_traits[]     = CharTrait::whereId($trait['id'])->first();
+            $array_trait_ids[]  = CharTrait::whereId($trait['id'])->first()->id;
         }
-
+        
         $existing_ids = [];
         foreach($existing_traits as $trait) {
             $existing_ids[] = $trait->id;
