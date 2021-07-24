@@ -26,7 +26,7 @@
 
                 <!-- Delete Character -->
                 <MenuItem>
-                  <button @click="isDeleteModalOpen = true" class="flex items-center block px-4 py-2 text-sm gap-2 w-full" ref="deleteButtonRef">
+                  <button @click="toggleDeleteModal()" class="flex items-center block px-4 py-2 text-sm gap-2 w-full" ref="deleteButtonRef">
                     <TrashIcon class="w-5 h-5 text-gray-500"/>
                     <p class="text-gray-900">Delete</p>
                   </button>
@@ -92,7 +92,7 @@
                         <h3 class="text-lg font-medium">
                             Skill Grid
                         </h3>
-                        <ExternalLinkIcon />
+                        <ExternalLinkIcon class="h-5 w-5" />
                       </div>
 
                       <!-- Subheading -->
@@ -205,53 +205,11 @@
       </div>
 
       <!-- Delete Modal -->
-      <TransitionRoot as="template" :show="isDeleteModalOpen">
-        <Dialog as="div" static class="fixed z-10 inset-0 overflow-y-auto" @close="isDeleteModalOpen = false" :open="isDeleteModalOpen">
-          <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
-              <DialogOverlay class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </TransitionChild>
-
-            <!-- This element is to trick the browser into centering the modal contents. -->
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200" leave-from="opacity-100 translate-y-0 sm:scale-100" leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-              <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                <div>
-                  <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                    <TrashIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
-                  </div>
-                  <div class="mt-3 text-center sm:mt-5">
-                    <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
-                      Delete Character
-                    </DialogTitle>
-                    <div class="mt-2">
-                      <p class="text-sm text-gray-500">
-                        Are you sure you want to delete {{character.alias}}?
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
-                  <button type="button" 
-                      class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm" 
-                      @click="deleteCharacter(character.id)">
-                    Delete
-                  </button>
-                  <button type="button" 
-                      class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm" 
-                      @click="isDeleteModalOpen = false" ref="cancelButtonRef">
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </TransitionChild>
-          </div>
-        </Dialog>
-      </TransitionRoot>
+      <DeleteCharacterModal ref="deleteCharacterModal" :character="character"></DeleteCharacterModal>
       
       <!-- Edit Modal -->
       <TransitionRoot as="template" :show="isEditModalOpen">
-        <Dialog as="div" static class="fixed z-10 inset-0 overflow-y-auto" @close="isEditModalOpen = false" :open="isEditModalOpen">
+        <Dialog :initialFocus="saveCharacterRef" as="div" static class="fixed z-10 inset-0 overflow-y-auto" @close="isEditModalOpen = false" :open="isEditModalOpen">
           <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
               <DialogOverlay class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
@@ -298,7 +256,7 @@
                             <!-- Alias -->
                             <div class="col-span-6 sm:col-span-3">
                               <label for="first_name" class="block text-sm font-medium text-gray-700">Alias</label>
-                              <input v-model.lazy="character.alias" type="text" name="alias" id="alias"
+                              <input v-model.lazy="character.alias" type="text" name="alias" id="alias" tabindex="-1"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                             </div>
 
@@ -344,7 +302,7 @@
                             </div>
 
                             <!-- Traits -->
-                            <div class="col-span-12">
+                            <div class="col-span-12 max-w-xl">
                               <label for="traits" class="block text-sm font-medium text-gray-700">Traits</label>
 
                               <!-- Multiselect -->
@@ -357,7 +315,7 @@
 
                         <!-- Save -->
                         <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                          <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                          <button ref="saveCharacterRef" type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Save
                           </button>
                         </div>
@@ -592,33 +550,7 @@
         </Dialog>
       </TransitionRoot>
 
-      <Dialog :open="isSuccessToastOpen" :show="isSuccessToastOpen">
-        <div class="rounded-md bg-green-50 p-4 fixed bottom-5 right-5">
-          <div class="flex gap-4">
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <CheckCircleIcon class="h-5 w-5 text-green-400" aria-hidden="true"/>
-              </div>
-              <div class="ml-3">
-                <p class="text-sm font-medium text-green-800">
-                  Character successfully updated
-                </p>
-              </div>
-            </div>
-            <div class="ml-auto pl-3">
-              <div class="-mx-1.5 -my-1.5">
-                <button type="button" 
-                    class="inline-flex bg-green-50 rounded-md p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600"
-                    @click="isSuccessToastOpen = false"
-                >
-                  <span class="sr-only">Dismiss</span>
-                  <XIcon class="h-5 w-5" aria-hidden="true"/>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Dialog>
+      <SuccessBanner ref="successBanner" :message="'Character successfully updated'"></SuccessBanner>"
 
     </app-layout>
 </template>
@@ -627,25 +559,32 @@
   import AppLayout from '@/Layouts/AppLayout';
   import { ref } from 'vue';
   import { Dialog, DialogOverlay, DialogTitle, Menu, MenuButton, MenuItem, MenuItems, TransitionChild, TransitionRoot } from '@headlessui/vue';
-  import { BookOpenIcon, CheckCircleIcon, ChevronDownIcon, FilmIcon, PencilIcon, TrashIcon, UserCircleIcon, UserGroupIcon, XIcon } from '@heroicons/vue/solid'
+  import { BookOpenIcon, ChevronDownIcon, FilmIcon, PencilIcon, TrashIcon, UserCircleIcon, UserGroupIcon } from '@heroicons/vue/solid'
   import { CheckIcon, ExternalLinkIcon } from '@heroicons/vue/outline';
   import MultiSelect from '../Components/MultiSelect.vue';
+  import DeleteCharacterModal from '../Components/DeleteCharacterModal.vue';
+  import SuccessBanner from '../Components/SuccessBanner.vue';
   import axios from 'axios';
 
   export default {
     setup() {
       // Modals
-      const isDeleteModalOpen = ref(false);
-      const isEditModalOpen = ref(true);
-
-      const isSuccessToastOpen = ref(false);
+      const isEditModalOpen = ref(false);
+      let saveCharacterRef = ref(null);
 
       const isProfile = ref(true);
       const isComics = ref(false);
       const isMovies = ref(false);
       const isTeams = ref(false);
 
-      return {isDeleteModalOpen, isEditModalOpen, isSuccessToastOpen, isProfile, isComics, isMovies, isTeams}
+      return {
+        saveCharacterRef,
+        isEditModalOpen, 
+        isProfile, 
+        isComics, 
+        isMovies, 
+        isTeams
+      }
     },
     data() {
       return {
@@ -699,9 +638,9 @@
     },
     components: {
         AppLayout,
-        CheckCircleIcon,
         CheckIcon,
         ChevronDownIcon,
+        DeleteCharacterModal,
         Dialog,
         DialogOverlay,
         DialogTitle,
@@ -712,10 +651,10 @@
         MenuItems,
         MultiSelect,
         PencilIcon,
+        SuccessBanner,
         TransitionChild,
         TransitionRoot,
-        TrashIcon,
-        XIcon
+        TrashIcon
     },
     created() {
       this.fetchCharacter();
@@ -779,10 +718,8 @@
               })
           })
       },
-      deleteCharacter(id) {
-        this.isDeleteModalOpen = false;
-        axios.delete(`/api/characters/${id}`)
-        return window.location.href = `/characters`;
+      toggleDeleteModal: function() {
+        this.$refs.deleteCharacterModal.toggleModal();
       },
 
       // Trait Methods
@@ -832,10 +769,7 @@
         axios.put(`/api/characters/${id}`, this.character)
           .then(res => {
             this.isEditModalOpen = false;
-            this.isSuccessToastOpen = true;
-            setTimeout(() => {
-              this.isSuccessToastOpen = false
-            }, 3000);
+            this.$refs.successBanner.toggle();
             return res.status;
           })
           .catch(e => {
@@ -851,6 +785,7 @@
             }
           })
       },
+
     },
   }
 </script>
