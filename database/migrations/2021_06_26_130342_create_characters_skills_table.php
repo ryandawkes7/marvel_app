@@ -13,7 +13,7 @@ class CreateCharactersSkillsTable extends Migration
      */
     public function up()
     {
-        Schema::create('characters_skills', function (Blueprint $table) {
+        Schema::create('character_skill', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('character_id');
             $table->foreign('character_id')->references('id')->on('characters')->onDelete('cascade');
@@ -32,6 +32,6 @@ class CreateCharactersSkillsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('characters_skills');
+        Schema::dropIfExists('character_skill');
     }
 }
