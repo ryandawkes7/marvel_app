@@ -165,7 +165,7 @@
       
       <!-- Edit Modal -->
       <TransitionRoot as="template" :show="isEditModalOpen">
-        <Dialog :initialFocus="saveCharacterRef" as="div" static class="fixed z-10 inset-0 overflow-y-auto" @close="isEditModalOpen = false" :open="isEditModalOpen">
+        <Dialog as="div" static class="fixed z-10 inset-0 overflow-y-auto" @close="isEditModalOpen = false" :open="isEditModalOpen">
           <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
               <DialogOverlay class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
@@ -226,10 +226,9 @@
                             <!-- Sex -->
                             <div class="col-span-6 sm:col-span-4">
                               <label for="email_address" class="block text-sm font-medium text-gray-700">Sex</label>
-                              <select v-model="character.sex" id="country" name="country"
-                                  class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm capitalize"
+                              <select v-model="this.character.sex" id="sex" name="sex" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm capitalize"
                               >
-                                <option class="capitalize" v-for="sex in sexValues" :key="sex.id" :value="sex.name" :selected="sex.name == character.sex">{{sex.name}}</option>
+                                <option class="capitalize" v-for="sex in sexValues" :key="sex" :value="sex" :selected="this.character.sex">{{sex}}</option>
                               </select>
                             </div>
                             
@@ -244,16 +243,16 @@
                             <!-- Morality -->
                             <div class="col-span-6 sm:col-span-3">
                               <label for="country" class="block text-sm font-medium text-gray-700">Morality</label>
-                              <select v-model="character.morality" id="morality" name="morality" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm capitalize">
-                                <option class="capitalize" v-for="morality in moralityValues" :key="morality.id" :value="morality.name" :selected="morality.name == character.morality">{{morality.name}}</option>
+                              <select v-model="this.character.morality" id="morality" name="morality" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm capitalize">
+                                <option class="capitalize" v-for="morality in moralityValues" :key="morality" :value="morality" :selected="this.character.morality">{{morality}}</option>
                               </select>
                             </div>
                             
                             <!-- Type -->
                             <div class="col-span-6 sm:col-span-3">
                               <label for="country" class="block text-sm font-medium text-gray-700">Type</label>
-                              <select v-model="character.type_id" id="type" name="type" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm capitalize">
-                                <option class="capitalize" v-for="type in typeValues" :key="type.id" :value="type.id.toString()" :selected="type.name == character.type">{{type.name}}</option>
+                              <select v-model="this.character.type_id" id="type" name="type" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm capitalize">
+                                <option class="capitalize" v-for="type in typeValues" :key="type.id.toString()" :value="type.id.toString()" :selected="this.character.type.toString()">{{type.type}}</option>
                               </select>
                             </div>
 
@@ -271,7 +270,7 @@
 
                         <!-- Save -->
                         <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                          <button ref="saveCharacterRef" type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                          <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Save
                           </button>
                         </div>
@@ -527,7 +526,6 @@
     setup() {
       // Modals
       const isEditModalOpen = ref(false);
-      let saveCharacterRef = ref(null);
 
       const isProfile = ref(true);
       const isComics = ref(false);
@@ -535,7 +533,6 @@
       const isTeams = ref(false);
 
       return {
-        saveCharacterRef,
         isEditModalOpen, 
         isProfile, 
         isComics, 
@@ -562,34 +559,10 @@
         },
         character_id: '',
         edit: false,
-        sexValues: [
-          { id: 1, name: 'unknown' }, 
-          { id: 2, name: 'male'}, 
-          { id: 3, name: 'female'}, 
-          { id: 4, name: 'none'}
-        ],
-        moralityValues: [
-          { id: 1, name: 'hero' }, 
-          { id: 2, name: 'neutral'}, 
-          { id: 3, name: 'evil'}, 
-          { id: 4, name: 'anti-hero'},
-          { id: 5, name: 'anti-villain'},
-          { id: 5, name: 'unknown'},
-        ],
-        typeValues: [
-          { id: 1, name: 'human'},
-          { id: 2, name: 'robot'},
-          { id: 3, name: 'unknown'},
-        ],
+        sexValues: [],
+        moralityValues: [],
+        typeValues: [],
         sharedItems: MultiSelect.data,
-        skills: [
-          { id: 1, name: 'durability', value: 86, colour: 'pink' },
-          { id: 2, name: 'energy projection', value: 86, colour: 'purple' },
-          { id: 3, name: 'fighting skills', value: 57, colour: 'red' },
-          { id: 4, name: 'intelligence', value: 86, colour: 'blue' },
-          { id: 5, name: 'speed', value: 71, colour: 'yellow' },
-          { id: 6, name: 'strength', value: 57, colour: 'green' },
-        ],
       };
     },
     components: {
@@ -668,15 +641,16 @@
         axios.get(`/api/characters/${id}`)
           .then(res => {
             const data = res.data.data;
-            this.character = data;
-            this.character.type_id = data.type_id.toString();
+            this.character = data.character;
+            this.moralityValues = data.morality;
+            this.sexValues = data.sex;
 
             // Fetch type
-            axios.get(`/api/character-types/${data.type_id}`)
+            axios.get(`/api/character-types`)
               .then(res => {
-                const data = res.data.data[0];
-                this.character.type = data.type;
-              })
+                const data = res.data.data;
+                this.typeValues = data;
+              });
           })
       },
       toggleDeleteModal: function() {

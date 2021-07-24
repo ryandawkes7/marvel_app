@@ -6,7 +6,6 @@ use App\Http\Requests\StoreCharacterRequest;
 use App\Http\Resources\CharacterResource;
 use App\Models\Character;
 use App\Http\Traits\EnumTrait;
-use App\Models\CharacterType;
 use App\Models\Skill;
 use Inertia\Inertia;
 
@@ -92,7 +91,6 @@ class CharactersController extends Controller
                 'character' => $character,
                 'morality'  => $morality_options,
                 'sex'       => $sex_options,
-                'types'     => CharacterType::all()
             ],
             'message' => 'Successfully fetched specified character'
         ], 200);
