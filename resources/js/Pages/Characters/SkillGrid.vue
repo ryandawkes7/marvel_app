@@ -8,15 +8,13 @@
 
             <!-- Title -->
             <div class="flex justify-between">
-              <h3 class="text-lg font-medium">
-                  Skill Grid
-              </h3>
+              <h3 class="text-lg font-medium">Skill Grid</h3>
               <ExternalLinkIcon class="h-5 w-5" />
             </div>
 
             <!-- Subheading -->
             <p class="text-sm text-gray-500" v-if="this.alias != ''">
-              Get an insight into {{this.alias}}'s competence in the field. Click on this box to gain further insight into each type of skill.
+              Take a look at {{this.alias}}'s competence in the field. Hover over the skills to learn what each skill is comprised of.
             </p>
           </div>
 
@@ -25,7 +23,6 @@
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="overflow-hidden border-b border-gray-200 rounded-lg">
-
                   <div class="block border border-gray-100">
                     <div v-for="skill in skills" :key="skill.id" :class="`bg-${skill.colour}-100`" class="grid grid-cols-12 p-3">
                       <p :class="`text-${skill.colour}-700`" class="col-span-3 text-wrap capitalize">{{skill.name}}</p>
@@ -34,12 +31,10 @@
                       </div>
                     </div>
                   </div>
-                  
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -50,16 +45,9 @@
 import { ExternalLinkIcon } from '@heroicons/vue/solid';
 
 export default {
-  data() {
-    return {
-    }
-  },
   components: {
     ExternalLinkIcon
   },
-  props: [
-    'alias',
-    'skills'
-  ]
+  props: ['alias', 'skills']
 }
 </script>
