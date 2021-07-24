@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\TraitResource;
 use App\Models\Character;
 use App\Models\CharTrait;
-use Doctrine\DBAL\Driver\Mysqli\Initializer\Charset;
 use Illuminate\Http\Request;
 
 class TraitsController extends Controller
