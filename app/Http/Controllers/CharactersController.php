@@ -77,9 +77,10 @@ class CharactersController extends Controller
      */
     public function show($id)
     {
-        $character = Character::where('id', $id)->get();
+
+        $character = Character::whereId($id)->with('skills')->first()->toArray();
         return response()->json([
-            'data' => CharacterResource::collection($character),
+            'data' => $character,
             'message' => 'Successfully fetched specified character'
         ], 200);
     }
@@ -127,5 +128,4 @@ class CharactersController extends Controller
         ]);
 
     }
-
 }
