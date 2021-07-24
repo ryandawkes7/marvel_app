@@ -306,7 +306,7 @@
                               <label for="traits" class="block text-sm font-medium text-gray-700">Traits</label>
 
                               <!-- Multiselect -->
-                              <MultiSelect :trait_options="traits" :char_id="this.fetchId()" @setSelectedTraits="setSelectedTraits"></MultiSelect>
+                              <MultiSelect ref="multiSelectRef" :char_id="this.fetchId()"></MultiSelect>
 
                             </div>
 
@@ -624,6 +624,7 @@
           { id: 2, name: 'robot'},
           { id: 3, name: 'unknown'},
         ],
+        sharedItems: MultiSelect.data,
         skills: [
           { id: 1, name: 'durability', value: 86, colour: 'pink' },
           { id: 2, name: 'energy projection', value: 86, colour: 'purple' },
@@ -632,8 +633,6 @@
           { id: 5, name: 'speed', value: 71, colour: 'yellow' },
           { id: 6, name: 'strength', value: 57, colour: 'green' },
         ],
-        traits: [],
-        traitsSelected: []
       };
     },
     components: {
@@ -658,7 +657,6 @@
     },
     created() {
       this.fetchCharacter();
-      this.fetchTraits();
     },
     methods: {
       changeEditSection(section) {
@@ -722,49 +720,9 @@
         this.$refs.deleteCharacterModal.toggleModal();
       },
 
-      // Trait Methods
-      fetchTraits() {
-        axios.get(`/api/traits`)
-          .then(res => {
-            this.traits = res.data.data;
-            axios.get(`/api/character-traits/${this.fetchId()}`).then(response => {
-                const existingTraits = response.data.data;
-                for (const trait of existingTraits) {
-                  const allTraits = res.data.data;
-                  allTraits.find(el => {
-                    if (el && el.id == trait.id) {
-                      let index = allTraits.indexOf(el);
-                      allTraits.splice(index, 1);
-                      this.traits = allTraits;
-                    }
-                  })
-                }
-            }).catch(e => console.log(e));
-          })
-      },
-      setSelectedTraits(sel) {
-        const items = this.traitsSelected;
-        items.includes(sel)
-          ? items.splice(items.indexOf(sel), 1)
-          : items.push(sel);
-
-        console.log(sel);
-      },
-      saveTraits(charId) {
-        axios.post(`/api/traits`, this.traitsSelected, charId);
-      },
-
       submitProfileForm() {
         const id = this.fetchId();
-
-        let traitPayload = {
-          traits: this.traitsSelected,
-          char_id: id
-        }
-
-        axios.post(`/api/traits`, { payload: traitPayload })
-          .then(res => console.log(res))
-          .catch(err => console.log(`Error: ${err}`));
+        this.$refs.multiSelectRef.saveTraits();
 
         axios.put(`/api/characters/${id}`, this.character)
           .then(res => {
@@ -773,16 +731,9 @@
             return res.status;
           })
           .catch(e => {
-            if (e.response) {
-              console.log(`Response: ${e}`);
-              return e.status;
-            } else if (e.request) {
-              console.log(`Request: ${e}`);
-              return e.status;
-            } else {
-              console.log(`Other: ${e}`);
-              return e.status;
-            }
+            if (e.response)     { return e.status } 
+            else if (e.request) { return e.status } 
+            else                { return e.status }
           })
       },
 
