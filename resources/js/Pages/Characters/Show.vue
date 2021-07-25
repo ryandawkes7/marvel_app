@@ -505,7 +505,7 @@
         </Dialog>
       </TransitionRoot>
 
-      <SuccessBanner ref="successBanner" :message="'Character successfully updated'"></SuccessBanner>"
+      <SuccessBanner ref="successBanner" :message="'Character successfully updated'"></SuccessBanner>
 
     </app-layout>
 </template>
