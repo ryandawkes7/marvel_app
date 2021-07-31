@@ -47,4 +47,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
      * Movies Page
      */
     Route::get('/movies', [MoviesController::class, 'main_page'])->name('movies');
+
+    /**
+     * Specific Movie
+     */
+    Route::get('/movies/{id}', [MoviesController::class, 'show_page'])->name('movie');
+
+    
 });
