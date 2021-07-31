@@ -16,6 +16,14 @@ class MoviesController extends Controller
         return Inertia::render('Movies/Index');
     }
 
+    /**
+     * Return a specific character
+     */
+    public function show_page()
+    {
+        return Inertia::render('Movies/Show');
+    }
+
     public function index()
     {        
         $movies = Movie::all();
