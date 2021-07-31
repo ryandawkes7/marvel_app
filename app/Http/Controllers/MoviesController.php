@@ -37,4 +37,17 @@ class MoviesController extends Controller
             'message' => 'Successfully created new movie'
         ]);
     }
+
+    /**
+     * Show a specific movie
+     */
+    public function show($id)
+    {
+        $movie = Movie::whereId($id)->with('sagas')->with('phase')->first()->toArray();
+        return response()->json([
+            'data'      => $movie,
+            'message'   => 'Successfully fetched specified character'
+        ], 200);
+    }
+
 }
