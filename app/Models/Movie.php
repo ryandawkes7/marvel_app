@@ -26,6 +26,6 @@ class Movie extends Model
 
     public function sagas() :BelongsToMany
     {
-        return $this->belongsToMany(MovieSaga::class, 'movie_movie_saga');
+        return $this->belongsToMany(MovieSaga::class, 'movie_movie_saga', 'movie_id', 'movie_saga_id');
     }
 }
