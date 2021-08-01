@@ -51,7 +51,7 @@ class MoviesController extends Controller
      */
     public function show($id)
     {
-        $movie = Movie::whereId($id)->with('sagas')->with('phase')->first()->toArray();
+        $movie = Movie::whereId($id)->with('sagas')->first()->toArray();
         return response()->json([
             'data'      => $movie,
             'message'   => 'Successfully fetched specified character'
