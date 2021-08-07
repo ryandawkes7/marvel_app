@@ -23,7 +23,7 @@ class CharactersController extends Controller
     /**
      * Return a specific character
      */
-    public function show_page($character_id)
+    public function show_page()
     {
         return Inertia::render('Characters/Show');
     }

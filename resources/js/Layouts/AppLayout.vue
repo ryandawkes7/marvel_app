@@ -23,6 +23,9 @@
                                 <jet-nav-link :href="route('characters')" :active="route().current('characters')">
                                     Characters
                                 </jet-nav-link>
+                                <jet-nav-link :href="route('movies')" :active="route().current('movies')">
+                                    Movies
+                                </jet-nav-link>
                             </div>
                         </div>
 

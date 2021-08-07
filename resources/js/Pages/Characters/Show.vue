@@ -511,169 +511,168 @@
 </template>
 
 <script>
-  import AppLayout from '@/Layouts/AppLayout';
-  import { ref } from 'vue';
-  import { Dialog, DialogOverlay, DialogTitle, Menu, MenuButton, MenuItem, MenuItems, TransitionChild, TransitionRoot } from '@headlessui/vue';
-  import { BookOpenIcon, ChevronDownIcon, FilmIcon, PencilIcon, TrashIcon, UserCircleIcon, UserGroupIcon } from '@heroicons/vue/solid'
-  import { CheckIcon, ExternalLinkIcon } from '@heroicons/vue/outline';
-  import MultiSelect from '../Components/MultiSelect.vue';
-  import DeleteCharacterModal from '../Components/DeleteCharacterModal.vue';
-  import SuccessBanner from '../Components/SuccessBanner.vue';
-  import SkillGrid from './SkillGrid.vue';
-  import axios from 'axios';
+    import AppLayout from '@/Layouts/AppLayout';
+    import { ref } from 'vue';
+    import { Dialog, DialogOverlay, DialogTitle, Menu, MenuButton, MenuItem, MenuItems, TransitionChild, TransitionRoot } from '@headlessui/vue';
+    import { BookOpenIcon, ChevronDownIcon, FilmIcon, PencilIcon, TrashIcon, UserCircleIcon, UserGroupIcon } from '@heroicons/vue/solid'
+    import { CheckIcon, ExternalLinkIcon } from '@heroicons/vue/outline';
+    import MultiSelect from '../Components/MultiSelect.vue';
+    import DeleteCharacterModal from '../Components/DeleteCharacterModal.vue';
+    import SuccessBanner from '../Components/SuccessBanner.vue';
+    import SkillGrid from './SkillGrid.vue';
+    import axios from 'axios';
 
-  export default {
-    setup() {
-      // Modals
-      const isEditModalOpen = ref(false);
+    export default {
+        setup() {
+            // Modals
+            const isEditModalOpen = ref(false);
 
-      const isProfile = ref(true);
-      const isComics = ref(false);
-      const isMovies = ref(false);
-      const isTeams = ref(false);
+            const isProfile = ref(true);
+            const isComics = ref(false);
+            const isMovies = ref(false);
+            const isTeams = ref(false);
 
-      return {
-        isEditModalOpen, 
-        isProfile, 
-        isComics, 
-        isMovies, 
-        isTeams
-      }
-    },
-    data() {
-      return {
-        navigationItems: [
-          { id: 1, name: 'Character Profile', icon: UserCircleIcon, current: true},
-          { id: 2, name: 'Comics', icon: BookOpenIcon, current: false},
-          { id: 3, name: 'Teams', icon: UserGroupIcon, current: false},
-          { id: 4, name: 'Movies', icon: FilmIcon, current: false}
-        ],
-        character: {
-            alias: String,
-            real_name: String,
-            sex: String,
-            thumb_url: String,
-            morality: String,
-            type_id: Number.toString(),
-            type: String
+            return {
+                isEditModalOpen, 
+                isProfile, 
+                isComics, 
+                isMovies, 
+                isTeams
+            }
         },
-        character_id: '',
-        edit: false,
-        sexValues: [],
-        moralityValues: [],
-        typeValues: [],
-        sharedItems: MultiSelect.data,
-      };
-    },
-    components: {
-        AppLayout,
-        CheckIcon,
-        ChevronDownIcon,
-        DeleteCharacterModal,
-        Dialog,
-        DialogOverlay,
-        DialogTitle,
-        ExternalLinkIcon,
-        Menu,
-        MenuButton,
-        MenuItem,
-        MenuItems,
-        MultiSelect,
-        PencilIcon,
-        SkillGrid,
-        SuccessBanner,
-        TransitionChild,
-        TransitionRoot,
-        TrashIcon
-    },
-    created() {
-      this.fetchCharacter();
-    },
-    methods: {
-      changeEditSection(section) {
-        let activeSection = '';
+        data() {
+            return {
+                navigationItems: [
+                { id: 1, name: 'Character Profile', icon: UserCircleIcon, current: true},
+                { id: 2, name: 'Comics', icon: BookOpenIcon, current: false},
+                { id: 3, name: 'Teams', icon: UserGroupIcon, current: false},
+                { id: 4, name: 'Movies', icon: FilmIcon, current: false}
+                ],
+                character: {
+                    alias: String,
+                    real_name: String,
+                    sex: String,
+                    thumb_url: String,
+                    morality: String,
+                    type_id: Number.toString(),
+                    type: String
+                },
+                character_id: '',
+                edit: false,
+                sexValues: [],
+                moralityValues: [],
+                typeValues: [],
+                sharedItems: MultiSelect.data,
+            };
+        },
+        components: {
+            AppLayout,
+            CheckIcon,
+            ChevronDownIcon,
+            DeleteCharacterModal,
+            Dialog,
+            DialogOverlay,
+            DialogTitle,
+            ExternalLinkIcon,
+            Menu,
+            MenuButton,
+            MenuItem,
+            MenuItems,
+            MultiSelect,
+            PencilIcon,
+            SkillGrid,
+            SuccessBanner,
+            TransitionChild,
+            TransitionRoot,
+            TrashIcon
+        },
+        created() {
+            this.fetchCharacter();
+        },
+        methods: {
+            changeEditSection(section) {
+                let activeSection = '';
 
-        const setSection = (section) => {
-          section.current = true;
-          activeSection = section;
-        }
+                const setSection = (section) => {
+                section.current = true;
+                activeSection = section;
+                }
 
-        this.navigationItems.forEach(item => {
-          item.id != section.id ? item.current = false : setSection(item);
-        });
+                this.navigationItems.forEach(item => {
+                item.id != section.id ? item.current = false : setSection(item);
+                });
 
-        switch(activeSection.id) {
-          case 1:
-            this.isProfile = true;
-            this.isComics = false;
-            this.isTeams = false;
-            this.isMovies = false;
-          case 2: 
-            this.isProfile = false;
-            this.isComics = true;
-            this.isTeams = false;
-            this.isMovies = false;
-            break;
-          case 3:
-            this.isProfile = false;
-            this.isComics = false;
-            this.isTeams = true;
-            this.isMovies = false;
-            break;
-          case 4:
-            this.isProfile = false;
-            this.isComics = false;
-            this.isTeams = false;
-            this.isMovies = true;
-            break;
-        }
-      },
+                switch(activeSection.id) {
+                case 1:
+                    this.isProfile = true;
+                    this.isComics = false;
+                    this.isTeams = false;
+                    this.isMovies = false;
+                case 2: 
+                    this.isProfile = false;
+                    this.isComics = true;
+                    this.isTeams = false;
+                    this.isMovies = false;
+                    break;
+                case 3:
+                    this.isProfile = false;
+                    this.isComics = false;
+                    this.isTeams = true;
+                    this.isMovies = false;
+                    break;
+                case 4:
+                    this.isProfile = false;
+                    this.isComics = false;
+                    this.isTeams = false;
+                    this.isMovies = true;
+                    break;
+                }
+            },
 
-      fetchId() {
-        return window.location.href.split('/').pop();
-      },
+            fetchId() {
+                return window.location.href.split('/').pop();
+            },
 
-      // Character Methods 
-      fetchCharacter() {
-        const id = this.fetchId();
+            // Character Methods 
+            fetchCharacter() {
+                const id = this.fetchId();
 
-        // Fetch character data
-        axios.get(`/api/characters/${id}`)
-          .then(res => {
-            const data = res.data.data;
-            this.character = data.character;
-            this.moralityValues = data.morality;
-            this.sexValues = data.sex;
+                // Fetch character data
+                axios.get(`/api/characters/${id}`)
+                .then(res => {
+                    const data = res.data.data;
+                    this.character = data.character;
+                    this.moralityValues = data.morality;
+                    this.sexValues = data.sex;
 
-            // Fetch type
-            axios.get(`/api/character-types`)
-              .then(res => {
-                const data = res.data.data;
-                this.typeValues = data;
-              });
-          })
-      },
-      toggleDeleteModal: function() {
-        this.$refs.deleteCharacterModal.toggleModal();
-      },
+                    // Fetch type
+                    axios.get(`/api/character-types`)
+                    .then(res => {
+                        const data = res.data.data;
+                        this.typeValues = data;
+                    });
+                })
+            },
+            toggleDeleteModal: function() {
+                this.$refs.deleteCharacterModal.toggleModal();
+            },
 
-      submitProfileForm() {
-        const id = this.fetchId();
-        this.$refs.multiSelectRef.saveTraits();
+            submitProfileForm() {
+                const id = this.fetchId();
+                this.$refs.multiSelectRef.saveTraits();
 
-        axios.put(`/api/characters/${id}`, this.character)
-          .then(res => {
-            this.isEditModalOpen = false;
-            this.$refs.successBanner.toggle();
-            return res.status;
-          })
-          .catch(e => {
-            if (e.response)     { return e.status } 
-            else if (e.request) { return e.status } 
-            else                { return e.status }
-          })
-      },
-
-    },
-  }
+                axios.put(`/api/characters/${id}`, this.character)
+                .then(res => {
+                    this.isEditModalOpen = false;
+                    this.$refs.successBanner.toggle();
+                    return res.status;
+                })
+                .catch(e => {
+                    if (e.response)     { return e.status } 
+                    else if (e.request) { return e.status } 
+                    else                { return e.status }
+                })
+            },
+        },
+    }
 </script>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CharactersController;
+use App\Http\Controllers\MoviesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,4 +42,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
      * Specific Character
      */
     Route::get('/characters/{id}', [CharactersController::class, 'show_page'])->name('character');
+
+    /**
+     * Movies Page
+     */
+    Route::get('/movies', [MoviesController::class, 'main_page'])->name('movies');
+
+    /**
+     * Specific Movie
+     */
+    Route::get('/movies/{id}', [MoviesController::class, 'show_page'])->name('movie');
+
+    
 });
