@@ -179,8 +179,10 @@
         </div>
 
         <!-- Edit Modal -->
-        <EditModal v-if="isEditModalOpen"></EditModal>
+        <EditModal :movie="movie" v-if="isEditModalOpen"></EditModal>
 
+        <SuccessBanner ref="successBanner" :message="'Character successfully updated'"></SuccessBanner>
+        
     </app-layout>
 </template>
 
@@ -191,6 +193,7 @@ import { Dialog, DialogOverlay, DialogTitle, Menu, MenuButton, MenuItem, MenuIte
 import { BookOpenIcon, ChevronDownIcon, FilmIcon, PencilIcon, TrashIcon, UserCircleIcon, UserGroupIcon } from '@heroicons/vue/solid'
 import { ArrowsExpandIcon } from '@heroicons/vue/solid'
 import EditModal from './EditModal.vue';
+import SuccessBanner from '../Components/SuccessBanner.vue';
 
 export default {
     components: {
@@ -208,6 +211,7 @@ export default {
         MenuItem,
         MenuItems,
         PencilIcon,
+        SuccessBanner,
         TransitionChild,
         TransitionRoot,
         TrashIcon, 
@@ -242,7 +246,6 @@ export default {
             .then(res => {
                 const data = res.data.data;
                 this.movie = data;
-                console.log(this.movie.sagas);
             })
         },
     },
