@@ -17,8 +17,10 @@
 
                     <!-- File Upload -->
                     <div class="col-span-1">
-                        <label for="poster_url" class="block text-sm font-medium text-gray-700">Poster URL</label>
-                        <button type="button" class="bg-purple-500 text-white px-3 py-1 rounded-md shadow hover:bg-purple-600" @click="this.toggleModal" >Add Poster</button>
+                        <button type="button" class="flex items-center gap-2 transition-colors bg-purple-500 text-white px-3 py-2 rounded-md shadow hover:bg-purple-600" @click="this.toggleModal" >
+                            <PlusIcon class="h-5 w-5"></PlusIcon>
+                            Add New Poster
+                        </button>
                     </div>
                     
                     <!-- Existing Posters Preview -->
@@ -28,8 +30,8 @@
 
                             <!-- Grid Items -->
                             <li v-for="poster in posters" :key="poster.id" class="col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200">
-                                <div class="flex-1 flex flex-col p-2">
-                                    <img class="flex-shrink-0 mx-auto rounded-md" :src="poster.image_url" alt="">
+                                <div class="flex-1 flex flex-col">
+                                    <img class="flex-shrink-0 mx-auto rounded-md min-h-full" :src="poster.image_url" alt="">
                                 </div>
                             </li>
 
@@ -100,10 +102,11 @@
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+import { PlusIcon } from '@heroicons/vue/solid';
 import ValidationErrors from '../Components/ValidationErrors.vue';
 
 export default {
-    components: { ValidationErrors },
+    components: { PlusIcon, ValidationErrors },
     computed: {
         validationErrors() {
             let errors = Object.values(this.errors);
@@ -127,7 +130,10 @@ export default {
         },
         addPoster: function() {
             axios.post(`/api/posters`, { image: this.new_poster.image_url, movie_id: this.movie_id })
-                .then(res => console.log(res))
+                .then(res => {
+                    this.toggleModal();
+                    this.$parent.fetchMovie();
+                })
                 .catch(e => {
                     if (e.response.status = 422) { this.validationErrors = e.response.data.errors }
                 })
