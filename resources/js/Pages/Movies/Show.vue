@@ -219,7 +219,7 @@ export default {
         UserGroupIcon
     },
     created() {
-        this.fetchCharacter();
+        this.fetchMovie();
     },
     data() {
         return {
@@ -238,7 +238,7 @@ export default {
             return window.location.href.split('/').pop();
         },
 
-        fetchCharacter() {
+        fetchMovie() {
             const id = this.fetchId();
 
             // Fetch character data
