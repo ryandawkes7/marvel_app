@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Movie extends Model
@@ -27,5 +28,10 @@ class Movie extends Model
     public function sagas() :BelongsToMany
     {
         return $this->belongsToMany(MovieSaga::class, 'movie_movie_saga', 'movie_id', 'movie_saga_id');
+    }
+    
+    public function posters() :HasMany
+    {
+        return $this->hasMany(MoviePoster::class);
     }
 }
