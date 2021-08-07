@@ -38732,7 +38732,9 @@ __webpack_require__.r(__webpack_exports__);
           break;
       }
     },
-    fetchMovie: function fetchMovie() {}
+    fetchMovie: function fetchMovie() {
+      this.$parent.fetchMovie();
+    }
   },
   props: {
     movie: {
@@ -38860,13 +38862,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Components/ValidationErrors.vue */ "./resources/js/Pages/Components/ValidationErrors.vue");
+/* harmony import */ var _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @heroicons/vue/solid */ "./node_modules/@heroicons/vue/solid/esm/index.js");
+/* harmony import */ var _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Components/ValidationErrors.vue */ "./resources/js/Pages/Components/ValidationErrors.vue");
+
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
-    ValidationErrors: _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_2__.default
+    PlusIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_2__.PlusIcon,
+    ValidationErrors: _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_3__.default
   },
   computed: {
     validationErrors: function validationErrors() {
@@ -38896,7 +38901,9 @@ __webpack_require__.r(__webpack_exports__);
         image: this.new_poster.image_url,
         movie_id: this.movie_id
       }).then(function (res) {
-        return console.log(res);
+        _this.toggleModal();
+
+        _this.$parent.fetchMovie();
       })["catch"](function (e) {
         if (e.response.status = 422) {
           _this.validationErrors = e.response.data.errors;
@@ -38970,7 +38977,7 @@ __webpack_require__.r(__webpack_exports__);
     UserGroupIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_3__.UserGroupIcon
   },
   created: function created() {
-    this.fetchCharacter();
+    this.fetchMovie();
   },
   data: function data() {
     return {
@@ -38988,7 +38995,7 @@ __webpack_require__.r(__webpack_exports__);
     fetchId: function fetchId() {
       return window.location.href.split('/').pop();
     },
-    fetchCharacter: function fetchCharacter() {
+    fetchMovie: function fetchMovie() {
       var _this = this;
 
       var id = this.fetchId(); // Fetch character data
@@ -44481,7 +44488,7 @@ var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 );
 
 var _hoisted_16 = {
-  "class": "flex-1 relative overflow-y-hidden focus:outline-none"
+  "class": "flex-1 relative overflow-y-auto focus:outline-none"
 };
 var _hoisted_17 = {
   "class": "px-4 py-6 sm:px-6 md:px-0"
@@ -44741,12 +44748,7 @@ var _hoisted_5 = {
   "class": "col-span-1"
 };
 
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
-  "for": "poster_url",
-  "class": "block text-sm font-medium text-gray-700"
-}, "Poster URL", -1
-/* HOISTED */
-);
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Add New Poster ");
 
 var _hoisted_7 = {
   "class": "col-span-6 sm:col-span-3 flex flex-col gap-3"
@@ -44764,7 +44766,7 @@ var _hoisted_9 = {
   "class": "grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3"
 };
 var _hoisted_10 = {
-  "class": "flex-1 flex flex-col p-2"
+  "class": "flex-1 flex flex-col"
 };
 var _hoisted_11 = {
   key: 0,
@@ -44842,6 +44844,8 @@ var _hoisted_24 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _this = this;
 
+  var _component_PlusIcon = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("PlusIcon");
+
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Poster View "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
@@ -44849,18 +44853,20 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return _ctx.submitProfileForm && _ctx.submitProfileForm.apply(_ctx, arguments);
     }, ["prevent"])),
     method: "POST"
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Content "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Heading "), _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Input Fields "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" File Upload "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Content "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Heading "), _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Input Fields "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" File Upload "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
     type: "button",
-    "class": "bg-purple-500 text-white px-3 py-1 rounded-md shadow hover:bg-purple-600",
+    "class": "flex items-center gap-2 transition-colors bg-purple-500 text-white px-3 py-2 rounded-md shadow hover:bg-purple-600",
     onClick: _cache[1] || (_cache[1] = function () {
       return _this.toggleModal && _this.toggleModal.apply(_this, arguments);
     })
-  }, "Add Poster")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Existing Posters Preview "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Grid Items "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.posters, function (poster) {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PlusIcon, {
+    "class": "h-5 w-5"
+  }), _hoisted_6])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Existing Posters Preview "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Grid Items "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.posters, function (poster) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", {
       key: poster.id,
       "class": "col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
-      "class": "flex-shrink-0 mx-auto rounded-md",
+      "class": "flex-shrink-0 mx-auto rounded-md min-h-full",
       src: poster.image_url,
       alt: ""
     }, null, 8
