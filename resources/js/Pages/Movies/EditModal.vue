@@ -16,23 +16,19 @@
 
                         <!-- Title -->
                         <div class="flex-shrink-0 px-4 flex items-center">
-                            <h2 class="h-8 w-auto font-bold text-xl">Movies</h2>
+                            <h2 class="h-8 w-auto font-bold text-xl">Edit Movie</h2>
                         </div>
 
                         <!-- Sub-Page Links -->
                         <div class="flex-grow mt-5 flex flex-col">
                             <nav class="flex-1 bg-white px-2 space-y-1">
 
-                                <!-- Movie Details -->
-                                <a href="#" class="bg-gray-100 text-gray-900 group rounded-md py-2 px-2 flex items-center text-sm font-medium">
-                                    <svg class="text-gray-500 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                                    Details
-                                </a>
+                                <!-- Pages -->
+                                <button v-for="item in navigationItems" :key="item.name" @click="changeEditSection(item)" :class="[item.current ? 'bg-indigo-50 text-indigo-700 hover:text-indigo-700 hover:bg-indigo-100 border-none' : 'text-gray-900 hover:text-gray-900 hover:bg-gray-50', 'group rounded-md px-3 py-2 flex items-center text-sm font-medium w-full']">
+                                    <component :is="item.icon" :class="[item.current ? 'text-indigo-500 group-hover:text-indigo-500' : 'text-gray-400 group-hover:text-gray-500', 'flex-shrink-0 -ml-1 mr-3 h-6 w-6']" aria-hidden="true" />
+                                    <span class="truncate">{{ item.name }}</span>
+                                </button>
 
-                                <a href="#" class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group rounded-md py-2 px-2 flex items-center text-sm font-medium">
-                                    <svg class="text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                                    Posters
-                                </a>
                             </nav>
                         </div>
                     </div>
@@ -49,17 +45,10 @@
                 </button>
 
                 <!-- Viewport -->
-                <main class="flex-1 relative overflow-y-auto focus:outline-none">
-                    <div class="py-6">
-                        <div class="px-4 sm:px-6 md:px-0">
-                            <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
-                        </div>
-                        <div class="px-4 sm:px-6 md:px-0">
-                            <!-- Replace with your content -->
-                            <div class="py-4">
-                                <div class="h-96 border-4 border-dashed border-gray-200 rounded-lg"></div>
-                            </div>
-                            <!-- /End replace -->
+                <main class="flex-1 relative overflow-y-hidden focus:outline-none">
+                    <div class="px-4 py-6 sm:px-6 md:px-0">
+                        <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
+                            <PosterModal :posters="movie.posters" :movie_id="movie.id" v-if="isPoster"></PosterModal>
                         </div>
                     </div>
                 </main>
@@ -72,7 +61,74 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+import { BookOpenIcon, UserCircleIcon } from '@heroicons/vue/solid';
+import DetailsModal from './DetailsModal.vue';
+import PosterModal from './PosterModal.vue';
+
 export default {
-    
+    components: {
+        BookOpenIcon,
+        DetailsModal,
+        PosterModal,
+        UserCircleIcon
+    },
+    created() {
+        console.log(`Movie:`);
+        console.log(this.movie.posters);
+    },
+    data() {
+        return {
+            navigationItems: [
+                { id: 1, name: 'Details', icon: UserCircleIcon, current: true},
+                { id: 2, name: 'Poster', icon: BookOpenIcon, current: false},
+            ],
+        }
+    },
+    methods: {
+        changeEditSection(section) {
+            let activeSection = '';
+
+            const setSection = (section) => {
+            section.current = true;
+            activeSection = section;
+            }
+
+            this.navigationItems.forEach(item => {
+            item.id != section.id ? item.current = false : setSection(item);
+            });
+
+            switch(activeSection.id) {
+            case 1:
+                this.isDetails = true;
+                this.isPoster = false;
+            case 2: 
+                this.isDetails = false;
+                this.isPoster = true;
+                break;
+            }
+        },
+        fetchMovie() {
+
+        }
+    },
+    props: {
+        movie: {
+            type: Object
+        }
+    },
+    setup() {
+        // Modals
+        const isEditModalOpen = ref(false);
+
+        const isDetails = ref(true);
+        const isPoster = ref(false);
+
+        return {
+            isEditModalOpen, 
+            isDetails, 
+            isPoster,
+        }
+    }
 }
 </script>
