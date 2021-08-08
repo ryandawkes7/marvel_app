@@ -179,7 +179,7 @@
         </div>
 
         <!-- Edit Modal -->
-        <EditModal :movie="movie" v-if="isEditModalOpen"></EditModal>
+        <EditModal @fetchMovie="fetchMovie" :movie="movie" v-if="isEditModalOpen"></EditModal>
 
         <SuccessBanner ref="successBanner" :message="'Character successfully updated'"></SuccessBanner>
         

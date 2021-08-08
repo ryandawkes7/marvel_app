@@ -48,7 +48,7 @@
                 <main class="flex-1 relative overflow-y-auto focus:outline-none">
                     <div class="px-4 py-6 sm:px-6 md:px-0">
                         <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
-                            <PosterModal :posters="movie.posters" :movie_id="movie.id" v-if="isPoster"></PosterModal>
+                            <PosterModal @fetchMovie="fetchMovie" :posters="movie.posters" :movie_id="movie.id" v-if="isPoster"></PosterModal>
                         </div>
                     </div>
                 </main>
@@ -72,10 +72,6 @@ export default {
         DetailsModal,
         PosterModal,
         UserCircleIcon
-    },
-    created() {
-        console.log(`Movie:`);
-        console.log(this.movie.posters);
     },
     data() {
         return {
@@ -109,7 +105,7 @@ export default {
             }
         },
         fetchMovie() {
-            this.$parent.fetchMovie();
+            this.$emit('fetchMovie');
         }
     },
     props: {

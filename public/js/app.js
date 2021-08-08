@@ -38689,10 +38689,6 @@ __webpack_require__.r(__webpack_exports__);
     PosterModal: _PosterModal_vue__WEBPACK_IMPORTED_MODULE_3__.default,
     UserCircleIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_1__.UserCircleIcon
   },
-  created: function created() {
-    console.log("Movie:");
-    console.log(this.movie.posters);
-  },
   data: function data() {
     return {
       navigationItems: [{
@@ -38733,7 +38729,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     fetchMovie: function fetchMovie() {
-      this.$parent.fetchMovie();
+      this.$emit('fetchMovie');
     }
   },
   props: {
@@ -38871,7 +38867,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
     PlusIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_2__.PlusIcon,
-    ValidationErrors: _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_3__.default
+    ValidationErrors: _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_3__.default,
+    XIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_2__.XIcon
   },
   computed: {
     validationErrors: function validationErrors() {
@@ -38887,13 +38884,17 @@ __webpack_require__.r(__webpack_exports__);
         image_url: 'hello world',
         user_id: 0
       },
+      selected_poster: {
+        id: null,
+        image_url: ''
+      },
       validationErrors: ''
     };
   },
   methods: {
-    toggleModal: function toggleModal() {
-      this.isModalOpen = !this.isModalOpen;
-    },
+    /**
+     * Create new poster instance
+     */
     addPoster: function addPoster() {
       var _this = this;
 
@@ -38901,14 +38902,62 @@ __webpack_require__.r(__webpack_exports__);
         image: this.new_poster.image_url,
         movie_id: this.movie_id
       }).then(function (res) {
-        _this.toggleModal();
+        _this.toggleAddModal();
 
-        _this.$parent.fetchMovie();
+        _this.$emit('fetchMovie');
       })["catch"](function (e) {
-        if (e.response.status = 422) {
+        if (e.response && e.response.status == 422) {
           _this.validationErrors = e.response.data.errors;
-        }
+        } else console.log(e);
       });
+    },
+
+    /**
+     * Delete a poster instance
+     */
+    deletePoster: function deletePoster() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().delete("/api/posters/".concat(this.selected_poster.id)).then(function (res) {
+        _this2.toggleDeleteModal();
+
+        _this2.$emit('fetchMovie');
+      })["catch"](function (e) {
+        if (e.response && e.response.status == 422) {
+          _this2.validationErrors = e.response.data.errors;
+        } else console.log(e);
+      });
+    },
+
+    /**
+     * Reset selected_poster params
+     */
+    resetSelectedPoster: function resetSelectedPoster() {
+      this.selected_poster.id = null;
+      this.selected_poster.image_url = '';
+    },
+
+    /**
+     * Toggles modal for adding poster
+     */
+    toggleAddModal: function toggleAddModal() {
+      this.isAddModalOpen = !this.isAddModalOpen;
+    },
+
+    /**
+     * Toggles modal for deleting a poster
+     *
+     * @param {Object} poster 
+     */
+    toggleDeleteModal: function toggleDeleteModal(poster) {
+      if (this.isDeleteModalOpen) {
+        this.isDeleteModalOpen = false;
+        this.resetSelectedPoster();
+      } else {
+        this.selected_poster.id = poster.id;
+        this.selected_poster.image_url = poster.image_url;
+        this.isDeleteModalOpen = true;
+      }
     }
   },
   props: {
@@ -38920,9 +38969,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   setup: function setup() {
-    var isModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
+    var isAddModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
+    var isDeleteModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     return {
-      isModalOpen: isModalOpen
+      isAddModalOpen: isAddModalOpen,
+      isDeleteModalOpen: isDeleteModalOpen
     };
   }
 });
@@ -44520,11 +44571,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* KEYED_FRAGMENT */
   ))])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("  Body "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Open Sidebar Button (Mobile) "), _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Viewport "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("main", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_18, [$setup.isPoster ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_PosterModal, {
     key: 0,
+    onFetchMovie: $options.fetchMovie,
     posters: $props.movie.posters,
     movie_id: $props.movie.id
   }, null, 8
   /* PROPS */
-  , ["posters", "movie_id"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])])])])]);
+  , ["onFetchMovie", "posters", "movie_id"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])])])])]);
 }
 
 /***/ }),
@@ -44766,78 +44818,155 @@ var _hoisted_9 = {
   "class": "grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3"
 };
 var _hoisted_10 = {
-  "class": "flex-1 flex flex-col"
+  "class": "flex-1 flex flex-col relative"
 };
-var _hoisted_11 = {
+
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  "class": "h-4 w-4 transition-colors text-gray-500 group-hover:text-gray-600",
+  fill: "none",
+  viewBox: "0 0 24 24",
+  stroke: "currentColor"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("path", {
+  "stroke-linecap": "round",
+  "stroke-linejoin": "round",
+  "stroke-width": "2",
+  d: "M6 18L18 6M6 6l12 12"
+})], -1
+/* HOISTED */
+);
+
+var _hoisted_12 = {
   key: 0,
   "class": "col-span-3 bg-gray-100 py-5 flex flex-col text-center rounded-lg shadow"
 };
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", {
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", {
   "class": "text-xl font-bold text-gray-900"
 }, "No posters found for this movie", -1
 /* HOISTED */
 );
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
   "class": "px-4 py-3 bg-gray-50 text-right sm:px-6"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+  type: "button",
+  "class": "bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+}, " Cancel "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
   type: "submit",
   "class": "bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 }, " Save ")], -1
 /* HOISTED */
 );
 
-var _hoisted_14 = {
+var _hoisted_15 = {
   key: 0,
   "class": "fixed z-10 inset-0 overflow-y-auto h-full",
-  "aria-labelledby": "modal-title",
+  "aria-labelledby": "add-poster",
   role: "dialog",
   "aria-modal": "true"
 };
-var _hoisted_15 = {
+var _hoisted_16 = {
   "class": "flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0"
 };
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
   "class": "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity",
   "aria-hidden": "true"
 }, null, -1
 /* HOISTED */
 );
 
-var _hoisted_17 = {
+var _hoisted_18 = {
   "class": "fixed inset-10 flex justify-center items-center"
 };
-var _hoisted_18 = {
+var _hoisted_19 = {
   "class": "inline-block align-bottom text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
 };
-var _hoisted_19 = {
+var _hoisted_20 = {
   "class": "shadow sm:rounded-md sm:overflow-hidden"
 };
-var _hoisted_20 = {
+var _hoisted_21 = {
   "class": "bg-white py-6 px-4 space-y-6 sm:p-6"
 };
-var _hoisted_21 = {
+var _hoisted_22 = {
   "class": "grid grid-cols-1"
 };
-var _hoisted_22 = {
+var _hoisted_23 = {
   "class": "col-span-1"
 };
 
-var _hoisted_23 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
+var _hoisted_24 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
   "for": "poster_url",
   "class": "block text-md font-medium"
 }, "Poster URL", -1
 /* HOISTED */
 );
 
-var _hoisted_24 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "px-4 py-3 bg-gray-50 text-right sm:px-6"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+var _hoisted_25 = {
+  "class": "px-4 py-3 bg-gray-50 text-right sm:px-6 flex gap-2 items-center justify-end"
+};
+
+var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
   type: "submit",
-  "class": "bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-}, " Save ")], -1
+  "class": "transition-all bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+}, " Save ", -1
+/* HOISTED */
+);
+
+var _hoisted_27 = {
+  key: 1,
+  "class": "fixed z-10 inset-0 overflow-y-auto h-full",
+  "aria-labelledby": "delete-poster",
+  role: "dialog",
+  "aria-modal": "true"
+};
+var _hoisted_28 = {
+  "class": "flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+};
+
+var _hoisted_29 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+  "class": "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity",
+  "aria-hidden": "true"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_30 = {
+  "class": "fixed inset-10 flex justify-center items-center"
+};
+var _hoisted_31 = {
+  "class": "inline-block align-bottom text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+};
+var _hoisted_32 = {
+  "class": "shadow sm:rounded-md sm:overflow-hidden"
+};
+var _hoisted_33 = {
+  "class": "bg-white py-6 px-4 space-y-6 sm:p-6"
+};
+
+var _hoisted_34 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", {
+  "class": "text-lg leading-6 font-medium text-gray-900"
+}, "Remove Poster"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", {
+  "class": "mt-1 text-sm text-gray-500"
+}, "Are you sure you would like to remove this poster?")], -1
+/* HOISTED */
+);
+
+var _hoisted_35 = {
+  "class": "grid grid-cols-1"
+};
+var _hoisted_36 = {
+  "class": "col-span-1 flex"
+};
+var _hoisted_37 = {
+  "class": "px-4 py-3 bg-gray-50 text-right sm:px-6 flex gap-2 items-center justify-end"
+};
+
+var _hoisted_38 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+  type: "submit",
+  "class": "transition-all bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+}, " Confirm ", -1
 /* HOISTED */
 );
 
@@ -44857,7 +44986,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "button",
     "class": "flex items-center gap-2 transition-colors bg-purple-500 text-white px-3 py-2 rounded-md shadow hover:bg-purple-600",
     onClick: _cache[1] || (_cache[1] = function () {
-      return _this.toggleModal && _this.toggleModal.apply(_this, arguments);
+      return _this.toggleAddModal && _this.toggleAddModal.apply(_this, arguments);
     })
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PlusIcon, {
     "class": "h-5 w-5"
@@ -44865,7 +44994,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", {
       key: poster.id,
       "class": "col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Delete Button "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+      type: "button",
+      onClick: function onClick($event) {
+        return $options.toggleDeleteModal(poster);
+      },
+      "class": "group absolute transition-all -top-2.5 -right-2.5 p-1 bg-white rounded-full border-2 border-gray-300 shadow hover:shadow-lg hover:bg-gray-100"
+    }, [_hoisted_11], 8
+    /* PROPS */
+    , ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Poster "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
       "class": "flex-shrink-0 mx-auto rounded-md min-h-full",
       src: poster.image_url,
       alt: ""
@@ -44874,14 +45011,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , ["src"])])]);
   }), 128
   /* KEYED_FRAGMENT */
-  )), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Empty Posters Array "), !$props.posters ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", _hoisted_11, [_hoisted_12])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Save "), _hoisted_13])], 32
+  )), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Empty Posters Array "), $props.posters.length <= 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", _hoisted_12, [_hoisted_13])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), _hoisted_14])], 32
   /* HYDRATE_EVENTS */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Add Poster Modal "), $setup.isModalOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
-    onSubmit: _cache[4] || (_cache[4] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Add Poster Modal "), $setup.isAddModalOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_16, [_hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
+    onSubmit: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.addPoster && $options.addPoster.apply($options, arguments);
     }, ["prevent"])),
     method: "POST"
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Content "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Input Fields "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" File Upload "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_22, [_hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Content "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Input Fields "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" File Upload "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_23, [_hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
       return $data.new_poster.image_url = $event;
     }),
@@ -44898,7 +45035,38 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     errors: $data.validationErrors
   }, null, 8
   /* PROPS */
-  , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Save "), _hoisted_24])], 32
+  , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+    type: "button",
+    onClick: _cache[4] || (_cache[4] = function () {
+      return $options.toggleAddModal && $options.toggleAddModal.apply($options, arguments);
+    }),
+    "class": "transition-all bg-gray-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
+  }, " Cancel "), _hoisted_26])])], 32
+  /* HYDRATE_EVENTS */
+  )])])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Delete Poster Modal "), $setup.isDeleteModalOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_28, [_hoisted_29, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_30, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
+    onSubmit: _cache[7] || (_cache[7] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
+      return $options.deletePoster();
+    }, ["prevent"])),
+    method: "POST"
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+    type: "hidden",
+    name: "_token",
+    value: _ctx.csrf
+  }, null, 8
+  /* PROPS */
+  , ["value"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_32, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Content "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_33, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Heading "), _hoisted_34, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Input Fields "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" File Upload "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_36, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
+    src: this.selected_poster.image_url,
+    alt: "Poster",
+    "class": "m-auto h-96 rounded-md shadow"
+  }, null, 8
+  /* PROPS */
+  , ["src"])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_37, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+    type: "button",
+    onClick: _cache[6] || (_cache[6] = function () {
+      return $options.toggleDeleteModal && $options.toggleDeleteModal.apply($options, arguments);
+    }),
+    "class": "transition-all bg-gray-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
+  }, " Cancel "), _hoisted_38])])], 32
   /* HYDRATE_EVENTS */
   )])])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 64
   /* STABLE_FRAGMENT */
@@ -45226,10 +45394,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       /* PROPS */
       , ["src"])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Edit Modal "), $setup.isEditModalOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_EditModal, {
         key: 1,
+        onFetchMovie: $options.fetchMovie,
         movie: $data.movie
       }, null, 8
       /* PROPS */
-      , ["movie"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_SuccessBanner, {
+      , ["onFetchMovie", "movie"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_SuccessBanner, {
         ref: "successBanner",
         message: 'Character successfully updated'
       }, null, 512
