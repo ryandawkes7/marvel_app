@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Date;
 
 class MoviePostersController extends Controller
 {
+    /**
+     * Create new poster instance
+     *
+     * @param Request $request
+     * @return JSON
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -27,6 +33,22 @@ class MoviePostersController extends Controller
         return response()->json([
             'data' => $poster,
             'message' => 'Successfully stored poster'
+        ]);
+    }
+
+    /**
+     * Delete an instance of the poster model
+     *
+     * @param Request $request
+     * @return JSON
+     */
+    public function destroy($id)
+    {
+        $poster = MoviePoster::find($id);
+        $poster->delete();
+
+        return response()->json([
+            'message' => 'Successfully removed poster'
         ]);
     }
 }
