@@ -1,30 +1,23 @@
-==================================================
-==========> NODE
-==================================================
-# Install Node Dependencies
+
+# NODE
+## Install Node Dependencies
 `npm i`
 
-# Watch in development
+## Watch in development
 `npm run watch`
 
-==================================================
-==========> LARAVEL
-==================================================
-
-# Install Composer Dependencies
+# LARAVEL
+## Install Composer Dependencies
 `composer install`
 
-# Create .env
+## Create .env
 `cp .env.example .env`
 
 ## Run migrations
 `php artisan migrate`
 
-# Generate Key
+## Generate Key
 `php artisan key:ge`
 
-# Serve Artisan
+## Serve Artisan
 `php artisan serve`
-
-
-
