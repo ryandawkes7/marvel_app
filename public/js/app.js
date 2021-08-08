@@ -38689,10 +38689,6 @@ __webpack_require__.r(__webpack_exports__);
     PosterModal: _PosterModal_vue__WEBPACK_IMPORTED_MODULE_3__.default,
     UserCircleIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_1__.UserCircleIcon
   },
-  created: function created() {
-    console.log("Movie:");
-    console.log(this.movie.posters);
-  },
   data: function data() {
     return {
       navigationItems: [{
@@ -38896,6 +38892,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    /**
+     * Create new poster instance
+     */
     addPoster: function addPoster() {
       var _this = this;
 
@@ -38903,7 +38902,7 @@ __webpack_require__.r(__webpack_exports__);
         image: this.new_poster.image_url,
         movie_id: this.movie_id
       }).then(function (res) {
-        _this.toggleModal();
+        _this.toggleAddModal();
 
         _this.$emit('fetchMovie');
       })["catch"](function (e) {
@@ -38912,6 +38911,10 @@ __webpack_require__.r(__webpack_exports__);
         } else console.log(e);
       });
     },
+
+    /**
+     * Delete a poster instance
+     */
     deletePoster: function deletePoster() {
       var _this2 = this;
 
@@ -38925,10 +38928,27 @@ __webpack_require__.r(__webpack_exports__);
         } else console.log(e);
       });
     },
+
+    /**
+     * Reset selected_poster params
+     */
     resetSelectedPoster: function resetSelectedPoster() {
       this.selected_poster.id = null;
       this.selected_poster.image_url = '';
     },
+
+    /**
+     * Toggles modal for adding poster
+     */
+    toggleAddModal: function toggleAddModal() {
+      this.isAddModalOpen = !this.isAddModalOpen;
+    },
+
+    /**
+     * Toggles modal for deleting a poster
+     *
+     * @param {Object} poster 
+     */
     toggleDeleteModal: function toggleDeleteModal(poster) {
       if (this.isDeleteModalOpen) {
         this.isDeleteModalOpen = false;
@@ -38936,12 +38956,8 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         this.selected_poster.id = poster.id;
         this.selected_poster.image_url = poster.image_url;
-        console.log(this.selected_poster);
         this.isDeleteModalOpen = true;
       }
-    },
-    toggleModal: function toggleModal() {
-      this.isModalOpen = !this.isModalOpen;
     }
   },
   props: {
@@ -38953,10 +38969,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   setup: function setup() {
-    var isModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
+    var isAddModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     var isDeleteModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     return {
-      isModalOpen: isModalOpen,
+      isAddModalOpen: isAddModalOpen,
       isDeleteModalOpen: isDeleteModalOpen
     };
   }
@@ -44970,7 +44986,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "button",
     "class": "flex items-center gap-2 transition-colors bg-purple-500 text-white px-3 py-2 rounded-md shadow hover:bg-purple-600",
     onClick: _cache[1] || (_cache[1] = function () {
-      return _this.toggleModal && _this.toggleModal.apply(_this, arguments);
+      return _this.toggleAddModal && _this.toggleAddModal.apply(_this, arguments);
     })
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_PlusIcon, {
     "class": "h-5 w-5"
@@ -44997,7 +45013,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* KEYED_FRAGMENT */
   )), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Empty Posters Array "), $props.posters.length <= 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", _hoisted_12, [_hoisted_13])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), _hoisted_14])], 32
   /* HYDRATE_EVENTS */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Add Poster Modal "), $setup.isModalOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_16, [_hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Add Poster Modal "), $setup.isAddModalOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_16, [_hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("form", {
     onSubmit: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.addPoster && $options.addPoster.apply($options, arguments);
     }, ["prevent"])),
@@ -45022,7 +45038,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
     type: "button",
     onClick: _cache[4] || (_cache[4] = function () {
-      return $options.toggleModal && $options.toggleModal.apply($options, arguments);
+      return $options.toggleAddModal && $options.toggleAddModal.apply($options, arguments);
     }),
     "class": "transition-all bg-gray-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
   }, " Cancel "), _hoisted_26])])], 32
