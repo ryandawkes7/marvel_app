@@ -17,7 +17,7 @@
 
                     <!-- File Upload -->
                     <div class="col-span-1">
-                        <button type="button" class="flex items-center gap-2 transition-colors bg-purple-500 text-white px-3 py-2 rounded-md shadow hover:bg-purple-600" @click="this.toggleModal" >
+                        <button type="button" class="flex items-center gap-2 transition-colors bg-purple-500 text-white px-3 py-2 rounded-md shadow hover:bg-purple-600" @click="this.toggleAddModal" >
                             <PlusIcon class="h-5 w-5"></PlusIcon>
                             Add New Poster
                         </button>
@@ -66,7 +66,7 @@
     </form>
 
     <!-- Add Poster Modal -->
-    <div class="fixed z-10 inset-0 overflow-y-auto h-full" aria-labelledby="add-poster" role="dialog" aria-modal="true" v-if="isModalOpen">
+    <div class="fixed z-10 inset-0 overflow-y-auto h-full" aria-labelledby="add-poster" role="dialog" aria-modal="true" v-if="isAddModalOpen">
         <div class="flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
             
@@ -95,7 +95,7 @@
 
                                 <!-- Action Buttons -->
                                 <div class="px-4 py-3 bg-gray-50 text-right sm:px-6 flex gap-2 items-center justify-end">
-                                    <button type="button" @click="toggleModal" class="transition-all bg-gray-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">
+                                    <button type="button" @click="toggleAddModal" class="transition-all bg-gray-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">
                                         Cancel
                                     </button>
                                     <button type="submit" class="transition-all bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -193,10 +193,13 @@ export default {
         }
     },
     methods: {
+        /**
+         * Create new poster instance
+         */
         addPoster: function() {
             axios.post(`/api/posters`, { image: this.new_poster.image_url, movie_id: this.movie_id })
                 .then(res => {
-                    this.toggleModal();
+                    this.toggleAddModal();
                     this.$emit('fetchMovie');
                 })
                 .catch(e => {
@@ -204,6 +207,10 @@ export default {
                     else console.log(e);
                 })
         },
+
+        /**
+         * Delete a poster instance
+         */
         deletePoster: function() {
             axios.delete(`/api/posters/${this.selected_poster.id}`)
                 .then(res => {
@@ -215,10 +222,27 @@ export default {
                     else console.log(e);
                 })
         },
+
+        /**
+         * Reset selected_poster params
+         */
         resetSelectedPoster: function() {
             this.selected_poster.id = null;
             this.selected_poster.image_url = '';
         },
+
+        /**
+         * Toggles modal for adding poster
+         */
+        toggleAddModal: function() {
+            this.isAddModalOpen = !this.isAddModalOpen;
+        },
+
+        /**
+         * Toggles modal for deleting a poster
+         *
+         * @param {Object} poster 
+         */
         toggleDeleteModal: function(poster) {
             if (this.isDeleteModalOpen) {
                 this.isDeleteModalOpen = false;
@@ -226,12 +250,8 @@ export default {
             } else {
                 this.selected_poster.id = poster.id;
                 this.selected_poster.image_url = poster.image_url;
-                console.log(this.selected_poster);
                 this.isDeleteModalOpen = true;
             }
-        } ,
-        toggleModal: function() {
-            this.isModalOpen = !this.isModalOpen;
         },
     },
     props: {
@@ -239,9 +259,9 @@ export default {
         movie_id: { type: Number }
     },
     setup() {
-        const isModalOpen = ref(false);
+        const isAddModalOpen = ref(false);
         const isDeleteModalOpen = ref(false);
-        return { isModalOpen, isDeleteModalOpen }
+        return { isAddModalOpen, isDeleteModalOpen }
     }
 }
 </script>
