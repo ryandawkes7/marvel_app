@@ -30,7 +30,14 @@
 
                             <!-- Grid Items -->
                             <li v-for="poster in posters" :key="poster.id" class="col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200">
-                                <div class="flex-1 flex flex-col">
+                                <div class="flex-1 flex flex-col relative">
+
+                                    <!-- Delete Button -->
+                                    <button type="button" class="group absolute transition-all -top-2.5 -right-2.5 p-1 bg-white rounded-full border-2 border-gray-300 shadow hover:shadow-lg hover:bg-gray-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-colors text-gray-500 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+
+                                    <!-- Poster -->
                                     <img class="flex-shrink-0 mx-auto rounded-md min-h-full" :src="poster.image_url" alt="">
                                 </div>
                             </li>
@@ -45,8 +52,11 @@
                 </div>
             </div>
 
-            <!-- Save -->
+            <!-- Action Buttons -->
             <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                <button type="button" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Cancel
+                </button>
                 <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Save
                 </button>
@@ -83,9 +93,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Save -->
-                                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <!-- Action Buttons -->
+                                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6 flex gap-2 items-center justify-end">
+                                    <button type="button" @click="toggleModal" class="transition-all bg-gray-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="transition-all bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         Save
                                     </button>
                                 </div>
@@ -102,11 +115,11 @@
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
-import { PlusIcon } from '@heroicons/vue/solid';
+import { PlusIcon, XIcon } from '@heroicons/vue/solid';
 import ValidationErrors from '../Components/ValidationErrors.vue';
 
 export default {
-    components: { PlusIcon, ValidationErrors },
+    components: { PlusIcon, ValidationErrors, XIcon },
     computed: {
         validationErrors() {
             let errors = Object.values(this.errors);
