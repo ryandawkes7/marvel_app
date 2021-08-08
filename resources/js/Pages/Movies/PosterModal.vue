@@ -33,7 +33,7 @@
                                 <div class="flex-1 flex flex-col relative">
 
                                     <!-- Delete Button -->
-                                    <button type="button" class="group absolute transition-all -top-2.5 -right-2.5 p-1 bg-white rounded-full border-2 border-gray-300 shadow hover:shadow-lg hover:bg-gray-100">
+                                    <button type="button" @click="toggleDeleteModal(poster)" class="group absolute transition-all -top-2.5 -right-2.5 p-1 bg-white rounded-full border-2 border-gray-300 shadow hover:shadow-lg hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-colors text-gray-500 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                     </button>
 
@@ -43,7 +43,7 @@
                             </li>
 
                             <!-- Empty Posters Array -->
-                            <li v-if="!posters" class="col-span-3 bg-gray-100 py-5 flex flex-col text-center rounded-lg shadow">
+                            <li v-if="posters.length <= 0" class="col-span-3 bg-gray-100 py-5 flex flex-col text-center rounded-lg shadow">
                                 <h3 class="text-xl font-bold text-gray-900">No posters found for this movie</h3>
                             </li>
                         </ul>
@@ -66,7 +66,7 @@
     </form>
 
     <!-- Add Poster Modal -->
-    <div class="fixed z-10 inset-0 overflow-y-auto h-full" aria-labelledby="modal-title" role="dialog" aria-modal="true" v-if="isModalOpen">
+    <div class="fixed z-10 inset-0 overflow-y-auto h-full" aria-labelledby="add-poster" role="dialog" aria-modal="true" v-if="isModalOpen">
         <div class="flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
             
@@ -110,6 +110,57 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Poster Modal -->
+    <div class="fixed z-10 inset-0 overflow-y-auto h-full" aria-labelledby="delete-poster" role="dialog" aria-modal="true" v-if="isDeleteModalOpen">
+        <div class="flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            
+            <div class="fixed inset-10 flex justify-center items-center">
+                <div class="inline-block align-bottom text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                    <div>
+                        <form v-on:submit.prevent="deletePoster()" method="POST" >
+                            <input type="hidden" name="_token" :value="csrf">
+                            <div class="shadow sm:rounded-md sm:overflow-hidden">
+
+                                <!-- Content -->
+                                <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
+
+                                    <!-- Heading -->
+                                    <div>
+                                        <h3 class="text-lg leading-6 font-medium text-gray-900">Remove Poster</h3>
+                                        <p class="mt-1 text-sm text-gray-500">Are you sure you would like to remove this poster?</p>
+                                    </div>
+
+                                    <!-- Input Fields -->
+                                    <div class="grid grid-cols-1">
+
+                                        <!-- File Upload -->
+                                        <div class="col-span-1 flex">
+                                            <img :src="this.selected_poster.image_url" alt="Poster" class="m-auto h-96 rounded-md shadow">
+                                        </div>
+                                        
+
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6 flex gap-2 items-center justify-end">
+                                    <button type="button" @click="toggleDeleteModal" class="transition-all bg-gray-500 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="transition-all bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Confirm
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -134,37 +185,63 @@ export default {
                 image_url: 'hello world',
                 user_id: 0,
             },
+            selected_poster: {
+                id: null,
+                image_url: ''
+            },
             validationErrors: ''
         }
     },
     methods: {
-        toggleModal: function() {
-            this.isModalOpen = !this.isModalOpen
-        },
         addPoster: function() {
             axios.post(`/api/posters`, { image: this.new_poster.image_url, movie_id: this.movie_id })
                 .then(res => {
                     this.toggleModal();
-                    this.$parent.fetchMovie();
+                    this.$emit('fetchMovie');
                 })
                 .catch(e => {
-                    if (e.response.status = 422) { this.validationErrors = e.response.data.errors }
+                    if (e.response && e.response.status == 422) { this.validationErrors = e.response.data.errors }
+                    else console.log(e);
                 })
-        }
+        },
+        deletePoster: function() {
+            axios.delete(`/api/posters/${this.selected_poster.id}`)
+                .then(res => {
+                    this.toggleDeleteModal();
+                    this.$emit('fetchMovie');
+                })
+                .catch(e => {
+                    if (e.response && e.response.status == 422) { this.validationErrors = e.response.data.errors }
+                    else console.log(e);
+                })
+        },
+        resetSelectedPoster: function() {
+            this.selected_poster.id = null;
+            this.selected_poster.image_url = '';
+        },
+        toggleDeleteModal: function(poster) {
+            if (this.isDeleteModalOpen) {
+                this.isDeleteModalOpen = false;
+                this.resetSelectedPoster();
+            } else {
+                this.selected_poster.id = poster.id;
+                this.selected_poster.image_url = poster.image_url;
+                console.log(this.selected_poster);
+                this.isDeleteModalOpen = true;
+            }
+        } ,
+        toggleModal: function() {
+            this.isModalOpen = !this.isModalOpen;
+        },
     },
     props: {
-        posters: {
-            type: Array
-        },
-        movie_id: {
-            type: Number
-        }
+        posters: { type: Array },
+        movie_id: { type: Number }
     },
     setup() {
         const isModalOpen = ref(false);
-        return {
-            isModalOpen
-        }
+        const isDeleteModalOpen = ref(false);
+        return { isModalOpen, isDeleteModalOpen }
     }
 }
 </script>
