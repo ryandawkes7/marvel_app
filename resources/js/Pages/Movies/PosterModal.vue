@@ -34,13 +34,23 @@
                             <li v-for="poster in posters" :key="poster.id" class="group col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200">
                                 <div class="flex-1 flex flex-col relative">
 
+                                    <!-- Poster -->
+                                    <img class="flex-shrink-0 mx-auto rounded-md min-h-full min-w-full" :src="poster.image_url" alt="">
+
+                                    <!-- Click to Enlarge -->
+                                    <div @click="toggleEnlargeModal(poster.id, poster.image_url)" class="group transition-colors flex items-center justify-center absolute inset-0 bg-transparent hover:bg-gray-300 opacity-75 rounded-md cursor-pointer">
+                                        <div class="bg-transparent opacity-0 flex flex-col justify-center items-center group-hover:opacity-100">
+                                            <!-- Icon -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                                            <!-- Subheading -->
+                                            <h3 class="text-gray-700 font-bold text-lg">Click to enlarge</h3>
+                                        </div>
+                                    </div>
+
                                     <!-- Delete Button -->
                                     <button type="button" @click="toggleDeleteModal(poster)" class="group absolute transition-all -top-2.5 -right-2.5 p-1 bg-white rounded-full border-2 border-gray-300 shadow hover:shadow-lg hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-colors text-gray-500 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                     </button>
-
-                                    <!-- Poster -->
-                                    <img class="flex-shrink-0 mx-auto rounded-md min-h-full min-w-full" :src="poster.image_url" alt="">
                                 </div>
                             </li>
 
@@ -152,6 +162,37 @@
             </div>
         </div>
     </div>
+    
+    <!-- Enlarged Image -->
+    <div class="fixed z-20 inset-0 overflow-y-auto h-full" aria-labelledby="enlarged_image" role="dialog" aria-modal="true" v-if="isEnlargeModalOpen">
+        <div class="flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            
+            <div class="fixed inset-10 flex justify-center items-center">
+                <div class="flex justify-center items-center overflow-hidden transform transition-all h-full sm:w-full py-2">
+
+                    <!-- Close Button -->
+                    <button @click="toggleEnlargeModal" class="absolute top-0 right-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 transition-colors text-gray-300 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+
+                    <!-- Left Arrow -->
+                    <button v-if="posters.length > 1" @click="previousPoster()" class="h-full transition-all bg-purple-700 opacity-50 hover:opacity-75 rounded-tl-lg rounded-bl-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-purple-300 opacity-100 z-20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    </button>
+
+                    <!-- Image -->
+                    <img class="object-cover min-h-full" :src="this.selected_poster.image_url" alt="Movie Poster" />
+
+                    <!-- Right Arrow -->
+                    <button v-if="posters.length > 1" @click="nextPoster()" class="h-full transition-all bg-purple-700 opacity-50 hover:opacity-75 rounded-tr-lg rounded-br-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-purple-300 opacity-100 z-20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script>
@@ -215,6 +256,43 @@ export default {
         },
 
         /**
+         * Fetch next poster from posters array. If last item, loop back to start
+         */
+        nextPoster: function() {
+            let index;
+            for (let poster of this.posters) {
+                if (this.selected_poster.id == poster.id) index = this.posters.indexOf(poster);
+            }
+
+            if (index >= 0 && index < this.posters.length - 1) {
+                this.selected_poster.id = this.posters[index + 1]['id'];
+                this.selected_poster.image_url = this.posters[index + 1]['image_url'];
+            } else if(index >= this.posters.length - 1) {
+                this.selected_poster.id = this.posters[0]['id'];
+                this.selected_poster.image_url = this.posters[0]['image_url'];
+            }
+        },
+
+                /**
+         * Fetch next poster from posters array. If last item, loop back to start
+         */
+        previousPoster: function() {
+            let index;
+            for (let poster of this.posters) {
+                if (this.selected_poster.id == poster.id) index = this.posters.indexOf(poster);
+            }
+
+            if (index > 0 && index <= this.posters.length - 1) {
+                this.selected_poster.id = this.posters[index - 1]['id'];
+                this.selected_poster.image_url = this.posters[index - 1]['image_url'];
+            } else if (index == 0) {
+                const final_item = this.posters.length - 1;
+                this.selected_poster.id = this.posters[final_item]['id'];
+                this.selected_poster.image_url = this.posters[final_item]['image_url'];
+            }
+        },
+
+        /**
          * Reset selected_poster params
          */
         resetSelectedPoster: function() {
@@ -244,6 +322,23 @@ export default {
                 this.isDeleteModalOpen = true;
             }
         },
+
+        /**
+        * Toggles modal for enlarged image
+        *
+        * @param {String} poster_id 
+        * @param {String} poser_image_url
+        */
+        toggleEnlargeModal: function(poster_id, poster_image_url) {
+            if (this.isEnlargeModalOpen) {
+                this.isEnlargeModalOpen = false;
+                this.resetSelectedPoster();
+            } else {
+                this.selected_poster.id = poster_id;
+                this.selected_poster.image_url = poster_image_url;
+                this.isEnlargeModalOpen = true;
+            };
+        },
     },
     props: {
         posters: { type: Array },
@@ -252,7 +347,8 @@ export default {
     setup() {
         const isAddModalOpen = ref(false);
         const isDeleteModalOpen = ref(false);
-        return { isAddModalOpen, isDeleteModalOpen }
+        const isEnlargeModalOpen = ref(false);
+        return { isAddModalOpen, isDeleteModalOpen, isEnlargeModalOpen }
     }
 }
 </script>
