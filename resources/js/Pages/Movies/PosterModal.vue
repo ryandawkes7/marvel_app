@@ -1,10 +1,10 @@
 <template>
     <!-- Poster View -->
     <form v-on:submit.prevent="submitProfileForm" method="POST">
-        <div class="shadow sm:rounded-md sm:overflow-hidden">
+        <div class="sm:overflow-hidden relative">
 
             <!-- Content -->
-            <div class="bg-white py-6 px-4 space-y-6 sm:p-6">
+            <div class="bg-white py-5 px-4 min-h-full space-y-6">
 
                 <!-- Heading -->
                 <div>
@@ -12,24 +12,26 @@
                     <p class="mt-1 text-sm text-gray-500">Add and remove posters for this movie.</p>
                 </div>
 
-                <!-- Input Fields -->
-                <div class="grid grid-cols-1 gap-6">
+                <!-- File Upload -->
+                <div class="col-span-1">
+                    <button type="button" class="flex items-center gap-2 transition-colors bg-purple-500 text-white px-3 py-2 rounded-md shadow hover:bg-purple-600" @click="this.toggleAddModal" >
+                        <PlusIcon class="h-5 w-5"></PlusIcon>
+                        Add New Poster
+                    </button>
+                </div>
 
-                    <!-- File Upload -->
-                    <div class="col-span-1">
-                        <button type="button" class="flex items-center gap-2 transition-colors bg-purple-500 text-white px-3 py-2 rounded-md shadow hover:bg-purple-600" @click="this.toggleAddModal" >
-                            <PlusIcon class="h-5 w-5"></PlusIcon>
-                            Add New Poster
-                        </button>
-                    </div>
+                <hr>
+
+                <!-- Input Fields -->
+                <div class="grid grid-cols-1 gap-6 mt-4">
                     
                     <!-- Existing Posters Preview -->
                     <div class="col-span-6 sm:col-span-3 flex flex-col gap-3">
                         <label for="first_name" class="block text-sm font-medium text-gray-700">Existing Posters</label>
-                        <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+                        <ul role="list" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
 
                             <!-- Grid Items -->
-                            <li v-for="poster in posters" :key="poster.id" class="col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200">
+                            <li v-for="poster in posters" :key="poster.id" class="group col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200">
                                 <div class="flex-1 flex flex-col relative">
 
                                     <!-- Delete Button -->
@@ -38,7 +40,7 @@
                                     </button>
 
                                     <!-- Poster -->
-                                    <img class="flex-shrink-0 mx-auto rounded-md min-h-full" :src="poster.image_url" alt="">
+                                    <img class="flex-shrink-0 mx-auto rounded-md min-h-full min-w-full" :src="poster.image_url" alt="">
                                 </div>
                             </li>
 
@@ -51,17 +53,6 @@
 
                 </div>
             </div>
-
-            <!-- Action Buttons -->
-            <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                <button type="button" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Cancel
-                </button>
-                <button type="submit" class="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Save
-                </button>
-            </div>
-
         </div>
     </form>
 
@@ -182,7 +173,7 @@ export default {
         return {
             new_poster: {
                 movie_id: this.movie_id,
-                image_url: 'hello world',
+                image_url: '',
                 user_id: 0,
             },
             selected_poster: {
