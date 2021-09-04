@@ -1,7 +1,7 @@
 <template>
     <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="closeEditModal()"></div>
 
             <!-- Centering -->
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
@@ -134,11 +134,16 @@
 
                         <!-- Body -->
                         <div class="flex-1 relative z-0 flex overflow-hidden h-full">
-                            <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
-                                <div class="absolute inset-0">
-                                    <div class="px-4 sm:px-6 md:px-0">
-                                        <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
-                                            <PosterModal @fetchMovie="fetchMovie" :posters="movie.posters" :movie_id="movie.id" v-if="isPoster"></PosterModal>
+                            <main class="flex-1 h-full relative z-0 overflow-y-auto focus:outline-none xl:order-last">
+                                <div class="absolute h-full inset-0">
+                                    <div class="px-4 sm:px-6 h-full md:px-0">
+                                        <div class="space-y-6 sm:px-6 h-full lg:px-0 lg:col-span-9">
+                                            <div v-if="isDetails" class="relative h-full">
+                                                <DetailsModal @closeEditModal="closeEditModal()" :movie="movie"></DetailsModal>
+                                            </div>
+                                            <div v-if="isPoster">
+                                                <PosterModal @fetchMovie="fetchMovie" :posters="movie.posters" :movie_id="movie.id"></PosterModal>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -166,44 +171,66 @@ export default {
         PosterModal,
         UserCircleIcon
     },
+    created() {
+        // console.log(this.movie);
+    },
     data() {
         return {
             navigationItems: [
-                { id: 1, name: 'Details', icon: UserCircleIcon, current: true},
-                { id: 2, name: 'Posters', icon: BookOpenIcon, current: false},
+                { id: 1, name: 'Details', icon: UserCircleIcon, current: this.isDetails},
+                { id: 2, name: 'Posters', icon: BookOpenIcon, current: this.isPoster},
             ],
         }
     },
     methods: {
+
+        /**
+         * Changes the section in the Edit Modal
+         *
+         * @param {Object} section 
+         */
         changeEditSection(section) {
             let activeSection = '';
 
             const setSection = (section) => {
-            section.current = true;
-            activeSection = section;
+                section.current = true;
+                activeSection = section;
             }
 
             this.navigationItems.forEach(item => {
-            item.id != section.id ? item.current = false : setSection(item);
+                item.id != section.id ? item.current = false : setSection(item);
             });
 
-            switch(activeSection.id) {
-            case 1:
+            if (activeSection.id == 1) {
                 this.isDetails = true;
                 this.isPoster = false;
-            case 2: 
+            } else if (activeSection.id == 2) {
                 this.isDetails = false;
-                this.isPoster = true;
-                break;
+                this.isPoster = true
             }
         },
+
+        /**
+         * Emit up to parent to close edit modal
+         * 
+         * @return {String}
+         */
+        closeEditModal() {
+            return this.$emit('closeEditModal');
+        },
+        /**
+         * Emit up to parent to re-fetch movie model instance
+         * 
+         * @return {String}
+         */
         fetchMovie() {
-            this.$emit('fetchMovie');
+            return this.$emit('fetchMovie');
         }
     },
     props: {
         movie: {
-            type: Object
+            type: [Array, Object],
+            required: true
         }
     },
     setup() {
