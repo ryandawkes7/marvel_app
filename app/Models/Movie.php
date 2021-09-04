@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Movie extends Model
 {
@@ -20,18 +20,23 @@ class Movie extends Model
         'mcu_phase_id'
     ];
 
-    public function phase() :HasOne
+    public function phase() :BelongsTo
     {
-        return $this->hasOne(McuPhase::class);
+        return $this->belongsTo(McuPhase::class, 'mcu_phase_id', 'id');
     }
 
     public function sagas() :BelongsToMany
     {
-        return $this->belongsToMany(MovieSaga::class, 'movie_movie_saga', 'movie_id', 'movie_saga_id');
+        return $this->belongsToMany(MovieSaga::class, 'movie_movie_saga', 'movie_id', 'movie_saga_id')->withPivot('movie_saga_id');
     }
     
     public function posters() :HasMany
     {
         return $this->hasMany(MoviePoster::class);
+    }
+
+    public function directors() :BelongsToMany
+    {
+        return $this->belongsToMany(Director::class, 'movie_director', 'movie_id', 'director_id');
     }
 }
