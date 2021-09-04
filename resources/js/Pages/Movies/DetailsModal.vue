@@ -27,12 +27,11 @@
                         <div class="lg:col-span-4 sm:col-span-6">
                             <label for="director" class="block text-sm font-medium text-gray-700">Directors</label>
 
-                            <div class="border border-gray-600 shadow-md rounded-md px-2 py-1 flex flex-wrap gap-2">
+                            <div class="border border-gray-300 shadow-md rounded-md p-2 flex flex-wrap gap-2">
                                 <span v-for="director in directors" :key="director.id" v-on="movieDirectorIds.includes(director.id) ? {click: () => removeSelectedDirector(director)} : {click: () => addSelectedDirector(director)}" class="transition-colors px-2 py-0.5 rounded-full whitespace-nowrap cursor-pointer text-sm" :class="movieDirectorIds.includes(director.id) ? 'bg-green-400 text-green-100 hover:bg-green-500 ' : 'bg-red-400 hover:bg-red-500 text-red-100'">
                                     {{director.name}}
                                 </span>
                             </div>
-
                         </div>
 
                         <!-- Release Date -->
@@ -58,9 +57,12 @@
                         <!-- Associated Saga -->
                         <div class="col-span-4 sm:col-span-4">
                             <label for="saga" class="block text-sm font-medium text-gray-700">Associated Saga</label>
-                            <select multiple v-model="selectedSagas" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block h-48 w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <option v-for="saga in sagas" :key="saga.id" :selected="movieSagaIds.includes(saga.id)" :value="saga">{{ saga.title }}</option>
-                            </select>
+
+                            <div class="border border-gray-300 shadow-md rounded-md p-2 flex flex-wrap gap-2">
+                                <span v-for="saga in sagas" :key="saga.id" v-on="movieSagaIds.includes(saga.id) ? {click: () => removeSelectedSaga(saga)} : {click: () => addSelectedSaga(saga)}" class="transition-colors px-2 py-0.5 rounded-full whitespace-nowrap cursor-pointer text-sm" :class="movieSagaIds.includes(saga.id) ? 'bg-green-400 text-green-100 hover:bg-green-500 ' : 'bg-red-400 hover:bg-red-500 text-red-100'">
+                                    {{saga.title}}
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Action Buttons -->
@@ -83,13 +85,13 @@ export default {
     data() {
         return {
             phases: [],
-            selectedPhase: null,
+            selectedPhase: this.movie.mcu_phase_id,
 
             directors: [],
             selectedDirectors: this.movie.directors,
 
             sagas: [],
-            selectedSagas: this.movieSagaIds,
+            selectedSagas: this.movie.sagas,
             
 
             // Props on the selected movie 
@@ -127,7 +129,6 @@ export default {
          */
         addSelectedDirector: function(director) {
             this.selectedDirectors.push(director);
-            console.log(this.selectedDirectors);
         },
 
         /**
@@ -138,6 +139,26 @@ export default {
         removeSelectedDirector: function(director) {
             const director_index = this.selectedDirectors.findIndex(item => item.id == director.id);
             this.selectedDirectors.splice(director_index, 1);
+        },
+
+        /**
+         * Adds specified saga to the selectedSagas array
+         *
+         * @param {Object} saga
+         */
+        addSelectedSaga: function(saga) {
+            this.selectedSagas.push(saga);
+            console.log(this.selectedSagas);
+        },
+
+        /**
+         * Removes specified saga from selectedSagas array
+         *
+         * @param {Object} saga
+         */
+        removeSelectedSaga: function(saga) {
+            const saga_index = this.selectedDirectors.findIndex(item => item.id == saga.id);
+            this.selectedSagas.splice(saga_index, 1);
         },
 
         /**
@@ -185,6 +206,7 @@ export default {
 
         updateMovie: function() {
             this.movie.directors = this.selectedDirectors;
+            this.movie.mcu_phase_id = this.selectedPhase;
 
             axios.patch(`/api/movies/${this.movie.id}`, this.movie )
                 .then(res => {
