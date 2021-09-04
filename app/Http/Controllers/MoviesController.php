@@ -93,17 +93,17 @@ class MoviesController extends Controller
         ]);
 
         $saga_ids = [];
+        $director_ids = [];
+
         foreach ($data['sagas'] as $saga) {
             $saga_ids[] = $saga['id'];
         }
 
-        $movie->sagas()->sync($saga_ids);
-
-        $director_ids = [];
         foreach ($data['directors'] as $director) {
             $director_ids[] = $director['id'];
         }
 
+        $movie->sagas()->sync($saga_ids);
         $movie->directors()->sync($director_ids);
 
         return response()->json([
