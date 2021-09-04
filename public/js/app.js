@@ -38689,11 +38689,11 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       phases: [],
-      selectedPhase: null,
+      selectedPhase: this.movie.mcu_phase_id,
       directors: [],
       selectedDirectors: this.movie.directors,
       sagas: [],
-      selectedSagas: this.movieSagaIds,
+      selectedSagas: this.movie.sagas,
       // Props on the selected movie 
       movieSagas: this.movie.sagas,
       movieDirectors: this.movie.directors
@@ -38730,7 +38730,6 @@ __webpack_require__.r(__webpack_exports__);
      */
     addSelectedDirector: function addSelectedDirector(director) {
       this.selectedDirectors.push(director);
-      console.log(this.selectedDirectors);
     },
 
     /**
@@ -38743,6 +38742,28 @@ __webpack_require__.r(__webpack_exports__);
         return item.id == director.id;
       });
       this.selectedDirectors.splice(director_index, 1);
+    },
+
+    /**
+     * Adds specified saga to the selectedSagas array
+     *
+     * @param {Object} saga
+     */
+    addSelectedSaga: function addSelectedSaga(saga) {
+      this.selectedSagas.push(saga);
+      console.log(this.selectedSagas);
+    },
+
+    /**
+     * Removes specified saga from selectedSagas array
+     *
+     * @param {Object} saga
+     */
+    removeSelectedSaga: function removeSelectedSaga(saga) {
+      var saga_index = this.selectedDirectors.findIndex(function (item) {
+        return item.id == saga.id;
+      });
+      this.selectedSagas.splice(saga_index, 1);
     },
 
     /**
@@ -38796,6 +38817,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this4 = this;
 
       this.movie.directors = this.selectedDirectors;
+      this.movie.mcu_phase_id = this.selectedPhase;
       axios.patch("/api/movies/".concat(this.movie.id), this.movie).then(function (res) {
         _this4.$emit('closeEditModal');
 
@@ -44791,7 +44813,7 @@ var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 );
 
 var _hoisted_12 = {
-  "class": "border border-gray-600 shadow-md rounded-md px-2 py-1 flex flex-wrap gap-2"
+  "class": "border border-gray-300 shadow-md rounded-md p-2 flex flex-wrap gap-2"
 };
 var _hoisted_13 = {
   "class": "lg:col-span-4 sm:col-span-6"
@@ -44839,6 +44861,9 @@ var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 );
 
 var _hoisted_21 = {
+  "class": "border border-gray-300 shadow-md rounded-md p-2 flex flex-wrap gap-2"
+};
+var _hoisted_22 = {
   "class": "absolute bottom-5 right-5 flex gap-2 mt-auto"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -44915,34 +44940,34 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* KEYED_FRAGMENT */
   ))], 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.selectedPhase]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Associated Saga "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [_hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
-    multiple: "",
-    "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
-      return $data.selectedSagas = $event;
-    }),
-    "class": "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block h-48 w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.sagas, function (saga) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("option", {
-      key: saga.id,
-      selected: $options.movieSagaIds.includes(saga.id),
-      value: saga
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(saga.title), 9
-    /* TEXT, PROPS */
-    , ["selected", "value"]);
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.selectedPhase]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Associated Saga "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [_hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_21, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.sagas, function (saga) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("span", (0,vue__WEBPACK_IMPORTED_MODULE_0__.mergeProps)({
+      key: saga.id
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toHandlers)($options.movieSagaIds.includes(saga.id) ? {
+      click: function click() {
+        return $options.removeSelectedSaga(saga);
+      }
+    } : {
+      click: function click() {
+        return $options.addSelectedSaga(saga);
+      }
+    }), {
+      "class": ["transition-colors px-2 py-0.5 rounded-full whitespace-nowrap cursor-pointer text-sm", $options.movieSagaIds.includes(saga.id) ? 'bg-green-400 text-green-100 hover:bg-green-500 ' : 'bg-red-400 hover:bg-red-500 text-red-100']
+    }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(saga.title), 17
+    /* TEXT, FULL_PROPS */
+    );
   }), 128
   /* KEYED_FRAGMENT */
-  ))], 512
-  /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.selectedSagas]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Cancel "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Cancel "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
     type: "button",
     "class": "px-5 py-2 transition-all bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:shadow",
-    onClick: _cache[7] || (_cache[7] = function ($event) {
+    onClick: _cache[6] || (_cache[6] = function ($event) {
       return _this.$emit('closeEditModal');
     })
   }, "Cancel"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Save "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
     type: "button",
     "class": "px-5 py-2 transition-all bg-gray-300 border border-gray-400 rounded-md hover:bg-gray-400 hover:shadow",
-    onClick: _cache[8] || (_cache[8] = function ($event) {
+    onClick: _cache[7] || (_cache[7] = function ($event) {
       return $options.updateMovie();
     })
   }, "Save")])])])])])])], 2112
