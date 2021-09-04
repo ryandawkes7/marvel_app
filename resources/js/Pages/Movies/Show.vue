@@ -179,7 +179,7 @@
         </div>
 
         <!-- Edit Modal -->
-        <EditModal @fetchMovie="fetchMovie" :movie="movie" v-if="isEditModalOpen"></EditModal>
+        <EditModal @fetchMovie="fetchMovie" @closeEditModal="setIsEditModalOpen(false)" :movie="movie" v-if="isEditModalOpen && movie.id != null"></EditModal>
 
         <SuccessBanner ref="successBanner" :message="'Character successfully updated'"></SuccessBanner>
         
@@ -218,19 +218,19 @@ export default {
         UserCircleIcon, 
         UserGroupIcon
     },
-    created() {
-        this.fetchMovie();
+    async created() {
+        const id = this.fetchId();
+
+        // Fetch character data
+        axios.get(`/api/movies/${id}`)
+        .then(res => {
+            const data = res.data.data;
+            this.movie = data;
+        })
     },
     data() {
         return {
-            movie: {
-                title: String,
-                director: String,
-                release_date: Date,
-                in_mcu: Boolean,
-                mcu_phase_id: Number,
-                image: String,
-            },
+            movie: Object
         }
     },
     methods: {
