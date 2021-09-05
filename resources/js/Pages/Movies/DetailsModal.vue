@@ -41,9 +41,19 @@
                         </div>
 
                         <!-- In MCU (Toggle) -->
-                        <div class="col-span-4 flex items-baseline align-bottom gap-2">
+                        <div class="col-span-4 flex flex-col items-baseline align-bottom gap-1">
                             <label for="in_mcu" class="block text-sm font-medium text-gray-700">In MCU?</label>
-                            <input type="checkbox" v-model="movie.in_mcu" @click="toggleInMcu" :checked="movie.in_mcu ? true : false" name="in_mcu" id="in_mcu" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            <div class="rounded-md overflow-hidden border border-gray-300 flex shadow-sm">
+                                <!-- True -->
+                                <div class="w-20 py-1 text-center transition-colors cursor-pointer" @click="in_mcu = !in_mcu" :class="in_mcu ? 'bg-purple-500 hover:bg-purple-600 text-purple-100' : 'bg-transparent hover:bg-purple-50'">
+                                    True
+                                </div>
+                                
+                                <!-- False -->
+                                <div class="w-20 py-1 text-center transition-colors cursor-pointer" @click="in_mcu = !in_mcu" :class="!in_mcu ? 'bg-purple-500 hover:bg-purple-600 text-purple-50' : 'bg-transparent'">
+                                    False
+                                </div>
+                            </div>
                         </div>
 
                         <!-- MCU Phase (Only Visible if In MCU is True) -->
@@ -92,7 +102,8 @@ export default {
 
             sagas: [],
             selectedSagas: this.movie.sagas,
-            
+
+            in_mcu: this.movie.in_mcu ? true : false,
 
             // Props on the selected movie 
             movieSagas: this.movie.sagas,
@@ -207,6 +218,7 @@ export default {
         updateMovie: function() {
             this.movie.directors = this.selectedDirectors;
             this.movie.mcu_phase_id = this.selectedPhase;
+            this.movie.in_mcu = this.in_mcu;
 
             axios.patch(`/api/movies/${this.movie.id}`, this.movie )
                 .then(res => {
