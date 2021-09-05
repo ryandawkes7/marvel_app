@@ -38694,6 +38694,7 @@ __webpack_require__.r(__webpack_exports__);
       selectedDirectors: this.movie.directors,
       sagas: [],
       selectedSagas: this.movie.sagas,
+      in_mcu: this.movie.in_mcu ? true : false,
       // Props on the selected movie 
       movieSagas: this.movie.sagas,
       movieDirectors: this.movie.directors
@@ -38818,6 +38819,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.movie.directors = this.selectedDirectors;
       this.movie.mcu_phase_id = this.selectedPhase;
+      this.movie.in_mcu = this.in_mcu;
       axios.patch("/api/movies/".concat(this.movie.id), this.movie).then(function (res) {
         _this4.$emit('closeEditModal');
 
@@ -44827,7 +44829,7 @@ var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 );
 
 var _hoisted_15 = {
-  "class": "col-span-4 flex items-baseline align-bottom gap-2"
+  "class": "col-span-4 flex flex-col items-baseline align-bottom gap-1"
 };
 
 var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
@@ -44838,32 +44840,35 @@ var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 );
 
 var _hoisted_17 = {
+  "class": "rounded-md overflow-hidden border border-gray-300 flex shadow-sm"
+};
+var _hoisted_18 = {
   key: 0,
   "class": "col-span-4 sm:col-span-6 lg:col-span-4"
 };
 
-var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
+var _hoisted_19 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
   "for": "mcu_phase",
   "class": "block text-sm font-medium text-gray-700"
 }, "MCU Phase", -1
 /* HOISTED */
 );
 
-var _hoisted_19 = {
+var _hoisted_20 = {
   "class": "col-span-4 sm:col-span-4"
 };
 
-var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", {
   "for": "saga",
   "class": "block text-sm font-medium text-gray-700"
 }, "Associated Saga", -1
 /* HOISTED */
 );
 
-var _hoisted_21 = {
+var _hoisted_22 = {
   "class": "border border-gray-300 shadow-md rounded-md p-2 flex flex-wrap gap-2"
 };
-var _hoisted_22 = {
+var _hoisted_23 = {
   "class": "absolute bottom-5 right-5 flex gap-2 mt-auto"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -44909,21 +44914,21 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
   }, null, 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.movie.release_date]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" In MCU (Toggle) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
-    type: "checkbox",
-    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
-      return $props.movie.in_mcu = $event;
-    }),
-    onClick: _cache[4] || (_cache[4] = function () {
-      return _ctx.toggleInMcu && _ctx.toggleInMcu.apply(_ctx, arguments);
-    }),
-    checked: $props.movie.in_mcu ? true : false,
-    name: "in_mcu",
-    id: "in_mcu",
-    "class": "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-gray-300 rounded-md"
-  }, null, 8
-  /* PROPS */
-  , ["checked"]), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelCheckbox, $props.movie.in_mcu]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" MCU Phase (Only Visible if In MCU is True) "), ($props.movie.in_mcu = true) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_17, [_hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.movie.release_date]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" In MCU (Toggle) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" True "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+    "class": ["w-20 py-1 text-center transition-colors cursor-pointer", $data.in_mcu ? 'bg-purple-500 hover:bg-purple-600 text-purple-100' : 'bg-transparent hover:bg-purple-50'],
+    onClick: _cache[3] || (_cache[3] = function ($event) {
+      return $data.in_mcu = !$data.in_mcu;
+    })
+  }, " True ", 2
+  /* CLASS */
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" False "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+    "class": ["w-20 py-1 text-center transition-colors cursor-pointer", !$data.in_mcu ? 'bg-purple-500 hover:bg-purple-600 text-purple-50' : 'bg-transparent'],
+    onClick: _cache[4] || (_cache[4] = function ($event) {
+      return $data.in_mcu = !$data.in_mcu;
+    })
+  }, " False ", 2
+  /* CLASS */
+  )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" MCU Phase (Only Visible if In MCU is True) "), ($props.movie.in_mcu = true) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_18, [_hoisted_19, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
     "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
       return $data.selectedPhase = $event;
     }),
@@ -44940,7 +44945,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* KEYED_FRAGMENT */
   ))], 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.selectedPhase]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Associated Saga "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_19, [_hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_21, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.sagas, function (saga) {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.selectedPhase]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Associated Saga "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_20, [_hoisted_21, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_22, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.sagas, function (saga) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("span", (0,vue__WEBPACK_IMPORTED_MODULE_0__.mergeProps)({
       key: saga.id
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toHandlers)($options.movieSagaIds.includes(saga.id) ? {
@@ -44958,7 +44963,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     );
   }), 128
   /* KEYED_FRAGMENT */
-  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Cancel "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
+  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Action Buttons "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Cancel "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
     type: "button",
     "class": "px-5 py-2 transition-all bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:shadow",
     onClick: _cache[6] || (_cache[6] = function ($event) {
