@@ -1,30 +1,30 @@
-==================================================
-==========> NODE
-==================================================
-# Install Node Dependencies
+# Installation 
+## Node Installation
+### Install Node Dependencies
 `npm i`
 
-# Watch in development
-`npm run watch`
+## Laravel Installation
 
-==================================================
-==========> LARAVEL
-==================================================
-
-# Install Composer Dependencies
+### Install Composer Dependencies
 `composer install`
 
-# Create .env
+### Create .env
 `cp .env.example .env`
 
-## Run migrations
-`php artisan migrate`
-
-# Generate Key
+#### Generate Key
 `php artisan key:ge`
 
-# Serve Artisan
+#### Fill out Database Details
+`code .env` & fill out necessary keys
+
+### Run migrations
+`php artisan migrate`
+
+# Running Locally
+
+## Frontend
+For live updates...
+`npm run watch`
+
+## Backend
 `php artisan serve`
-
-
-
