@@ -185,8 +185,6 @@ export default {
          * Filters directors according to the search term provided
          */
         searchDirectors: function() {
-
-            // If no directors
             let results = [];
             for (let i = 0; i < this.allDirectors.length; i++) {
                 const search = this.filter(this.allDirectors[i].name, this.directorSearch);

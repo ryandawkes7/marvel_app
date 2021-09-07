@@ -17,9 +17,10 @@
                 </div>
             </div>
 
+            <!-- Search -->
             <div class="max-w-2xl mx-auto">
                 <div class="mt-1 relative flex items-center">
-                    <input type="text" name="search" id="search" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="Quick Search"/>
+                    <input type="text" name="search_movies" v-model="movieSearchTerm" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="Quick Search"/>
                     <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
                         <button class="inline-flex items-center border border-red-300 bg-red-200 rounded px-2 text-sm font-sans font-medium text-white hover:bg-red-300 hover:border-red-400 transition-colors cursor-pointer hover:shadow">
                             <SearchCircleIcon class="h-5 w-5"></SearchCircleIcon>
@@ -28,7 +29,8 @@
                 </div>
             </div>
 
-            <div class="pb-12 sm:pb-16">
+            <!-- Filters -->
+            <div class="pb-12">
                 <div class="relative">
                     <div class="absolute inset-0 h-1/2 bg-gray-50" />
                     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,7 +62,8 @@
                 </div>
             </div>
 
-            <div class="px-5">
+            <!-- Movie List -->
+            <div class="px-5 pb-5">
                 <MovieList v-if="this.movies.length > 0" v-bind:movies="this.movies"></MovieList>
             </div>
             
@@ -76,11 +79,10 @@ import MovieList from './MovieList.vue';
 export default {
     data() {
         return {
+            allMovies: [],
             movies: [],
-            movie: {
-
-            },
-            pagination: {},
+            movieSearchTerm: null,
+            pagination: {}
         }
     },
     components: {
@@ -95,9 +97,45 @@ export default {
         fetchMovies() {
             axios.get('/api/movies')
                 .then(res => {
+                    this.allMovies = res.data.data;
                     this.movies = res.data.data;
                 })
-        }
+        },
+
+        /**
+         * Filters strings via a provided search term
+         *
+         * @param {String} text item to search against 
+         * @param {String} searchString term to search for
+         * @return {Bool}
+         */
+        filter: function(text, searchString) {
+            const regexStr = '(?=.*' + searchString.split(/\,|\s/).join(')(?=.*') + ')';
+            const searchRegEx = new RegExp(regexStr, 'gi');
+            return text.match(searchRegEx) !== null;
+        },
+
+        /**
+         * Filters directors according to the search term provided
+         */
+        searchMovies: function() {
+            let results = [];
+            for (let i = 0; i < this.allMovies.length; i++) {
+                const search = this.filter(this.allMovies[i].title, this.movieSearchTerm);
+                if (search == true) {
+                    results.push(this.allMovies[i]);
+                }
+            }
+            this.movies = results;
+        },
+    },
+    watch: {
+        /**
+         * Watches for changes on movieSearchTerm variable; runs function if changed
+         */
+        movieSearchTerm: function() {
+            this.searchMovies();
+        },
     }
 }
 </script>
