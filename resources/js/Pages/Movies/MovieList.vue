@@ -1,4 +1,3 @@
-
 <template>
     <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <li v-for="movie in this.movies" :key="movie.id" @click="showMovie(movie.id)" class="group col-span-1 grid grid-cols-4 box-border bg-white rounded-lg overflow-hidden shadow divide-y divide-gray-200 transition-all hover:bg-red-50 hover:shadow-lg cursor-pointer">
@@ -12,7 +11,7 @@
                 </div>
             </div>
             <div class="col-span-1 bg-gray-300 flex-shrink-0 transition-all group-hover:bg-red-500">
-                <img class="min-h-full transition-all object-cover group-hover:my-1" v-if="movie.image" :src="movie.image" alt="" />
+                <img class="min-h-full transition-all object-cover group-hover:my-1" v-if="movie.posters.length > 0" :src="movie.posters[0].image_url" alt="" />
             </div>
         </li>
   </ul>

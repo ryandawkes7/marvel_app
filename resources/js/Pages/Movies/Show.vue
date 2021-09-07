@@ -47,20 +47,30 @@
                     <section aria-labelledby="profile-overview-title">
                         <div class="rounded-lg bg-white overflow-hidden shadow">
                             <div class="bg-white p-6">
+                                <!-- Header Area -->
                                 <div class="sm:flex sm:items-center sm:justify-between">
+
+                                    <!-- image & Headings -->
                                     <div class="sm:flex sm:space-x-5">
+                                        <!-- Movie Image -->
                                         <div class="flex-shrink-0">
                                             <div class="relative">
+
+                                                <!-- Movie Icon -->
                                                 <div class="w-20 h-20 flex-shrink-0 mx-auto bg-white rounded-full overflow-hidden shadow-lg">
                                                     <img class="object-contain min-w-full min-h-full"
-                                                        :src="movie.image ? movie.image : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'"
+                                                        :src="poster ? poster : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'"
                                                     />
                                                 </div>
-                                                <div class="group absolute -top-1 -right-1 rounded-lg overflow-hidden bg-gray-200 cursor-pointer transition-colors flex p-0.5 hover:bg-red-100" @click="isPosterModalOpen = true">
+
+                                                <!-- Click to Expand -->
+                                                <div class="group absolute -top-1 -right-1 rounded-lg overflow-hidden bg-gray-200 cursor-pointer transition-colors flex p-0.5 hover:bg-red-100" v-if="poster" @click="isPosterModalOpen = true">
                                                     <ArrowsExpandIcon class="h-6 w-6 text-white m-auto" stroke="#000000"/>
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <!-- Headings -->
                                         <div class="mt-4 sm:mt-0 sm:pt-1 sm:text-left flex flex-col justify-center">
                                             <p class="text-xl font-bold text-gray-900 sm:text-2xl">{{movie.title}}</p>
                                             <p class="text-gray-400 font-light sm:text-md">Director: {{movie.director}}</p>
@@ -165,15 +175,21 @@
 
 
         <!-- Poster Modal -->
-        <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" v-if="isPosterModalOpen">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="setIsPosterModalOpen(false)"></div>
+        <div class="fixed z-20 inset-0 overflow-y-auto h-full" aria-labelledby="enlarged_image" role="dialog" aria-modal="true" v-if="isPosterModalOpen">
+            <div class="flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="inline-block align-bottom overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:max-h-screen sm:w-full">
-                    <img class="max-h-screen "
-                        :src="movie.image ? movie.image : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'"
-                    />
+                <div class="fixed inset-10 flex justify-center items-center">
+                    <div class="flex justify-center items-center overflow-hidden transform transition-all h-full sm:w-full py-2">
+
+                        <!-- Close Button -->
+                        <button @click="setIsPosterModalOpen(false)" class="absolute top-0 right-0 group">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 transition-all text-gray-300 group-hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+
+                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                        <img class="object-cover min-h-full" :src="poster ? poster : null"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -226,11 +242,16 @@ export default {
         .then(res => {
             const data = res.data.data;
             this.movie = data;
+
+            if (data.posters.length > 0) {
+                this.poster = data.posters[0].image_url;
+            }
         })
     },
     data() {
         return {
-            movie: Object
+            movie: Object,
+            poster: null
         }
     },
     methods: {
@@ -251,7 +272,7 @@ export default {
     },
     setup() {
         const isPosterModalOpen = ref(false);
-        const isEditModalOpen = ref(true);
+        const isEditModalOpen = ref(false);
 
         return {
             isPosterModalOpen,
