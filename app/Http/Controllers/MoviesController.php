@@ -32,7 +32,12 @@ class MoviesController extends Controller
      */
     public function index()
     {        
-        $movies = Movie::all();
+        $movies = Movie::with('sagas')
+                        ->with('posters')
+                        ->with('phase')
+                        ->with('directors')
+                        ->get();
+                        
         return response()->json([
             'data' => $movies,
             'message' => 'Successfully fetched all characters'
