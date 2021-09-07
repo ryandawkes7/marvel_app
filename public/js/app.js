@@ -38753,7 +38753,6 @@ __webpack_require__.r(__webpack_exports__);
      * Filters directors according to the search term provided
      */
     searchDirectors: function searchDirectors() {
-      // If no directors
       var results = [];
 
       for (var i = 0; i < this.allDirectors.length; i++) {
@@ -39040,8 +39039,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      allMovies: [],
       movies: [],
-      movie: {},
+      movieSearchTerm: null,
       pagination: {}
     };
   },
@@ -39058,8 +39058,47 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('/api/movies').then(function (res) {
+        _this.allMovies = res.data.data;
         _this.movies = res.data.data;
       });
+    },
+
+    /**
+     * Filters strings via a provided search term
+     *
+     * @param {String} text item to search against 
+     * @param {String} searchString term to search for
+     * @return {Bool}
+     */
+    filter: function filter(text, searchString) {
+      var regexStr = '(?=.*' + searchString.split(/\,|\s/).join(')(?=.*') + ')';
+      var searchRegEx = new RegExp(regexStr, 'gi');
+      return text.match(searchRegEx) !== null;
+    },
+
+    /**
+     * Filters directors according to the search term provided
+     */
+    searchMovies: function searchMovies() {
+      var results = [];
+
+      for (var i = 0; i < this.allMovies.length; i++) {
+        var search = this.filter(this.allMovies[i].title, this.movieSearchTerm);
+
+        if (search == true) {
+          results.push(this.allMovies[i]);
+        }
+      }
+
+      this.movies = results;
+    }
+  },
+  watch: {
+    /**
+     * Watches for changes on movieSearchTerm variable; runs function if changed
+     */
+    movieSearchTerm: function movieSearchTerm() {
+      this.searchMovies();
     }
   }
 });
@@ -39403,6 +39442,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               axios.get("/api/movies/".concat(id)).then(function (res) {
                 var data = res.data.data;
                 _this.movie = data;
+
+                if (data.posters.length > 0) {
+                  _this.poster = data.posters[0].image_url;
+                }
               });
 
             case 2:
@@ -39415,7 +39458,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   data: function data() {
     return {
-      movie: Object
+      movie: Object,
+      poster: null
     };
   },
   methods: {
@@ -39435,7 +39479,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   setup: function setup() {
     var isPosterModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_2__.ref)(false);
-    var isEditModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_2__.ref)(true);
+    var isEditModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_2__.ref)(false);
     return {
       isPosterModalOpen: isPosterModalOpen,
       setIsPosterModalOpen: function setIsPosterModalOpen(value) {
@@ -45472,26 +45516,15 @@ var _hoisted_3 = {
 var _hoisted_4 = {
   "class": "mt-1 relative flex items-center"
 };
-
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
-  type: "text",
-  name: "search",
-  id: "search",
-  "class": "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md",
-  placeholder: "Quick Search"
-}, null, -1
-/* HOISTED */
-);
-
-var _hoisted_6 = {
+var _hoisted_5 = {
   "class": "absolute inset-y-0 right-0 flex py-1.5 pr-1.5"
 };
-var _hoisted_7 = {
+var _hoisted_6 = {
   "class": "inline-flex items-center border border-red-300 bg-red-200 rounded px-2 text-sm font-sans font-medium text-white hover:bg-red-300 hover:border-red-400 transition-colors cursor-pointer hover:shadow"
 };
 
-var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "pb-12 sm:pb-16"
+var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+  "class": "pb-12"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
   "class": "relative"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
@@ -45522,8 +45555,8 @@ var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("
 /* HOISTED */
 );
 
-var _hoisted_9 = {
-  "class": "px-5"
+var _hoisted_8 = {
+  "class": "px-5 pb-5"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _this = this;
@@ -45536,9 +45569,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_app_layout, null, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Headings "), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_SearchCircleIcon, {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Headings "), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Search "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("input", {
+        type: "text",
+        name: "search_movies",
+        "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+          return $data.movieSearchTerm = $event;
+        }),
+        "class": "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md",
+        placeholder: "Quick Search"
+      }, null, 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.movieSearchTerm]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_SearchCircleIcon, {
         "class": "h-5 w-5"
-      })])])])]), _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [_this.movies.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_MovieList, {
+      })])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Filters "), _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Movie List "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [_this.movies.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_MovieList, {
         key: 0,
         movies: _this.movies
       }, null, 8
@@ -45604,10 +45647,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(movie.release_date), 1
     /* TEXT */
-    )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [movie.image ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("img", {
+    )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [movie.posters.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("img", {
       key: 0,
       "class": "min-h-full transition-all object-cover group-hover:my-1",
-      src: movie.image,
+      src: movie.posters[0].image_url,
       alt: ""
     }, null, 8
     /* PROPS */
@@ -46204,25 +46247,51 @@ var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 
 var _hoisted_23 = {
   key: 0,
-  "class": "fixed z-10 inset-0 overflow-y-auto",
-  "aria-labelledby": "modal-title",
+  "class": "fixed z-20 inset-0 overflow-y-auto h-full",
+  "aria-labelledby": "enlarged_image",
   role: "dialog",
   "aria-modal": "true"
 };
 var _hoisted_24 = {
-  "class": "flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+  "class": "flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0"
 };
 
-var _hoisted_25 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
+var _hoisted_25 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+  "class": "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity",
+  "aria-hidden": "true"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_26 = {
+  "class": "fixed inset-10 flex justify-center items-center"
+};
+var _hoisted_27 = {
+  "class": "flex justify-center items-center overflow-hidden transform transition-all h-full sm:w-full py-2"
+};
+
+var _hoisted_28 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  "class": "h-10 w-10 transition-all text-gray-300 group-hover:text-gray-200",
+  fill: "none",
+  viewBox: "0 0 24 24",
+  stroke: "currentColor"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("path", {
+  "stroke-linecap": "round",
+  "stroke-linejoin": "round",
+  "stroke-width": "2",
+  d: "M6 18L18 6M6 6l12 12"
+})], -1
+/* HOISTED */
+);
+
+var _hoisted_29 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
   "class": "hidden sm:inline-block sm:align-middle sm:h-screen",
   "aria-hidden": "true"
 }, "​", -1
 /* HOISTED */
 );
 
-var _hoisted_26 = {
-  "class": "inline-block align-bottom overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:max-h-screen sm:w-full"
-};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ChevronDownIcon = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ChevronDownIcon");
 
@@ -46327,12 +46396,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         _: 1
         /* STABLE */
 
-      })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Body "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Left column "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Description panel "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("section", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
+      })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Body "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Left column "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Description panel "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("section", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Header Area "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" image & Headings "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Movie Image "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Movie Icon "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
         "class": "object-contain min-w-full min-h-full",
-        src: $data.movie.image ? $data.movie.image : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'
+        src: $data.poster ? $data.poster : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'
       }, null, 8
       /* PROPS */
-      , ["src"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+      , ["src"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Click to Expand "), $data.poster ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", {
+        key: 0,
         "class": "group absolute -top-1 -right-1 rounded-lg overflow-hidden bg-gray-200 cursor-pointer transition-colors flex p-0.5 hover:bg-red-100",
         onClick: _cache[3] || (_cache[3] = function ($event) {
           return $setup.isPosterModalOpen = true;
@@ -46340,22 +46410,21 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ArrowsExpandIcon, {
         "class": "h-6 w-6 text-white m-auto",
         stroke: "#000000"
-      })])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.movie.title), 1
+      })])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Headings "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.movie.title), 1
       /* TEXT */
       ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("p", _hoisted_19, "Director: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.movie.director), 1
       /* TEXT */
-      )])]), _hoisted_20])]), _hoisted_21])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Skill Grid "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <SkillGrid :alias=\"character.alias\" :skills=\"character.skills\"></SkillGrid> ")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Right column "), _hoisted_22])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Poster Modal "), $setup.isPosterModalOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-        "class": "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity",
-        "aria-hidden": "true",
+      )])]), _hoisted_20])]), _hoisted_21])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Skill Grid "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <SkillGrid :alias=\"character.alias\" :skills=\"character.skills\"></SkillGrid> ")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Right column "), _hoisted_22])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Poster Modal "), $setup.isPosterModalOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_24, [_hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Close Button "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", {
         onClick: _cache[4] || (_cache[4] = function ($event) {
           return $setup.setIsPosterModalOpen(false);
-        })
-      }), _hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
-        "class": "max-h-screen ",
-        src: $data.movie.image ? $data.movie.image : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'
+        }),
+        "class": "absolute top-0 right-0 group"
+      }, [_hoisted_28]), _hoisted_29, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("img", {
+        "class": "object-cover min-h-full",
+        src: $data.poster ? $data.poster : null
       }, null, 8
       /* PROPS */
-      , ["src"])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Edit Modal "), $setup.isEditModalOpen && $data.movie.id != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_EditModal, {
+      , ["src"])])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Edit Modal "), $setup.isEditModalOpen && $data.movie.id != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_EditModal, {
         key: 1,
         onFetchMovie: $options.fetchMovie,
         onCloseEditModal: _cache[5] || (_cache[5] = function ($event) {
