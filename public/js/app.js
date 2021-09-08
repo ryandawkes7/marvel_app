@@ -39040,8 +39040,19 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       allMovies: [],
+      allPhases: [],
+      allSagas: [],
       movies: [],
       movieSearchTerm: null,
+      universeFilter: 1,
+      phaseFilter: 0,
+      sagaFilter: 0,
+      universeValues: {
+        1: 'All',
+        2: 'MCU',
+        3: 'Non-MCU'
+      },
+      selectedFilter: null,
       pagination: {}
     };
   },
@@ -39051,15 +39062,50 @@ __webpack_require__.r(__webpack_exports__);
     SearchCircleIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_1__.SearchCircleIcon
   },
   created: function created() {
-    this.fetchMovies();
+    this.fetchMovies(), this.fetchPhases(), this.fetchSagas(), this.selectedFilter = 1;
   },
   methods: {
+    /**
+     * Fetches all movies
+     */
     fetchMovies: function fetchMovies() {
       var _this = this;
 
       axios.get('/api/movies').then(function (res) {
         _this.allMovies = res.data.data;
         _this.movies = res.data.data;
+        console.log(_this.movies[0]);
+      });
+    },
+
+    /**
+     * Fetches all phases
+     */
+    fetchPhases: function fetchPhases() {
+      var _this2 = this;
+
+      axios.get('/api/phases').then(function (res) {
+        _this2.allPhases = res.data.data;
+      })["catch"](function (e) {
+        console.log(e);
+      });
+    },
+
+    /**
+     * Fetches all sagas
+     */
+    fetchSagas: function fetchSagas() {
+      var _this3 = this;
+
+      axios.get('/api/sagas').then(function (res) {
+        var data = res.data.data.sort(function (a, b) {
+          if (a.title < b.title) return -1;
+          if (a.title > b.title) return 1;
+          return 0;
+        });
+        _this3.allSagas = data;
+      })["catch"](function (e) {
+        return console.log(e);
       });
     },
 
@@ -39099,6 +39145,73 @@ __webpack_require__.r(__webpack_exports__);
      */
     movieSearchTerm: function movieSearchTerm() {
       this.searchMovies();
+    },
+    universeFilter: function universeFilter(value) {
+      var movies = this.allMovies;
+
+      if (value == 1) {
+        this.movies = this.allMovies;
+        this.phaseFilter = 0;
+      } else if (value == 2) {
+        var inMcuMovies = [];
+        movies.filter(function (el) {
+          if (el.in_mcu == 1) {
+            inMcuMovies.push(el);
+          }
+        });
+        this.movies = inMcuMovies;
+      } else if (value == 3) {
+        var nonMcuMovies = [];
+        movies.filter(function (el) {
+          if (el.in_mcu == 0) {
+            nonMcuMovies.push(el);
+          }
+        });
+        this.movies = nonMcuMovies;
+        this.phaseFilter = 0;
+      }
+    },
+
+    /**
+     * Filters movies by their phases
+     *
+     * @param {Integer} value 
+     */
+    phaseFilter: function phaseFilter(value) {
+      var movies = this.allMovies;
+
+      if (value == 0) {
+        this.movies = this.allMovies;
+      } else {
+        var filteredMovies = [];
+        movies.filter(function (el) {
+          if (el.mcu_phase_id == value) {
+            filteredMovies.push(el);
+          }
+        });
+        this.movies = filteredMovies;
+      }
+    },
+
+    /**
+     * Filters movies by their sagas
+     *
+     * @param {Integer} value 
+     */
+    sagaFilter: function sagaFilter(value) {
+      var movies = this.allMovies;
+
+      if (value == 0) {
+        this.movies = this.allMovies;
+      } else {
+        var filteredMovies = [];
+        movies.filter(function (el) {
+          for (var i = 0; i < el.sagas.length; i++) {
+            if (el.sagas[i].id == value) filteredMovies.push(el);
+          }
+        });
+        this.movies = filteredMovies;
+      }
     }
   }
 });
@@ -45522,40 +45635,72 @@ var _hoisted_5 = {
 var _hoisted_6 = {
   "class": "inline-flex items-center border border-red-300 bg-red-200 rounded px-2 text-sm font-sans font-medium text-white hover:bg-red-300 hover:border-red-400 transition-colors cursor-pointer hover:shadow"
 };
+var _hoisted_7 = {
+  "class": "px-4"
+};
+var _hoisted_8 = {
+  "class": "w-full bg-red-500 text-white rounded-md py-2 px-4 flex justify-between items-center"
+};
+var _hoisted_9 = {
+  "class": "flex flex-col gap-1 p-2 border border-white rounded-md"
+};
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "pb-12"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "relative"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "absolute inset-0 h-1/2 bg-gray-50"
-}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "max-w-4xl mx-auto"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("dl", {
-  "class": "sm:grid sm:grid-cols-4 gap-2"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "flex flex-col bg-white p-6 text-center shadow rounded cursor-pointer transition-all hover:shadow-xl hover:bg-red-100"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("dd", {
-  "class": "order-1 text-2xl font-extrabold text-red-500"
-}, " All ")]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "flex flex-col bg-white p-6 text-center shadow rounded cursor-pointer transition-all hover:shadow-xl hover:bg-red-100"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("dd", {
-  "class": "order-1 text-2xl font-extrabold text-red-500"
-}, " By Saga ")]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "flex flex-col bg-white p-6 text-center shadow rounded cursor-pointer transition-all hover:shadow-xl hover:bg-red-100"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("dd", {
-  "class": "order-1 text-2xl font-extrabold text-red-500"
-}, " MCU ")]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-  "class": "flex flex-col bg-white p-6 text-center shadow rounded cursor-pointer transition-all hover:shadow-xl hover:bg-red-100"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("dd", {
-  "class": "order-1 text-2xl font-extrabold text-red-500"
-}, " Non-MCU ")])])])])])], -1
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, "Filters", -1
 /* HOISTED */
 );
 
-var _hoisted_8 = {
+var _hoisted_11 = {
+  "class": "flex gap-4"
+};
+var _hoisted_12 = {
+  "class": "flex items-center gap-2"
+};
+
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", null, "Universe", -1
+/* HOISTED */
+);
+
+var _hoisted_14 = {
+  "class": "rounded-md overflow-hidden divide-x divide-gray-300 flex items-center text-black"
+};
+var _hoisted_15 = {
+  "class": "flex items-center gap-2"
+};
+
+var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", null, "MCU Phase", -1
+/* HOISTED */
+);
+
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", {
+  value: "0"
+}, "All", -1
+/* HOISTED */
+);
+
+var _hoisted_18 = {
+  "class": "flex items-center gap-2"
+};
+
+var _hoisted_19 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("label", null, "Saga", -1
+/* HOISTED */
+);
+
+var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", {
+  value: "0"
+}, "All", -1
+/* HOISTED */
+);
+
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+  "class": "flex gap-2 items-center p-2 border border-white rounded-md"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Title "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, "Sort By:"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", null, "Name Ascending"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", null, "Name Descending")])], -1
+/* HOISTED */
+);
+
+var _hoisted_22 = {
+  "class": "text-gray-500 text-sm px-5 text-right"
+};
+var _hoisted_23 = {
   "class": "px-5 pb-5"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -45581,7 +45726,54 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       /* NEED_PATCH */
       ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.movieSearchTerm]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("button", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_SearchCircleIcon, {
         "class": "h-5 w-5"
-      })])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Filters "), _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Movie List "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [_this.movies.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_MovieList, {
+      })])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Filters "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Filters "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Title "), _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" In MCU "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" In MCU, Not In MCU, Show All "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_12, [_hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_14, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.universeValues, function (value, key) {
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("button", {
+          key: key,
+          onClick: function onClick($event) {
+            return $data.universeFilter = key;
+          },
+          "class": ["transition-colors py-1 px-2", key == $data.universeFilter ? 'bg-purple-300 hover:bg-purple-400' : 'bg-gray-50 hover:bg-gray-200']
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(value), 11
+        /* TEXT, CLASS, PROPS */
+        , ["onClick"]);
+      }), 128
+      /* KEYED_FRAGMENT */
+      ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" MCU Phase (Grayed out if In MCU == false) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
+        "class": ["text-black", $data.universeFilter == 2 ? 'bg-white' : 'bg-gray-300 cursor-not-allowed opacity-75'],
+        "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+          return $data.phaseFilter = $event;
+        }),
+        disabled: $data.universeFilter == 2 ? false : true
+      }, [_hoisted_17, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.allPhases, function (phase) {
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("option", {
+          key: phase.id,
+          value: phase.id
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(phase.title), 9
+        /* TEXT, PROPS */
+        , ["value"]);
+      }), 128
+      /* KEYED_FRAGMENT */
+      ))], 10
+      /* CLASS, PROPS */
+      , ["disabled"]), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.phaseFilter]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Saga "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_18, [_hoisted_19, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
+        "class": "text-black",
+        "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+          return $data.sagaFilter = $event;
+        })
+      }, [_hoisted_20, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.allSagas, function (saga) {
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("option", {
+          key: saga.id,
+          value: saga.id
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(saga.title), 9
+        /* TEXT, PROPS */
+        , ["value"]);
+      }), 128
+      /* KEYED_FRAGMENT */
+      ))], 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.sagaFilter]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Sorting "), _hoisted_21])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Subheading "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_22, " Showing " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.movies.length) + " results ", 1
+      /* TEXT */
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Movie List "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_23, [_this.movies.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_MovieList, {
         key: 0,
         movies: _this.movies
       }, null, 8
