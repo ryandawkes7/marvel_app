@@ -30,36 +30,61 @@
             </div>
 
             <!-- Filters -->
-            <div class="pb-12">
-                <div class="relative">
-                    <div class="absolute inset-0 h-1/2 bg-gray-50" />
-                    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="max-w-4xl mx-auto">
-                            <dl class="sm:grid sm:grid-cols-4 gap-2">
-                                <div class="flex flex-col bg-white p-6 text-center shadow rounded cursor-pointer transition-all hover:shadow-xl hover:bg-red-100">
-                                    <dd class="order-1 text-2xl font-extrabold text-red-500">
-                                        All
-                                    </dd>
+            <div class="px-4">
+                <div class="w-full bg-red-500 text-white rounded-md py-2 px-4 flex justify-between items-center">
+                    <!-- Filters -->
+                    <div class="flex flex-col gap-1 p-2 border border-white rounded-md">
+                        <!-- Title -->
+                        <h3>Filters</h3>
+
+                        <div class="flex gap-4">
+                            <!-- In MCU -->
+                            <!-- In MCU, Not In MCU, Show All -->
+                            <div class="flex items-center gap-2">
+                                <label>Universe</label>
+                                <div class="rounded-md overflow-hidden divide-x divide-gray-300 flex items-center text-black">
+                                    <button v-for="(value, key) in universeValues" :key="key" @click="universeFilter = key" class="transition-colors py-1 px-2" :class="key == universeFilter ? 'bg-purple-300 hover:bg-purple-400' : 'bg-gray-50 hover:bg-gray-200'">
+                                        {{value}}
+                                    </button>
                                 </div>
-                                <div class="flex flex-col bg-white p-6 text-center shadow rounded cursor-pointer transition-all hover:shadow-xl hover:bg-red-100">
-                                    <dd class="order-1 text-2xl font-extrabold text-red-500">
-                                        By Saga
-                                    </dd>
-                                </div>
-                                <div class="flex flex-col bg-white p-6 text-center shadow rounded cursor-pointer transition-all hover:shadow-xl hover:bg-red-100">
-                                    <dd class="order-1 text-2xl font-extrabold text-red-500">
-                                        MCU
-                                    </dd>
-                                </div>
-                                <div class="flex flex-col bg-white p-6 text-center shadow rounded cursor-pointer transition-all hover:shadow-xl hover:bg-red-100">
-                                    <dd class="order-1 text-2xl font-extrabold text-red-500">
-                                        Non-MCU
-                                    </dd>
-                                </div>
-                            </dl>
+                            </div>
+
+                            <!-- MCU Phase (Grayed out if In MCU == false) -->
+                            <div class="flex items-center gap-2">
+                                <label>MCU Phase</label>
+                                <select class="text-black" :class="universeFilter == 2 ? 'bg-white' : 'bg-gray-300 cursor-not-allowed opacity-75' " v-model="phaseFilter" :disabled="universeFilter == 2 ? false : true ">
+                                    <option value="0">All</option>
+                                    <option v-for="phase in allPhases" :key="phase.id" :value="phase.id">{{phase.title}}</option>
+                                </select>
+                            </div>
+
+                            <!-- Saga -->
+                            <div class="flex items-center gap-2">
+                                <label>Saga</label>
+                                <select class="text-black" v-model="sagaFilter">
+                                    <option value="0">All</option>
+                                    <option v-for="saga in allSagas" :key="saga.id" :value="saga.id">{{saga.title}}</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Sorting -->
+                    <div class="flex gap-2 items-center p-2 border border-white rounded-md">
+                        <!-- Title -->
+                        <h3>Sort By:</h3>
+
+                        <select>
+                            <option>Name Ascending</option>
+                            <option>Name Descending</option>
+                        </select>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Subheading -->
+            <div class="text-gray-500 text-sm px-5 text-right">
+                Showing {{movies.length}} results
             </div>
 
             <!-- Movie List -->
@@ -80,9 +105,21 @@ export default {
     data() {
         return {
             allMovies: [],
+            allPhases: [],
+            allSagas: [],
+
             movies: [],
             movieSearchTerm: null,
-            pagination: {}
+
+            universeFilter: 1,
+            phaseFilter: 0,
+            sagaFilter: 0,
+
+            universeValues: { 1: 'All', 2: 'MCU', 3: 'Non-MCU'},
+
+            selectedFilter: null,
+
+            pagination: {},
         }
     },
     components: {
@@ -91,15 +128,51 @@ export default {
         SearchCircleIcon
     },
     created() {
-        this.fetchMovies()
+        this.fetchMovies(),
+        this.fetchPhases(),
+        this.fetchSagas(),
+        this.selectedFilter = 1
     },
     methods: {
+        /**
+         * Fetches all movies
+         */
         fetchMovies() {
             axios.get('/api/movies')
                 .then(res => {
                     this.allMovies = res.data.data;
                     this.movies = res.data.data;
+                    console.log(this.movies[0]);
                 })
+        },
+
+        /**
+         * Fetches all phases
+         */
+        fetchPhases: function() {
+            axios.get('/api/phases')
+                .then(res => {
+                    this.allPhases = res.data.data;
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        },
+
+        /**
+         * Fetches all sagas
+         */
+        fetchSagas: function() {
+            axios.get('/api/sagas')
+                .then(res => {
+                    const data = res.data.data.sort((a, b) => {
+                        if (a.title < b.title) return -1;
+                        if (a.title > b.title) return 1;
+                        return 0;
+                    })
+                    this.allSagas = data;
+                })
+                .catch(e => console.log(e));
         },
 
         /**
@@ -135,6 +208,74 @@ export default {
          */
         movieSearchTerm: function() {
             this.searchMovies();
+        },
+
+        universeFilter: function(value) {
+            const movies = this.allMovies;
+
+            if (value == 1) {
+                this.movies = this.allMovies;
+                this.phaseFilter = 0;
+            } else if (value == 2) {
+                let inMcuMovies = []
+                movies.filter(el => {
+                    if (el.in_mcu == 1) {
+                        inMcuMovies.push(el); 
+                    }
+                });
+                this.movies = inMcuMovies;
+            } else if (value == 3) {
+                let nonMcuMovies = []
+                movies.filter(el => {
+                    if (el.in_mcu == 0) {
+                        nonMcuMovies.push(el); 
+                    }
+                });
+                this.movies = nonMcuMovies;
+                this.phaseFilter = 0;
+            }
+        },
+
+        /**
+         * Filters movies by their phases
+         *
+         * @param {Integer} value 
+         */
+        phaseFilter: function (value) {
+            const movies = this.allMovies;
+
+            if (value == 0) {
+                this.movies = this.allMovies;
+            } else {
+                let filteredMovies = [];
+                movies.filter(el => {
+                    if (el.mcu_phase_id == value) {
+                        filteredMovies.push(el);
+                    }
+                });
+                this.movies = filteredMovies;
+            }
+        },
+
+        /**
+         * Filters movies by their sagas
+         *
+         * @param {Integer} value 
+         */
+        sagaFilter: function (value) {
+            const movies = this.allMovies;
+
+            if (value == 0) {
+                this.movies = this.allMovies;
+            } else {
+                let filteredMovies = [];
+                movies.filter(el => {
+                    for (let i = 0; i < el.sagas.length; i++) {
+                        if (el.sagas[i].id == value) filteredMovies.push(el);
+                    }
+                });
+                this.movies = filteredMovies;
+            }
         },
     }
 }
