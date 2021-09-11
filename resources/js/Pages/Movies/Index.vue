@@ -1,67 +1,60 @@
 <template>
     <app-layout>
-        <div class="bg-gray-50 pt-12 sm:pt-16 flex flex-col gap-4 shadow-lg rounded-lg">
+        <div class="bg-gray-50 flex flex-col gap-4 shadow-lg rounded-lg overflow-hidden">
 
-            <!-- Headings -->
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="max-w-4xl mx-auto text-center">
+            <!-- Header -->
+            <section>
+                <!-- Title & Search -->
+                <div class="bg-red-500 py-6 flex flex-col gap-4">
                     <!-- Title -->
-                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                        How would you like to search?
-                    </h2>
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="max-w-4xl mx-auto text-center">
+                            <h2 class="text-3xl font-extrabold text-red-100 sm:text-4xl">
+                                Movies
+                            </h2>
+                        </div>
+                    </div>
 
-                    <!-- Subtitle -->
-                    <p class="mt-3 text-xl text-gray-500 sm:mt-4">
-                        Begin typing a movie in the search bar or select a category from below
-                    </p>
-                </div>
-            </div>
-
-            <!-- Search -->
-            <div class="max-w-2xl mx-auto">
-                <div class="mt-1 relative flex items-center">
-                    <input type="text" name="search_movies" v-model="movieSearchTerm" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="Quick Search"/>
-                    <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-                        <button class="inline-flex items-center border border-red-300 bg-red-200 rounded px-2 text-sm font-sans font-medium text-white hover:bg-red-300 hover:border-red-400 transition-colors cursor-pointer hover:shadow">
-                            <SearchCircleIcon class="h-5 w-5"></SearchCircleIcon>
-                        </button>
+                    <!-- Search -->
+                    <div class="max-w-2xl mx-auto">
+                        <div class="mt-1 relative flex items-center">
+                            <input type="text" name="search_movies" v-model="movieSearchTerm" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="Quick Search"/>
+                            <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
+                                <button class="inline-flex items-center bg-red-400 rounded px-2 text-sm font-sans font-medium text-white hover:bg-red-600 hover:border-red-400 transition-colors cursor-pointer hover:shadow">
+                                    <SearchCircleIcon class="h-5 w-5"></SearchCircleIcon>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Filters -->
-            <div class="px-4">
-                <div class="w-full bg-red-500 text-white rounded-md py-2 px-4 flex justify-between items-center">
+                <!-- Filters -->
+                <div class="w-full bg-red-400 text-white px-4 py-4 flex justify-between items-center">
                     <!-- Filters -->
-                    <div class="flex flex-col gap-1 p-2 border border-white rounded-md">
-                        <!-- Title -->
-                        <h3>Filters</h3>
-
+                    <div class="flex flex-col gap-1 p-2 rounded-md">
                         <div class="flex gap-4">
+
                             <!-- In MCU -->
-                            <!-- In MCU, Not In MCU, Show All -->
-                            <div class="flex items-center gap-2">
-                                <label>Universe</label>
-                                <div class="rounded-md overflow-hidden divide-x divide-gray-300 flex items-center text-black">
-                                    <button v-for="(value, key) in universeValues" :key="key" @click="universeFilter = key" class="transition-colors py-1 px-2" :class="key == universeFilter ? 'bg-purple-300 hover:bg-purple-400' : 'bg-gray-50 hover:bg-gray-200'">
-                                        {{value}}
-                                    </button>
-                                </div>
+                            <div class="flex flex-col justify-center gap-1">
+                                <label for="in_mcu" class="font-bold">Universe</label>
+                                <select name="in_mcu" v-model="universeFilter" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100">
+                                    <option v-for="(value, key) in universeValues" :key="key" :value="key">{{value}}</option>
+                                </select>
                             </div>
 
                             <!-- MCU Phase (Grayed out if In MCU == false) -->
-                            <div class="flex items-center gap-2">
-                                <label>MCU Phase</label>
-                                <select class="text-black" :class="universeFilter == 1 ? 'bg-white' : 'bg-gray-300 cursor-not-allowed opacity-75' " v-model="phaseFilter" :disabled="universeFilter == 1 ? false : true ">
+                            <div class="flex flex-col justify-center gap-1">
+                                <label for="mcu_phase" class="font-bold">MCU Phase</label>
+                                <select name="mcu_phase" class="transition-colors rounded-md bg-transparent border" :class="universeFilter == 1 ? 'bg-transparent hover:bg-red-600 focus:bg-red-600 border-red-100' : 'bg-red-900 border-red-800 line-through cursor-not-allowed opacity-75 text-red-800' " v-model="phaseFilter" :disabled="universeFilter == 1 ? false : true " >
                                     <option value="0">All</option>
                                     <option v-for="phase in allPhases" :key="phase.id" :value="phase.id">{{phase.title}}</option>
                                 </select>
                             </div>
 
                             <!-- Saga -->
-                            <div class="flex items-center gap-2">
-                                <label>Saga</label>
-                                <select class="text-black" v-model="sagaFilter">
+                            <div class="flex flex-col justify-center gap-1">
+                                <label for="saga" class="font-bold">Saga</label>
+                                <select name="saga" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100" v-model="sagaFilter">
                                     <option value="0">All</option>
                                     <option v-for="saga in sagas" :key="saga.id" :value="saga.id">{{saga.title}}</option>
                                 </select>
@@ -70,11 +63,9 @@
                     </div>
 
                     <!-- Sorting -->
-                    <div class="flex gap-2 items-center p-2 border border-white rounded-md">
-                        <!-- Title -->
-                        <h3>Sort By:</h3>
-
-                        <select class="text-black" v-model="sortBy">
+                    <div class="flex flex-col gap-1 justify-center p-2 rounded-md">
+                        <label for="sort_by" class="font-bold">Sort By</label>
+                        <select name="sort_by" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100" v-model="sortBy">
                             <option value="1">Name (A-Z)</option>
                             <option value="2">Name (Z-A)</option>
                             <option value="3">Release Date (Old-New)</option>
@@ -82,18 +73,21 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Subheading -->
-            <div class="text-gray-500 text-sm px-5 text-right">
-                Showing {{movies.length}} results
-            </div>
+            <!-- Body -->
+            <section class="flex flex-col gap-4">
+                <!-- Search Results -->
+                <div class="text-gray-500 text-sm px-5 text-right">
+                    Showing {{movies.length}} results
+                </div>
 
-            <!-- Movie List -->
-            <div class="px-5 pb-5">
-                <MovieList v-if="this.movies.length > 0" v-bind:movies="this.movies"></MovieList>
-            </div>
-            
+                <!-- Movie List -->
+                <div class="px-5 pb-5">
+                    <MovieList v-if="this.movies.length > 0" v-bind:movies="this.movies"></MovieList>
+                </div>
+            </section>
+
         </div>
     </app-layout>
 </template>

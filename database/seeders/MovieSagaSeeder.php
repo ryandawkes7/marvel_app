@@ -102,7 +102,7 @@ class MovieSagaSeeder extends Seeder
                 'updated_at' => Date::now(),
             ],
             [
-                'title' => 'Spider-Man: Into the Spider-Verse',
+                'title' => 'Into the Spider-Verse',
                 'created_at' => Date::now(),
                 'updated_at' => Date::now(),
             ],
