@@ -39044,13 +39044,14 @@ __webpack_require__.r(__webpack_exports__);
       allSagas: [],
       movies: [],
       movieSearchTerm: null,
-      universeFilter: 1,
+      sagas: [],
+      universeFilter: 0,
       phaseFilter: 0,
       sagaFilter: 0,
       universeValues: {
-        1: 'All',
-        2: 'MCU',
-        3: 'Non-MCU'
+        0: 'All',
+        1: 'MCU',
+        2: 'Non-MCU'
       },
       selectedFilter: null,
       pagination: {}
@@ -39104,6 +39105,7 @@ __webpack_require__.r(__webpack_exports__);
           return 0;
         });
         _this3.allSagas = data;
+        _this3.sagas = data;
       })["catch"](function (e) {
         return console.log(e);
       });
@@ -39123,6 +39125,42 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     /**
+     * Filters sagas based on the sagas available from each movie
+     *
+     * @return {Object}
+     */
+    filterSagas: function filterSagas() {
+      var _this4 = this;
+
+      var sagaArray = [];
+
+      var _loop = function _loop(i) {
+        if (_this4.movies[i].sagas.length > 0) {
+          var _loop2 = function _loop2(j) {
+            var object = sagaArray.findIndex(function (x) {
+              return x.title == _this4.movies[i].sagas[j].title;
+            });
+            if (object == -1) sagaArray.push(_this4.movies[i].sagas[j]);
+          };
+
+          for (var j = 0; j < _this4.movies[i].sagas.length; j++) {
+            _loop2(j);
+          }
+        }
+      };
+
+      for (var i = 0; i < this.movies.length; i++) {
+        _loop(i);
+      }
+
+      this.sagas = sagaArray.sort(function (a, b) {
+        if (a.title < b.title) return -1;
+        if (a.title > b.title) return 1;
+        return 0;
+      });
+    },
+
+    /**
      * Filters directors according to the search term provided
      */
     searchMovies: function searchMovies() {
@@ -39130,10 +39168,7 @@ __webpack_require__.r(__webpack_exports__);
 
       for (var i = 0; i < this.allMovies.length; i++) {
         var search = this.filter(this.allMovies[i].title, this.movieSearchTerm);
-
-        if (search == true) {
-          results.push(this.allMovies[i]);
-        }
+        if (search == true) results.push(this.allMovies[i]);
       }
 
       this.movies = results;
@@ -39148,27 +39183,26 @@ __webpack_require__.r(__webpack_exports__);
     },
     universeFilter: function universeFilter(value) {
       var movies = this.allMovies;
+      this.sagaFilter = 0;
 
-      if (value == 1) {
+      if (value == 0) {
         this.movies = this.allMovies;
         this.phaseFilter = 0;
-      } else if (value == 2) {
+      } else if (value == 1) {
         var inMcuMovies = [];
         movies.filter(function (el) {
-          if (el.in_mcu == 1) {
-            inMcuMovies.push(el);
-          }
+          if (el.in_mcu == 1) inMcuMovies.push(el);
         });
         this.movies = inMcuMovies;
-      } else if (value == 3) {
+        this.filterSagas();
+      } else if (value == 2) {
         var nonMcuMovies = [];
         movies.filter(function (el) {
-          if (el.in_mcu == 0) {
-            nonMcuMovies.push(el);
-          }
+          if (el.in_mcu == 0) nonMcuMovies.push(el);
         });
         this.movies = nonMcuMovies;
         this.phaseFilter = 0;
+        this.filterSagas();
       }
     },
 
@@ -39179,18 +39213,19 @@ __webpack_require__.r(__webpack_exports__);
      */
     phaseFilter: function phaseFilter(value) {
       var movies = this.allMovies;
+      this.sagaFilter = 0;
 
       if (value == 0) {
         this.movies = this.allMovies;
       } else {
         var filteredMovies = [];
         movies.filter(function (el) {
-          if (el.mcu_phase_id == value) {
-            filteredMovies.push(el);
-          }
+          if (el.mcu_phase_id == value) filteredMovies.push(el);
         });
         this.movies = filteredMovies;
       }
+
+      this.filterSagas();
     },
 
     /**
@@ -45739,11 +45774,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }), 128
       /* KEYED_FRAGMENT */
       ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" MCU Phase (Grayed out if In MCU == false) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
-        "class": ["text-black", $data.universeFilter == 2 ? 'bg-white' : 'bg-gray-300 cursor-not-allowed opacity-75'],
+        "class": ["text-black", $data.universeFilter == 1 ? 'bg-white' : 'bg-gray-300 cursor-not-allowed opacity-75'],
         "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
           return $data.phaseFilter = $event;
         }),
-        disabled: $data.universeFilter == 2 ? false : true
+        disabled: $data.universeFilter == 1 ? false : true
       }, [_hoisted_17, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.allPhases, function (phase) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("option", {
           key: phase.id,
@@ -45760,7 +45795,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
           return $data.sagaFilter = $event;
         })
-      }, [_hoisted_20, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.allSagas, function (saga) {
+      }, [_hoisted_20, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.sagas, function (saga) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("option", {
           key: saga.id,
           value: saga.id
