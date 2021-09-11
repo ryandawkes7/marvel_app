@@ -52,7 +52,7 @@
                             <!-- MCU Phase (Grayed out if In MCU == false) -->
                             <div class="flex items-center gap-2">
                                 <label>MCU Phase</label>
-                                <select class="text-black" :class="universeFilter == 2 ? 'bg-white' : 'bg-gray-300 cursor-not-allowed opacity-75' " v-model="phaseFilter" :disabled="universeFilter == 2 ? false : true ">
+                                <select class="text-black" :class="universeFilter == 1 ? 'bg-white' : 'bg-gray-300 cursor-not-allowed opacity-75' " v-model="phaseFilter" :disabled="universeFilter == 1 ? false : true ">
                                     <option value="0">All</option>
                                     <option v-for="phase in allPhases" :key="phase.id" :value="phase.id">{{phase.title}}</option>
                                 </select>
@@ -63,7 +63,7 @@
                                 <label>Saga</label>
                                 <select class="text-black" v-model="sagaFilter">
                                     <option value="0">All</option>
-                                    <option v-for="saga in allSagas" :key="saga.id" :value="saga.id">{{saga.title}}</option>
+                                    <option v-for="saga in sagas" :key="saga.id" :value="saga.id">{{saga.title}}</option>
                                 </select>
                             </div>
                         </div>
@@ -111,11 +111,13 @@ export default {
             movies: [],
             movieSearchTerm: null,
 
-            universeFilter: 1,
+            sagas: [],
+
+            universeFilter: 0,
             phaseFilter: 0,
             sagaFilter: 0,
 
-            universeValues: { 1: 'All', 2: 'MCU', 3: 'Non-MCU'},
+            universeValues: { 0: 'All', 1: 'MCU', 2: 'Non-MCU'},
 
             selectedFilter: null,
 
@@ -171,6 +173,7 @@ export default {
                         return 0;
                     })
                     this.allSagas = data;
+                    this.sagas = data;
                 })
                 .catch(e => console.log(e));
         },
@@ -189,15 +192,35 @@ export default {
         },
 
         /**
+         * Filters sagas based on the sagas available from each movie
+         *
+         * @return {Object}
+         */
+        filterSagas: function() {
+            const sagaArray = [];
+            for (let i = 0; i < this.movies.length; i++) {
+                if (this.movies[i].sagas.length > 0) {
+                    for (let j = 0; j < this.movies[i].sagas.length; j++) {
+                        let object = sagaArray.findIndex(x => x.title == this.movies[i].sagas[j].title);
+                        if (object == -1) sagaArray.push(this.movies[i].sagas[j]);
+                    }
+                }
+            }
+            this.sagas = sagaArray.sort((a, b) => {
+                if (a.title < b.title) return -1;
+                if (a.title > b.title) return 1;
+                return 0;
+            });
+        },
+
+        /**
          * Filters directors according to the search term provided
          */
         searchMovies: function() {
             let results = [];
             for (let i = 0; i < this.allMovies.length; i++) {
                 const search = this.filter(this.allMovies[i].title, this.movieSearchTerm);
-                if (search == true) {
-                    results.push(this.allMovies[i]);
-                }
+                if (search == true) results.push(this.allMovies[i]);
             }
             this.movies = results;
         },
@@ -212,27 +235,22 @@ export default {
 
         universeFilter: function(value) {
             const movies = this.allMovies;
+            this.sagaFilter = 0;
 
-            if (value == 1) {
+            if (value == 0) {
                 this.movies = this.allMovies;
                 this.phaseFilter = 0;
-            } else if (value == 2) {
+            } else if (value == 1) {
                 let inMcuMovies = []
-                movies.filter(el => {
-                    if (el.in_mcu == 1) {
-                        inMcuMovies.push(el); 
-                    }
-                });
+                movies.filter(el => { if (el.in_mcu == 1) inMcuMovies.push(el) });
                 this.movies = inMcuMovies;
-            } else if (value == 3) {
+                this.filterSagas();
+            } else if (value == 2) {
                 let nonMcuMovies = []
-                movies.filter(el => {
-                    if (el.in_mcu == 0) {
-                        nonMcuMovies.push(el); 
-                    }
-                });
+                movies.filter(el => { if (el.in_mcu == 0) nonMcuMovies.push(el) });
                 this.movies = nonMcuMovies;
                 this.phaseFilter = 0;
+                this.filterSagas();
             }
         },
 
@@ -243,18 +261,16 @@ export default {
          */
         phaseFilter: function (value) {
             const movies = this.allMovies;
+            this.sagaFilter = 0;
 
             if (value == 0) {
                 this.movies = this.allMovies;
             } else {
                 let filteredMovies = [];
-                movies.filter(el => {
-                    if (el.mcu_phase_id == value) {
-                        filteredMovies.push(el);
-                    }
-                });
+                movies.filter(el => { if (el.mcu_phase_id == value) filteredMovies.push(el) });
                 this.movies = filteredMovies;
             }
+            this.filterSagas();
         },
 
         /**
