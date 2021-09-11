@@ -74,9 +74,11 @@
                         <!-- Title -->
                         <h3>Sort By:</h3>
 
-                        <select>
-                            <option>Name Ascending</option>
-                            <option>Name Descending</option>
+                        <select class="text-black" v-model="sortBy">
+                            <option value="1">Name (A-Z)</option>
+                            <option value="2">Name (Z-A)</option>
+                            <option value="3">Release Date (Old-New)</option>
+                            <option value="4">Release Date (New-Old)</option>
                         </select>
                     </div>
                 </div>
@@ -119,7 +121,7 @@ export default {
 
             universeValues: { 0: 'All', 1: 'MCU', 2: 'Non-MCU'},
 
-            selectedFilter: null,
+            sortBy: 1,
 
             pagination: {},
         }
@@ -132,8 +134,7 @@ export default {
     created() {
         this.fetchMovies(),
         this.fetchPhases(),
-        this.fetchSagas(),
-        this.selectedFilter = 1
+        this.fetchSagas()
     },
     methods: {
         /**
@@ -293,6 +294,25 @@ export default {
                 this.movies = filteredMovies;
             }
         },
+
+        sortBy: function(value) {
+            const nameSorting = ['1', '2'];
+            const releaseDateSorting = ['3', '4'];
+
+            if (nameSorting.includes(value)) {
+                this.movies = this.movies.sort((a, b) => {
+                    if (a.title < b.title) return value == 1 ? -1 : 1;
+                    if (a.title > b.title) return value == 1 ? 1 : -1;
+                    return 0;
+                });
+            } else if (releaseDateSorting.includes(value)) {
+                this.movies = this.movies.sort((a, b) => {
+                    if (a.release_date < b.release_date) return value == 3 ? -1 : 1;
+                    if (a.release_date > b.release_date) return value == 3 ? 1 : -1;
+                    return 0;
+                });
+            }
+        }
     }
 }
 </script>

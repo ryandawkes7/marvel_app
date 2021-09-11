@@ -39053,7 +39053,7 @@ __webpack_require__.r(__webpack_exports__);
         1: 'MCU',
         2: 'Non-MCU'
       },
-      selectedFilter: null,
+      sortBy: 1,
       pagination: {}
     };
   },
@@ -39063,7 +39063,7 @@ __webpack_require__.r(__webpack_exports__);
     SearchCircleIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_1__.SearchCircleIcon
   },
   created: function created() {
-    this.fetchMovies(), this.fetchPhases(), this.fetchSagas(), this.selectedFilter = 1;
+    this.fetchMovies(), this.fetchPhases(), this.fetchSagas();
   },
   methods: {
     /**
@@ -39246,6 +39246,24 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
         this.movies = filteredMovies;
+      }
+    },
+    sortBy: function sortBy(value) {
+      var nameSorting = ['1', '2'];
+      var releaseDateSorting = ['3', '4'];
+
+      if (nameSorting.includes(value)) {
+        this.movies = this.movies.sort(function (a, b) {
+          if (a.title < b.title) return value == 1 ? -1 : 1;
+          if (a.title > b.title) return value == 1 ? 1 : -1;
+          return 0;
+        });
+      } else if (releaseDateSorting.includes(value)) {
+        this.movies = this.movies.sort(function (a, b) {
+          if (a.release_date < b.release_date) return value == 3 ? -1 : 1;
+          if (a.release_date > b.release_date) return value == 3 ? 1 : -1;
+          return 0;
+        });
       }
     }
   }
@@ -45726,16 +45744,42 @@ var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
 /* HOISTED */
 );
 
-var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+var _hoisted_21 = {
   "class": "flex gap-2 items-center p-2 border border-white rounded-md"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Title "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, "Sort By:"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", null, "Name Ascending"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", null, "Name Descending")])], -1
+};
+
+var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("h3", null, "Sort By:", -1
 /* HOISTED */
 );
 
-var _hoisted_22 = {
+var _hoisted_23 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", {
+  value: "1"
+}, "Name (A-Z)", -1
+/* HOISTED */
+);
+
+var _hoisted_24 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", {
+  value: "2"
+}, "Name (Z-A)", -1
+/* HOISTED */
+);
+
+var _hoisted_25 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", {
+  value: "3"
+}, "Release Date (Old-New)", -1
+/* HOISTED */
+);
+
+var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("option", {
+  value: "4"
+}, "Release Date (New-Old)", -1
+/* HOISTED */
+);
+
+var _hoisted_27 = {
   "class": "text-gray-500 text-sm px-5 text-right"
 };
-var _hoisted_23 = {
+var _hoisted_28 = {
   "class": "px-5 pb-5"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -45806,9 +45850,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       /* KEYED_FRAGMENT */
       ))], 512
       /* NEED_PATCH */
-      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.sagaFilter]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Sorting "), _hoisted_21])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Subheading "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_22, " Showing " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.movies.length) + " results ", 1
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.sagaFilter]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Sorting "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Title "), _hoisted_22, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("select", {
+        "class": "text-black",
+        "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+          return $data.sortBy = $event;
+        })
+      }, [_hoisted_23, _hoisted_24, _hoisted_25, _hoisted_26], 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.sortBy]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Subheading "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_27, " Showing " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.movies.length) + " results ", 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Movie List "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_23, [_this.movies.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_MovieList, {
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Movie List "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", _hoisted_28, [_this.movies.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_MovieList, {
         key: 0,
         movies: _this.movies
       }, null, 8
