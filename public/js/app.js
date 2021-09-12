@@ -39187,8 +39187,6 @@ __webpack_require__.r(__webpack_exports__);
     PosterModal: _PosterModal_vue__WEBPACK_IMPORTED_MODULE_3__.default,
     UserCircleIcon: _heroicons_vue_solid__WEBPACK_IMPORTED_MODULE_1__.UserCircleIcon
   },
-  created: function created() {// console.log(this.movie);
-  },
   data: function data() {
     return {
       navigationItems: [{
