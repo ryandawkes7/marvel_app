@@ -39789,7 +39789,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   setup: function setup() {
-    var isCreateModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_3__.ref)(true);
+    var isCreateModalOpen = (0,vue__WEBPACK_IMPORTED_MODULE_3__.ref)(false);
     return {
       isCreateModalOpen: isCreateModalOpen
     };
