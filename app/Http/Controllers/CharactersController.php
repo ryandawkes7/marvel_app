@@ -82,8 +82,17 @@ class CharactersController extends Controller
         }
 
         // Attaches specified trait instances
-        foreach ($request->traits as $trait) {
-            $new_character->traits()->attach($trait['id']);
+        if ($request->traits) {
+            foreach ($request->traits as $trait) {
+                $new_character->traits()->attach($trait['id']);
+            }
+        }
+
+        // Attaches specified movie istances
+        if ($request->movies) {
+            foreach ($request->movies as $movie) {
+                $new_character->movies()->attach($movie['id']);
+            }
         }
 
         return response()->json([
