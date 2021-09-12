@@ -14,63 +14,77 @@
                             </h2>
                         </div>
                     </div>
-
-                    <!-- Search -->
-                    <div class="max-w-2xl mx-auto">
-                        <div class="mt-1 relative flex items-center">
-                            <input type="text" name="search_movies" v-model="movieSearchTerm" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="Quick Search"/>
-                            <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-                                <button class="inline-flex items-center bg-red-400 rounded px-2 text-sm font-sans font-medium text-white hover:bg-red-600 hover:border-red-400 transition-colors cursor-pointer hover:shadow">
-                                    <SearchCircleIcon class="h-5 w-5"></SearchCircleIcon>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Filters -->
-                <div class="w-full bg-red-400 text-white px-4 py-4 flex justify-between items-center">
-                    <!-- Filters -->
-                    <div class="flex flex-col gap-1 p-2 rounded-md">
-                        <div class="flex gap-4">
+                <!-- Options -->
+                <div class="w-full bg-red-400 text-white px-4 py-4 flex flex-col justify-center">
 
-                            <!-- In MCU -->
-                            <div class="flex flex-col justify-center gap-1">
-                                <label for="in_mcu" class="font-bold">Universe</label>
-                                <select name="in_mcu" v-model="universeFilter" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100">
-                                    <option v-for="(value, key) in universeValues" :key="key" :value="key">{{value}}</option>
-                                </select>
+                    <!-- Search & Create -->
+                    <div class="flex items-center justify-between">
+                        <!-- Search -->
+                        <div class="max-w-2xl">
+                            <div class="mt-1 relative flex items-center">
+                                <input type="text" name="search_movies" v-model="movieSearchTerm" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 text-black rounded-md" placeholder="Quick Search"/>
+                                <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
+                                    <button class="inline-flex items-center bg-red-400 rounded px-2 text-sm font-sans font-medium text-white hover:bg-red-600 hover:border-red-400 transition-colors cursor-pointer hover:shadow">
+                                        <SearchCircleIcon class="h-5 w-5"></SearchCircleIcon>
+                                    </button>
+                                </div>
                             </div>
+                        </div>
 
-                            <!-- MCU Phase (Grayed out if In MCU == false) -->
-                            <div class="flex flex-col justify-center gap-1">
-                                <label for="mcu_phase" class="font-bold">MCU Phase</label>
-                                <select name="mcu_phase" class="transition-colors rounded-md bg-transparent border" :class="universeFilter == 1 ? 'bg-transparent hover:bg-red-600 focus:bg-red-600 border-red-100' : 'bg-red-900 border-red-800 line-through cursor-not-allowed opacity-75 text-red-800' " v-model="phaseFilter" :disabled="universeFilter == 1 ? false : true " >
-                                    <option value="0">All</option>
-                                    <option v-for="phase in allPhases" :key="phase.id" :value="phase.id">{{phase.title}}</option>
-                                </select>
-                            </div>
-
-                            <!-- Saga -->
-                            <div class="flex flex-col justify-center gap-1">
-                                <label for="saga" class="font-bold">Saga</label>
-                                <select name="saga" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100" v-model="sagaFilter">
-                                    <option value="0">All</option>
-                                    <option v-for="saga in sagas" :key="saga.id" :value="saga.id">{{saga.title}}</option>
-                                </select>
-                            </div>
+                        <!-- Create Movie -->
+                        <div>
+                            <button @click="isCreateModalOpen = true" class="px-3 py-1.5 text-white hover:text-red-500 font-bold border border-white rounded-md transition-all hover:shadow-md bg-red-500 hover:bg-gray-50 flex items-center gap-1.5">
+                                Create Movie
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Sorting -->
-                    <div class="flex flex-col gap-1 justify-center p-2 rounded-md">
-                        <label for="sort_by" class="font-bold">Sort By</label>
-                        <select name="sort_by" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100" v-model="sortBy">
-                            <option value="1">Name (A-Z)</option>
-                            <option value="2">Name (Z-A)</option>
-                            <option value="3">Release Date (Old-New)</option>
-                            <option value="4">Release Date (New-Old)</option>
-                        </select>
+                    <!-- Filters -->
+                    <div class="w-full bg-red-400 text-white flex justify-between items-center">
+                        <div class="flex flex-col gap-1 rounded-md">
+                            <div class="flex gap-4">
+
+                                <!-- In MCU -->
+                                <div class="flex flex-col justify-center gap-1">
+                                    <label for="in_mcu" class="font-bold">Universe</label>
+                                    <select name="in_mcu" v-model="universeFilter" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100">
+                                        <option v-for="(value, key) in universeValues" :key="key" :value="key">{{value}}</option>
+                                    </select>
+                                </div>
+
+                                <!-- MCU Phase (Grayed out if In MCU == false) -->
+                                <div class="flex flex-col justify-center gap-1">
+                                    <label for="mcu_phase" class="font-bold">MCU Phase</label>
+                                    <select name="mcu_phase" class="transition-colors rounded-md bg-transparent border" :class="universeFilter == 1 ? 'bg-transparent hover:bg-red-600 focus:bg-red-600 border-red-100' : 'bg-red-900 border-red-800 line-through cursor-not-allowed opacity-75 text-red-800' " v-model="phaseFilter" :disabled="universeFilter == 1 ? false : true " >
+                                        <option value="0">All</option>
+                                        <option v-for="phase in allPhases" :key="phase.id" :value="phase.id">{{phase.title}}</option>
+                                    </select>
+                                </div>
+
+                                <!-- Saga -->
+                                <div class="flex flex-col justify-center gap-1">
+                                    <label for="saga" class="font-bold">Saga</label>
+                                    <select name="saga" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100" v-model="sagaFilter">
+                                        <option value="0">All</option>
+                                        <option v-for="saga in sagas" :key="saga.id" :value="saga.id">{{saga.title}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sorting -->
+                        <div class="flex flex-col gap-1 justify-center p-2 rounded-md">
+                            <label for="sort_by" class="font-bold">Sort By</label>
+                            <select name="sort_by" class="transition-colors rounded-md bg-transparent hover:bg-red-600 focus:bg-red-600 border border-red-100" v-model="sortBy">
+                                <option value="1">Name (A-Z)</option>
+                                <option value="2">Name (Z-A)</option>
+                                <option value="3">Release Date (Old-New)</option>
+                                <option value="4">Release Date (New-Old)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -88,6 +102,10 @@
                 </div>
             </section>
 
+            <div v-if="isCreateModalOpen">
+                <CreateModal @closeCreateModal="isCreateModalOpen = false" :phases="allPhases"></CreateModal>
+            </div>
+
         </div>
     </app-layout>
 </template>
@@ -96,8 +114,16 @@
 import AppLayout from '@/Layouts/AppLayout';
 import { SearchCircleIcon } from '@heroicons/vue/solid';
 import MovieList from './MovieList.vue';
+import { ref } from 'vue';
+import CreateModal from './CreateModal.vue';
 
 export default {
+    setup() {
+        const isCreateModalOpen = ref(true);
+        return {
+            isCreateModalOpen
+        }
+    },
     data() {
         return {
             allMovies: [],
@@ -122,6 +148,7 @@ export default {
     },
     components: {
         AppLayout,
+        CreateModal,
         MovieList,
         SearchCircleIcon
     },
