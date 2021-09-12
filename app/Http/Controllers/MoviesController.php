@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMovieRequest;
 use Inertia\Inertia;
 use App\Models\Movie;
+use App\Models\MoviePoster;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MoviesController extends Controller
 {
@@ -72,12 +74,42 @@ class MoviesController extends Controller
      * @param Integer $saga_id
      * @return JSON
      */
-    public function store(StoreMovieRequest $request, $saga_id)
+    public function store(StoreMovieRequest $request)
     {
         $requested_movie = $request->validated();
         $new_movie = Movie::create($requested_movie);
 
-        if ($saga_id) $new_movie->sagas()->attach($saga_id);
+        // Attach saga instance(s)
+        if ($request->sagas) {
+            foreach ($request->sagas as $saga) {
+                $new_movie->sagas()->attach($saga['id']);
+            }
+        }
+
+        // Attach poster instance(s)
+        if ($request->posters) {
+            foreach ($request->posters as $poster) {
+                $val = strval($poster);
+                
+                $poster = new MoviePoster();
+                $poster->movie_id = 1;
+                $poster->image_url = $val;
+                $poster->user_id = Auth::id();
+                $poster->save();
+            }
+        }
+
+        // Attach director instance(s)
+        if ($request->directors) {
+            foreach ($request->directors as $director) {
+                $new_movie->directors()->attach($director['id']);
+            }
+        }
+
+        // Attach character instances
+        if ($request->characters) {
+
+        }
 
         return response()->json([
             'data'      => $new_movie,
