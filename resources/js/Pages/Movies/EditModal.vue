@@ -169,9 +169,6 @@ export default {
         PosterModal,
         UserCircleIcon
     },
-    created() {
-        // console.log(this.movie);
-    },
     data() {
         return {
             navigationItems: [
