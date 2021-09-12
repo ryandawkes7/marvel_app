@@ -39,4 +39,9 @@ class Movie extends Model
     {
         return $this->belongsToMany(Director::class, 'movie_director', 'movie_id', 'director_id');
     }
+
+    public function characters() :BelongsToMany
+    {
+        return $this->belongsToMany(Movie::class, 'character_movie', 'movie_id', 'character_id');
+    }
 }
