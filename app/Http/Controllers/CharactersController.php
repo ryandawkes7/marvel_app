@@ -67,9 +67,17 @@ class CharactersController extends Controller
     {
         $requested_character = $request->validated();
         $new_character = Character::create($requested_character);
-        $skills = Skill::all();
-        foreach($skills as $skill) {
-            $new_character->skills()->attach($skill->id);
+
+        // Attaches skill instances to character with values
+        $all_skills = Skill::all();
+        foreach($all_skills as $skill) {
+            $current_skill = null;
+            foreach ($request->skills as $character_skill) {
+                if ($skill->id == $character_skill['id']){ 
+                    $current_skill = $character_skill;
+                }
+            }
+            $new_character->skills()->attach($skill->id, ['value' => $current_skill['value']]);
         }
 
         return response()->json([
