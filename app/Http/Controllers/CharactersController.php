@@ -49,27 +49,41 @@ class CharactersController extends Controller
      * @authenticated
      * 
      * @response 200 {
-     *   "data": {
-     *     "alias": "Iron Man",
-     *     "real_name": "Tony Stark",
-     *     "sex": "male",
-     *     "thumb_url": "a",
-     *     "morality": "hero",
-     *     "type_id": "1",
-     *     "updated_at": "2021-06-05T14:48:05.000000Z",
-     *     "created_at": "2021-06-05T14:48:05.000000Z",
-     *     "id": 2
-     *   },
-     *   "message": "Successfully created character"
+     *  "data": {
+     *      "alias": "Iron Man",
+     *      "real_name": "Tony Stark",
+     *      "sex": "Male",
+     *      "thumb_url": "https://logo.com/logo.png",
+     *      "morality": "Hero",
+     *      "type_id": 1,
+     *      "updated_at": "2021-09-12T13:02:45.000000Z",
+     *      "created_at": "2021-09-12T13:02:45.000000Z",
+     *      "id": 123
+     *  },
+     *  "message": "Successfully created character"
      * }
      */
     public function store(StoreCharacterRequest $request)
     {
+        // New character instance
         $requested_character = $request->validated();
         $new_character = Character::create($requested_character);
-        $skills = Skill::all();
-        foreach($skills as $skill) {
-            $new_character->skills()->attach($skill->id);
+
+        // Attaches skill instances to character with values
+        $all_skills = Skill::all();
+        foreach($all_skills as $skill) {
+            $current_skill = null;
+            foreach ($request->skills as $character_skill) {
+                if ($skill->id == $character_skill['id']){ 
+                    $current_skill = $character_skill;
+                }
+            }
+            $new_character->skills()->attach($skill->id, ['value' => $current_skill['value']]);
+        }
+
+        // Attaches specified trait instances
+        foreach ($request->traits as $trait) {
+            $new_character->traits()->attach($trait['id']);
         }
 
         return response()->json([

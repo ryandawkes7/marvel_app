@@ -154,8 +154,6 @@
             </div>
         </div>
     </div>
-
-    
 </template>
 
 <script>
@@ -170,9 +168,6 @@ export default {
         DetailsModal,
         PosterModal,
         UserCircleIcon
-    },
-    created() {
-        // console.log(this.movie);
     },
     data() {
         return {
