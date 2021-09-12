@@ -49,22 +49,23 @@ class CharactersController extends Controller
      * @authenticated
      * 
      * @response 200 {
-     *   "data": {
-     *     "alias": "Iron Man",
-     *     "real_name": "Tony Stark",
-     *     "sex": "male",
-     *     "thumb_url": "a",
-     *     "morality": "hero",
-     *     "type_id": "1",
-     *     "updated_at": "2021-06-05T14:48:05.000000Z",
-     *     "created_at": "2021-06-05T14:48:05.000000Z",
-     *     "id": 2
-     *   },
-     *   "message": "Successfully created character"
+     *  "data": {
+     *      "alias": "Iron Man",
+     *      "real_name": "Tony Stark",
+     *      "sex": "Male",
+     *      "thumb_url": "https://logo.com/logo.png",
+     *      "morality": "Hero",
+     *      "type_id": 1,
+     *      "updated_at": "2021-09-12T13:02:45.000000Z",
+     *      "created_at": "2021-09-12T13:02:45.000000Z",
+     *      "id": 123
+     *  },
+     *  "message": "Successfully created character"
      * }
      */
     public function store(StoreCharacterRequest $request)
     {
+        // New character instance
         $requested_character = $request->validated();
         $new_character = Character::create($requested_character);
 
