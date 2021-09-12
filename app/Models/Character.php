@@ -34,4 +34,9 @@ class Character extends Model
     {
         return $this->belongsToMany(Skill::class)->withPivot('value');
     }
+
+    public function movies() :BelongsToMany
+    {
+        return $this->belongsToMany(Movie::class, 'character_movie', 'character_id', 'movie_id');
+    }
 }

@@ -285,6 +285,7 @@
                         {id: 5, title: "Speed", value: 0},
                         {id: 6, title: "Strength", value: 0},
                     ],
+                    movies: [],
                     traits: []
                 },
 
@@ -328,6 +329,29 @@
             this.fetchMovies()
         },
         methods: {
+
+            initialCharacterState: function() {
+                return this.character = {
+                    id: '',
+                    alias: '',
+                    real_name: '',
+                    sex: 0,
+                    thumb_url: '',
+                    morality: 0,
+                    type_id: 0,
+                    skills: [
+                        {id: 1, title: "Durability", value: 0},
+                        {id: 2, title: "Energy Projection", value: 0},
+                        {id: 3, title: "Fighting Skills", value: 0},
+                        {id: 4, title: "Intelligence", value: 0},
+                        {id: 5, title: "Speed", value: 0},
+                        {id: 6, title: "Strength", value: 0},
+                    ],
+                    movies: [],
+                    traits: []
+                }
+            },
+
             /**
              * Fetches all characters
              *
@@ -389,7 +413,7 @@
             },
 
             /**
-             * Redirectss to character show page
+             * Redirects to character show page
              *
              * @param {Integer} character_id 
              * @return {Object}
@@ -398,12 +422,19 @@
                 return window.location.href = `/characters/${character_id}`;
             },
 
+            /**
+             * Creates new character instance
+             *
+             * @return void
+             */
             createCharacter: function() {
                 this.character.traits = this.selectedTraits;
-                console.log(this.character.traits);
+                this.character.movies = this.selectedMovies;
                 axios.post('/api/characters', this.character)
                     .then(res => {
-                        // console.log(res);
+                        this.fetchCharacters();
+                        this.isCreateModalOpen = false;
+                        return this.initialCharacterState();
                     })
                     .catch(e => console.log(e));
             },
