@@ -30,7 +30,7 @@ class StoreCharacterRequest extends FormRequest
             'sex'           => 'required|string',
             'thumb_url'     => 'string',
             'morality'      => 'required',
-            'type_id'       => 'string'
+            'type_id'       => 'integer'
         ];
     }
 }
