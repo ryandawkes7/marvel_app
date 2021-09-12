@@ -81,6 +81,11 @@ class CharactersController extends Controller
             $new_character->skills()->attach($skill->id, ['value' => $current_skill['value']]);
         }
 
+        // Attaches specified trait instances
+        foreach ($request->traits as $trait) {
+            $new_character->traits()->attach($trait['id']);
+        }
+
         return response()->json([
             'data' => $new_character,
             'message' => 'Successfully created character'
