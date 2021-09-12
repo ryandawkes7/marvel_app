@@ -38133,6 +38133,7 @@ __webpack_require__.r(__webpack_exports__);
           title: "Strength",
           value: 0
         }],
+        movies: [],
         traits: []
       },
       characterTypes: [],
@@ -38157,6 +38158,45 @@ __webpack_require__.r(__webpack_exports__);
     this.fetchCharacters(), this.fetchTypes(), this.fetchTraits(), this.fetchMovies();
   },
   methods: {
+    initialCharacterState: function initialCharacterState() {
+      return this.character = {
+        id: '',
+        alias: '',
+        real_name: '',
+        sex: 0,
+        thumb_url: '',
+        morality: 0,
+        type_id: 0,
+        skills: [{
+          id: 1,
+          title: "Durability",
+          value: 0
+        }, {
+          id: 2,
+          title: "Energy Projection",
+          value: 0
+        }, {
+          id: 3,
+          title: "Fighting Skills",
+          value: 0
+        }, {
+          id: 4,
+          title: "Intelligence",
+          value: 0
+        }, {
+          id: 5,
+          title: "Speed",
+          value: 0
+        }, {
+          id: 6,
+          title: "Strength",
+          value: 0
+        }],
+        movies: [],
+        traits: []
+      };
+    },
+
     /**
      * Fetches all characters
      *
@@ -38226,7 +38266,7 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     /**
-     * Redirectss to character show page
+     * Redirects to character show page
      *
      * @param {Integer} character_id 
      * @return {Object}
@@ -38234,10 +38274,22 @@ __webpack_require__.r(__webpack_exports__);
     showCharacter: function showCharacter(character_id) {
       return window.location.href = "/characters/".concat(character_id);
     },
+
+    /**
+     * Creates new character instance
+     *
+     * @return void
+     */
     createCharacter: function createCharacter() {
+      var _this5 = this;
+
       this.character.traits = this.selectedTraits;
-      console.log(this.character.traits);
-      axios__WEBPACK_IMPORTED_MODULE_2___default().post('/api/characters', this.character).then(function (res) {// console.log(res);
+      this.character.movies = this.selectedMovies;
+      axios__WEBPACK_IMPORTED_MODULE_2___default().post('/api/characters', this.character).then(function (res) {
+        _this5.fetchCharacters();
+
+        _this5.isCreateModalOpen = false;
+        return _this5.initialCharacterState();
       })["catch"](function (e) {
         return console.log(e);
       });
@@ -39324,7 +39376,6 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/api/movies').then(function (res) {
         _this.allMovies = res.data.data;
         _this.movies = res.data.data;
-        console.log(_this.movies[0]);
       });
     },
 
