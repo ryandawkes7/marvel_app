@@ -39360,12 +39360,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     createMovie: function createMovie() {
+      var _this = this;
+
       this.movie.directors = this.$refs.directorComponent.selectedDirectors;
       this.movie.characters = this.$refs.characterComponent.selectedCharacters;
       this.movie.sagas = this.$refs.sagaComponent.selectedSagas;
       this.movie.posters = this.posters;
       axios.post('/api/movies', this.movie).then(function (res) {
-        console.log(res);
+        _this.$emit('closeCreateModal');
       })["catch"](function (e) {
         return console.log(e);
       });
