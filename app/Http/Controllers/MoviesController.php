@@ -33,13 +33,13 @@ class MoviesController extends Controller
      * @return JSON
      */
     public function index()
-    {        
+    {
         $movies = Movie::with('sagas')
-                        ->with('posters')
-                        ->with('phase')
-                        ->with('directors')
-                        ->get();
-                        
+            ->with('posters')
+            ->with('phase')
+            ->with('directors')
+            ->get();
+
         return response()->json([
             'data' => $movies,
             'message' => 'Successfully fetched all characters'
@@ -55,11 +55,11 @@ class MoviesController extends Controller
     public function show($id)
     {
         $movie = Movie::whereId($id)
-                        ->with('sagas')
-                        ->with('posters')
-                        ->with('phase')
-                        ->with('directors')
-                        ->first()->toArray();
+            ->with('sagas')
+            ->with('posters')
+            ->with('phase')
+            ->with('directors')
+            ->first()->toArray();
 
         return response()->json([
             'data'      => $movie,
@@ -90,9 +90,9 @@ class MoviesController extends Controller
         if ($request->posters) {
             foreach ($request->posters as $poster) {
                 $val = strval($poster);
-                
+
                 $poster = new MoviePoster();
-                $poster->movie_id = 1;
+                $poster->movie_id = $new_movie->id;
                 $poster->image_url = $val;
                 $poster->user_id = Auth::id();
                 $poster->save();
@@ -108,7 +108,9 @@ class MoviesController extends Controller
 
         // Attach character instances
         if ($request->characters) {
-
+            foreach ($request->characters as $character) {
+                $new_movie->characters()->attach($character['id']);
+            }
         }
 
         return response()->json([
@@ -148,5 +150,4 @@ class MoviesController extends Controller
             'message'   => 'Succesfully update movie'
         ]);
     }
-
 }
