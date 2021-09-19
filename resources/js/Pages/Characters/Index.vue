@@ -242,7 +242,7 @@
 
     export default {
         setup() {
-            const isCreateModalOpen = ref(true);
+            const isCreateModalOpen = ref(false);
 
             return {
                 isCreateModalOpen
