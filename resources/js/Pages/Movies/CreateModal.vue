@@ -162,7 +162,7 @@
 
                 axios.post('/api/movies', this.movie)
                     .then(res => {
-                        console.log(res);
+                        this.$emit('closeCreateModal');
                     })
                     .catch(e => console.log(e));
             },
