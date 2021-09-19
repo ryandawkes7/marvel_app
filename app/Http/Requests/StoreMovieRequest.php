@@ -28,7 +28,7 @@ class StoreMovieRequest extends FormRequest
             'director'      => 'string|nullable',
             'release_date'  => 'date|nullable',
             'in_mcu'        => 'boolean',
-            'mcu_phase_id'  => 'integer|nullable|min:1'
+            'mcu_phase_id'  => 'integer|nullable'
         ];
     }
 }
