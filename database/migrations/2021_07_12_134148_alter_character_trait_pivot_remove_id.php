@@ -14,7 +14,7 @@ class AlterCharacterTraitPivotRemoveId extends Migration
     public function up()
     {
         Schema::table('character_trait', function (Blueprint $table) {
-            // $table->dropColumn('id');
+            $table->dropColumn('id');
             $table->primary(['trait_id','character_id']);
             $table->dropTimestamps();
         });
