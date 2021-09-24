@@ -3,6 +3,8 @@
 use App\Http\Controllers\CharactersController;
 use App\Http\Controllers\CharacterTraitsPivotController;
 use App\Http\Controllers\CharacterTypesController;
+use App\Http\Controllers\ComicBooksController;
+use App\Http\Controllers\ComicWritersController;
 use App\Http\Controllers\DirectorsController;
 use App\Http\Controllers\McuPhaseController;
 use App\Http\Controllers\MoviePostersController;
@@ -42,3 +44,6 @@ Route::apiResource('posters', MoviePostersController::class);
 
 Route::apiResource('phases', McuPhaseController::class);
 Route::apiResource('sagas', SagasController::class);
+
+Route::apiResource('comics', ComicBooksController::class);
+Route::apiResource('comic-writers', ComicWritersController::class);

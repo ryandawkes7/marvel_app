@@ -39,4 +39,9 @@ class Character extends Model
     {
         return $this->belongsToMany(Movie::class, 'character_movie', 'character_id', 'movie_id');
     }
+
+    public function comics() :BelongsToMany
+    {
+        return $this->belongsToMany(ComicBook::class, CharacterComic::class, 'character_id', 'comic_book_id');
+    }
 }
