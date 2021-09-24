@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\CharactersController;
+use App\Http\Controllers\ComicBooksController;
 use App\Http\Controllers\MoviesController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,12 +18,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return redirect('/login');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
@@ -53,5 +48,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
      */
     Route::get('/movies/{id}', [MoviesController::class, 'show_page'])->name('movie');
 
-    
+    /**
+     * Comics Page
+     */
+    Route::get('/comics', [ComicBooksController::class, 'main_page'])->name('comics');
 });
