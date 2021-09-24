@@ -32,7 +32,6 @@ export default {
         setMovies() {
             if (this.movies) return this.movies;
         },
-        // TODO: Allow custom sorting (i.e. user can choose to sort by title, director, release date)
         sortMovies(key) {
             this.movies.sort((a,b) => {
                 if (a[key] > b[key]) return 1;
