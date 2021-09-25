@@ -74,6 +74,7 @@ class ComicBooksController extends Controller
         $movie = ComicBook::whereId($comic_id)
             ->with('writers')
             ->with('characters')
+            ->with('comicIssues')
             ->first()
             ->toArray();
 
