@@ -17,6 +17,14 @@ class ComicBooksController extends Controller
     }
 
     /**
+     * Return a specific comic
+     */
+    public function show_page()
+    {
+        return Inertia::render('Comics/Show');
+    }
+
+    /**
      * Fetch all comics
      *
      * @return JSON
@@ -25,6 +33,7 @@ class ComicBooksController extends Controller
     {
         $comics = ComicBook::with('characters')
                             ->with('writers')
+                            ->with('characters')
                             ->get();
 
         return response()->json([
@@ -55,14 +64,23 @@ class ComicBooksController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ComicBook  $comicBook
-     * @return \Illuminate\Http\Response
+     * Show a specific comic
+     * 
+     * @param integer $comic_id to lookup
+     * @return JSON
      */
-    public function show(ComicBook $comicBook)
+    public function show($comic_id)
     {
-        //
+        $movie = ComicBook::whereId($comic_id)
+            ->with('writers')
+            ->with('characters')
+            ->first()
+            ->toArray();
+
+        return response()->json([
+            'data'      => $movie,
+            'message'   => 'Successfully fetched specified comic'
+        ], 200);
     }
 
     /**
