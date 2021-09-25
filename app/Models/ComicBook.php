@@ -27,4 +27,9 @@ class ComicBook extends Model
         return $this->belongsToMany(ComicWriter::class, 'comic_writer_pivot', 'comic_book_id', 'comic_writer_id');
     }
 
+    public function comicIssues() :HasMany
+    {
+        return $this->hasMany(Comic::class, 'comic_book_id', 'id');
+    }
+
 }
