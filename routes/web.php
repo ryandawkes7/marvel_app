@@ -49,7 +49,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::get('/movies/{id}', [MoviesController::class, 'show_page'])->name('movie');
 
     /**
-     * Comics Page
+     * Comics Index Page
      */
     Route::get('/comics', [ComicBooksController::class, 'main_page'])->name('comics');
+
+    /**
+     * Comics Show Page
+     */
+    Route::get('/comics/{id}', [ComicBooksController::class, 'show_page'])->name('comics.show');
 });
