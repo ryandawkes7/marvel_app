@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class ComicBook extends Model
 {
@@ -17,11 +18,6 @@ class ComicBook extends Model
         'release_date',
     ];
 
-    public function characters() :BelongsToMany
-    {
-        return $this->belongsToMany(Character::class, CharacterComic::class, 'comic_id', 'character_id');
-    }
-
     public function writers() :BelongsToMany
     {
         return $this->belongsToMany(ComicWriter::class, 'comic_writer_pivot', 'comic_book_id', 'comic_writer_id');
@@ -30,6 +26,11 @@ class ComicBook extends Model
     public function comicIssues() :HasMany
     {
         return $this->hasMany(Comic::class, 'comic_book_id', 'id');
+    }
+
+    public function covers() :HasManyThrough
+    {
+        return $this->hasManyThrough(ComicCover::class, Comic::class, 'comic_book_id', 'comic_id', 'id', 'id');
     }
 
 }
