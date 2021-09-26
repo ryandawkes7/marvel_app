@@ -10,7 +10,7 @@ class ComicWriter extends Model
 {
     use HasFactory;
 
-    public function writers() :BelongsToMany
+    public function comic_books() :BelongsToMany
     {
         return $this->belongsToMany(ComicBook::class, 'comic_writer_pivot', 'comic_writer_id', 'comic_book_id');
     }
