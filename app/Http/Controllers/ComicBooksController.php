@@ -31,9 +31,9 @@ class ComicBooksController extends Controller
      */
     public function index()
     {
-        $comics = ComicBook::with('characters')
-                            ->with('writers')
-                            ->with('characters')
+        $comics = ComicBook::with('writers')
+                            ->with('comicIssues')
+                            ->with('covers')
                             ->get();
 
         return response()->json([
@@ -73,8 +73,8 @@ class ComicBooksController extends Controller
     {
         $movie = ComicBook::whereId($comic_id)
             ->with('writers')
-            ->with('characters')
             ->with('comicIssues')
+            ->with('covers')
             ->first()
             ->toArray();
 
