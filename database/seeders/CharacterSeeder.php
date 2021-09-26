@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Character;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +23,8 @@ class CharacterSeeder extends Seeder
      */
     public function run()
     {
+        // characters seeder
+        Character::truncate();
         DB::table('characters')->insert([
             [
                 'alias'      => 'Mr. Fantastic',
@@ -93,6 +96,42 @@ class CharacterSeeder extends Seeder
                 'thumb_url'  => 'https://static.wikia.nocookie.net/marveldatabase/images/d/d3/Uatu_%28Earth-616%29_from_Marvel_War_of_Heroes_001.png',
                 'morality'   => 'unknown',
                 'type_id'    => 3,
+                'created_at' => now()
+            ],
+            [
+                'alias'      => 'Spider-Man',
+                'real_name'  => 'Peter Parker',
+                'sex'        => 'male',
+                'thumb_url'  => 'https://upload.wikimedia.org/wikipedia/en/2/21/Web_of_Spider-Man_Vol_1_129-1.png',
+                'morality'   => 'hero',
+                'type_id'    => 1,
+                'created_at' => now()
+            ],
+            [
+                'alias'      => 'Hulk',
+                'real_name'  => 'Bruce Banner',
+                'sex'        => 'male',
+                'thumb_url'  => 'https://upload.wikimedia.org/wikipedia/en/a/aa/Hulk_%28circa_2019%29.png',
+                'morality'   => 'hero',
+                'type_id'    => 1,
+                'created_at' => now()
+            ],
+            [
+                'alias'      => 'Doctor Strange',
+                'real_name'  => 'Stephen Strange',
+                'sex'        => 'male',
+                'thumb_url'  => 'https://upload.wikimedia.org/wikipedia/en/4/4f/Doctor_Strange_Vol_4_2_Ross_Variant_Textless.jpg',
+                'morality'   => 'hero',
+                'type_id'    => 1,
+                'created_at' => now()
+            ],
+            [
+                'alias'      => 'Captain America',
+                'real_name'  => 'Steve Rogers',
+                'sex'        => 'male',
+                'thumb_url'  => 'https://upload.wikimedia.org/wikipedia/en/9/91/CaptainAmerica109.jpg',
+                'morality'   => 'hero',
+                'type_id'    => 1,
                 'created_at' => now()
             ],
         ]);

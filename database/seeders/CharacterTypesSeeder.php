@@ -15,6 +15,7 @@ class CharacterTypesSeeder extends Seeder
     public function run()
     {
         // Add character types
+        DB::table('character_types')->truncate();
         DB::table('character_types')->insert([
             [
                 'type' => 'human',
