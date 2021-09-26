@@ -58,13 +58,13 @@
 
                                                 <!-- Comic Image -->
                                                 <div class="w-20 h-20 flex-shrink-0 mx-auto bg-white rounded-full overflow-hidden shadow-lg">
-                                                    <img class="object-contain min-w-full min-h-full"
-                                                        :src="poster ? poster : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'"
+                                                    <img class="object-cover min-w-full min-h-full max-h-full max-w-full"
+                                                        :src="comic.covers.length > 0 ? comic.covers[0].cover_url : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=ZsrCV912yo&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60'"
                                                     />
                                                 </div>
 
                                                 <!-- Click to Expand -->
-                                                <div class="group absolute -top-1 -right-1 rounded-lg overflow-hidden bg-gray-200 cursor-pointer transition-colors flex p-0.5 hover:bg-red-100" v-if="poster" @click="isPosterModalOpen = true">
+                                                <div class="group absolute -top-1 -right-1 rounded-lg overflow-hidden bg-gray-200 cursor-pointer transition-colors flex p-0.5 hover:bg-red-100" v-if="comic.covers.length > 0" @click="isCoverModalOpen = true">
                                                     <ArrowsExpandIcon class="h-6 w-6 text-white m-auto" stroke="#000000"/>
                                                 </div>
                                             </div>
@@ -77,7 +77,7 @@
                                             <p class="text-xl font-bold text-gray-900 sm:text-2xl">{{comic.title}}</p>
 
                                             <!-- Writers -->
-                                            <div class="w-full flex gap-x-2" v-if="comic.writers.length > 1">
+                                            <div class="w-full flex items-center gap-x-2" v-if="comic.writers.length >= 1">
                                                 <!-- Heading -->
                                                 <span class="text-gray-400 font-light sm:text-md" v-if="comic.writers.length > 1">
                                                     Writers:
@@ -113,46 +113,106 @@
                         </div>
                     </section>
 
-                    <!-- Skill Grid -->
-                    <!-- <SkillGrid :alias="character.alias" :skills="character.skills"></SkillGrid> -->
-                </div>
+                    <!-- Comic Issues -->
+                    <section aria-labelledby="comic_issues">
+                        <div class="rounded-lg bg-gray-200 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-1 sm:gap-px">
+                            <div class="rounded-lg relative group bg-white p-6 flex flex-col gap-4">
 
-                <!-- Right column -->
-                <div class="grid grid-cols-1 gap-4">
-                
-                    <section aria-labelledby="skill-grid">
-                        <div class="rounded-lg bg-white overflow-hidden shadow">
+                                <!-- Heading -->
+                                <div class="flex flex-col">
 
-                            <!-- Contents -->
-                            <div class="p-6">
+                                    <!-- Title -->
+                                    <div class="flex justify-between">
+                                        <h3 class="text-lg font-medium">
+                                            Comic Issues
+                                        </h3>
+                                        <ExternalLinkIcon class="h-5 w-5" />
+                                    </div>
 
-                                <!-- Title -->
-                                <h2 class="text-base font-medium text-gray-900" id="announcements-title">Section</h2>
+                                    <!-- Subheading -->
+                                    <p class="text-sm text-gray-500">
+                                        Take a look at all of the issues for this comic below.
+                                    </p>
+                                </div>
 
                                 <!-- Grid -->
                                 <div class="flex flex-col">
                                     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                                            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                            <div class="overflow-hidden border-b border-gray-200 rounded-lg">
                                                 <div class="block border border-gray-100">
+
+                                                    <!-- Issues -->
+                                                    <div class="grid grid-cols-4">
+                                                        <div v-for="issue in comic.comic_issues" :key="issue.id" class="col-span-1 gap-x-4 py-4 px-4">
+                                                            <div class="flex flex-col items-center justify-center bg-gray-100 rounded-lg gap-y-2 py-2">
+
+                                                                <!-- Cover Image -->
+                                                                <div class="flex h-40 w-auto">
+                                                                    <img class="object-cover mx-auto" :src="issue.covers.length > 0 ? issue.covers[0].cover_url : null" alt="Issue Cover" />
+                                                                </div>
+
+                                                                <!-- Issue Number -->
+                                                                <p class="text-wrap capitalize">
+                                                                    Issue No. {{issue.issue_number}}
+                                                                </p>
+
+                                                                <!-- Title (Nullable) -->
+                                                                <div v-if="issue.title" class="col-span-9 rounded min-h-5 px-2 my-auto">
+                                                                    {{issue.title}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                            
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
 
-                                <!-- Action Button -->
-                                <div class="mt-6">
-                                    <a href="#" class="w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                        View all
-                                    </a>
+                <!-- Right column -->
+                <div class="grid grid-cols-1 gap-4">
+                
+                    <!-- Characters -->
+                    <section aria-labelledby="characters_list">
+                        <div class="rounded-lg bg-white overflow-hidden shadow">
+
+                            <!-- Contents -->
+                            <div class="px-6 py-4 flex flex-col gap-y-4">
+
+                                <!-- Title -->
+                                <h2 class="text-base font-medium text-gray-900" id="announcements-title">
+                                    Characters
+                                </h2>
+
+                                <!-- Character List -->
+                                <div class="flex flex-col">
+                                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                            <div class="overflow-hidden sm:rounded-lg">
+
+                                                <!-- Characters -->
+                                                <div class="grid grid-cols-2 gap-x-4 gap-y-3">
+                                                    <div v-for="character in characters" :key="character.id" class="col-span-1 flex flex-col justify-center gap-y-2 bg-gray-100 rounded-lg px-2 py-3">
+                                                        <div class="h-24 w-20 flex mx-auto items-center justify-center rounded-md overflow-hidden">
+                                                            <img class="object-cover" :src="character.thumb_url" alt="Character" />
+                                                        </div>
+                                                        <span class="text-md font-bold text-center float-none">{{ character.alias }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    <!-- Recent Hires -->
+                    <!-- Issues -->
                     <section aria-labelledby="recent-hires-title">
                         <div class="rounded-lg bg-white overflow-hidden shadow">
                             <div class="p-6">
@@ -189,6 +249,26 @@
                         </div>
                     </div>
                     </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cover Modal -->
+        <div class="fixed z-20 inset-0 overflow-y-auto h-full" aria-labelledby="enlarged_image" role="dialog" aria-modal="true" v-if="isCoverModalOpen">
+            <div class="flex items-end justify-center min-h-full pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+                <div class="fixed inset-10 flex justify-center items-center">
+                    <div class="flex justify-center items-center overflow-hidden transform transition-all h-full sm:w-full py-2">
+
+                        <!-- Close Button -->
+                        <button @click="setIsCoverModalOpen(false)" class="absolute top-0 right-0 group">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 transition-all text-gray-300 group-hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+
+                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                        <img class="object-cover min-h-full" :src="comic.covers.length > 0 ? comic.covers[0].cover_url : null"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -241,12 +321,18 @@ export default {
         .then(res => {
             const data = res.data.data;
             this.comic = data;
+            this.comic.comic_issues.forEach(issue => {
+                issue.characters.forEach(character => {
+                    this.characters.push(character);
+                })
+            });
         })
     },
     data() {
         return {
             comic: {
-                characters: [],
+                comic_issues: [],
+                covers: [],
                 created_at: null,
                 description: null,
                 id: null,
@@ -255,6 +341,7 @@ export default {
                 updated_at: null,
                 writers: []
             },
+            characters: [],
         }
     },
     methods: {
@@ -274,9 +361,14 @@ export default {
         },
     },
     setup() {
+        const isCoverModalOpen = ref(false);
         const isEditModalOpen = ref(false);
 
         return {
+            isCoverModalOpen,
+            setIsCoverModalOpen(value) {
+                isCoverModalOpen.value = value;
+            },
             isEditModalOpen,
             setIsEditModalOpen(value) {
                 isEditModalOpen.value = value;
