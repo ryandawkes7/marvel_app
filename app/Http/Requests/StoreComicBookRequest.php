@@ -13,7 +13,7 @@ class StoreComicBookRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,9 +24,9 @@ class StoreComicBookRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'         => 'string',
-            'description'   => 'string',
-            'release_date'  => 'date',
+            'title'         => '',
+            'description'   => '',
+            'release_date'  => '',
         ];
     }
 }
