@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreComicBookRequest;
+use App\Models\Comic;
 use App\Models\ComicBook;
+use App\Models\ComicCover;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -70,10 +72,32 @@ class ComicBooksController extends Controller
             }
         }
 
-        // Attach comic issue instance(s)
+        // Create comic issue instance(s) against this comic book
         if ($request->comic_issues) {
             foreach ($request->comic_issues as $issue) {
-                $new_comic->comicIssues()->attach($issue['id']);
+                $comic = new Comic();
+                $comic->comic_book_id   = $new_comic->id;
+                $comic->title           = $issue['title'];
+                $comic->description     = $issue['description'];
+                $comic->issue_number    = $issue['issue_number'];
+                $comic->volume_number   = $issue['volume_number'];
+                $comic->release_date    = $issue['release_date'];
+                $comic->save();
+
+                // Attach character instance(s) to this issue
+                foreach ($issue['characters'] as $character) {
+                    $comic->characters()->attach($character['id']);
+                }
+
+                // Create cover instance(s) against this issue
+                foreach ($issue['covers'] as $cover) {
+                    $comic_cover = new ComicCover();
+                    $comic_cover->comic_id        = $comic->id;
+                    $comic_cover->cover_url       = $cover['cover_url'];
+                    $comic_cover->is_variant      = $cover['is_variant'];
+                    $comic_cover->variant_issue   = $cover['variant_issue'];
+                    $comic_cover->save();
+                }
             }
         }
 
