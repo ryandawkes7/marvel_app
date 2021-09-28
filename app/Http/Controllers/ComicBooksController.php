@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreComicBookRequest;
 use App\Models\ComicBook;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -49,18 +50,37 @@ class ComicBooksController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created comic book in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreComicBookRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreComicBookRequest $request)
     {
-        //
+        $requested_comic = $request->validated();
+        $new_comic = ComicBook::create($requested_comic);
+
+        // Attach writer instance(s)
+        if ($request->writers) {
+            foreach ($request->writers as $writer) {
+                $new_comic->writers()->attach($writer['id']);
+            }
+        }
+
+        // Attach comic issue instance(s)
+        if ($request->comic_issues) {
+            foreach ($request->comic_issues as $issue) {
+                $new_comic->comicIssues()->attach($issue['id']);
+            }
+        }
+
+        return response()->json([
+            'data'      => $new_comic,
+            'message'   => 'Successfully created new comic'
+        ]);
     }
 
     /**
