@@ -152,13 +152,25 @@ class ComicBooksController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified comic book from the DB.
      *
-     * @param  \App\Models\ComicBook  $comicBook
+     * @param integer  $comicBook
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ComicBook $comicBook)
+    public function destroy($comic_book_id)
     {
-        //
+        $comic = ComicBook::find($comic_book_id);
+
+        if (!$comic) {
+            return response()->json([
+                'data' => null,
+                'message' => 'Comic not found'
+            ]);
+        }
+        $comic->delete();
+        return response()->json([
+            'data' => null,
+            'message' => 'Successfully deleted comic'
+        ]);
     }
 }
