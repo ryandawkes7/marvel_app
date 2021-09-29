@@ -160,6 +160,5 @@ class CharactersController extends Controller
             'data' => null,
             'message' => 'Successfully deleted character'
         ]);
-
     }
 }
