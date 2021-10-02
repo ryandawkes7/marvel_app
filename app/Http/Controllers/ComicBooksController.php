@@ -142,13 +142,34 @@ class ComicBooksController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ComicBook  $comicBook
+     * @param  \App\Http\Requests\StoreComicBookRequest $request
+     * @param  integer  $comicBook
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ComicBook $comicBook)
+    public function update(Request $request, $comic_book_id)
     {
-        //
+        $data = $request->all();
+        $comic = ComicBook::find($comic_book_id);
+
+        $comic->update([
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'release_date' => $data['release_date'],
+        ]);
+
+        $writer_ids = [];
+        $issue_ids = [];
+
+        foreach ($data['writers'] as $writer) {
+            $writer_ids[] = $writer['id'];
+        }
+
+        $comic->writers()->sync($writer_ids);
+
+        return response()->json([
+            'data'      => $comic,
+            'message'   => 'Succesfully update movie'
+        ]);
     }
 
     /**
