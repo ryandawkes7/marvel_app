@@ -160,8 +160,22 @@ class ComicBooksController extends Controller
         $writer_ids = [];
         $issue_ids = [];
 
-        foreach ($data['writers'] as $writer) {
-            $writer_ids[] = $writer['id'];
+        if ($data['writers']) {
+            foreach ($data['writers'] as $writer) {
+                $writer_ids[] = $writer['id'];
+            }
+        }
+
+        if ($data['comic_issues']) {
+            foreach ($data['comic_issues'] as $issue) {
+                $comic->comicIssues()->create([
+                    'title'         => $issue['title'],
+                    'description'   => $issue['description'],
+                    'issue_number'  => $issue['issue_number'],
+                    'volume_number' => $issue['volume_number'],
+                    'release_date'  => $issue['release_date'],
+                ]);
+            }
         }
 
         $comic->writers()->sync($writer_ids);
