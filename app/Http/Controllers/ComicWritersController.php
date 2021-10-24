@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ComicWriter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ComicWritersController extends Controller
 {
@@ -15,10 +16,19 @@ class ComicWritersController extends Controller
     public function index()
     {
         $writers = ComicWriter::all();
+
+        if (count($writers) == 0) {
+            Log::error("No writers could be found", ['writers' => null]);
+            return response()->json([
+                'data' => null,
+                'message' => "No comic writers found"
+            ], 400);
+        }
         
+        Log::info("Successfully fetched all writers", ['writers' => $writers]);
         return response()->json([
-            'data' => $writers,
-            'message' => "Successfully fetched all writers"
+            'data'      => $writers,
+            'message'   => "Successfully fetched all writers"
         ]);
     }
 
@@ -46,12 +56,26 @@ class ComicWritersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $writer_id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($writer_id)
     {
-        //
+        $writer = ComicWriter::whereId($writer_id)->first();
+
+        if (!$writer->exists()) {
+            Log::error("Could not find comic writer", ['writer' => null]);
+            return response()->json([
+                'data'      => null,
+                'message'   => "Could not find writer matching ID {$writer_id}"
+            ], 404);
+        }
+
+        Log::info("Successfully retrieved comic writer", ['writer' => $writer]);
+        return response()->json([
+            'data'      => $writer,
+            'message'   => "Successfully retrieved comic writer"
+        ]);
     }
 
     /**
