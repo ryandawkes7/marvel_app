@@ -274,7 +274,7 @@
         </div>
 
         <!-- Edit Modal -->
-        <!-- <EditModal @fetchComic="fetchComic" @closeEditModal="setIsEditModalOpen(false)" :comic="comic" v-if="isEditModalOpen && comic.id != null"></EditModal> -->
+        <EditModal @fetchComic="fetchComic" @closeEditModal="setIsEditModalOpen(false)" :comic="comic" v-if="isEditModalOpen && comic.id != null"></EditModal>
 
         <SuccessBanner ref="successBanner" :message="'Comic successfully updated'"></SuccessBanner>
         
@@ -287,7 +287,7 @@ import { ref } from 'vue';
 import { Dialog, DialogOverlay, DialogTitle, Menu, MenuButton, MenuItem, MenuItems, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { BookOpenIcon, ChevronDownIcon, FilmIcon, PencilIcon, TrashIcon, UserCircleIcon, UserGroupIcon } from '@heroicons/vue/solid'
 import { ArrowsExpandIcon } from '@heroicons/vue/solid'
-// import EditModal from './EditModal.vue';
+import EditModal from './Components/EditModal.vue';
 import SuccessBanner from '../Components/SuccessBanner.vue';
 
 export default {
@@ -299,7 +299,7 @@ export default {
         Dialog,
         DialogOverlay,
         DialogTitle,
-        // EditModal,
+        EditModal,
         FilmIcon,
         Menu,
         MenuButton,
@@ -314,19 +314,7 @@ export default {
         UserGroupIcon
     },
     created() {
-        const id = this.fetchId();
-
-        // Fetch comic data
-        axios.get(`/api/comics/${id}`)
-        .then(res => {
-            const data = res.data.data;
-            this.comic = data;
-            this.comic.comic_issues.forEach(issue => {
-                issue.characters.forEach(character => {
-                    this.characters.push(character);
-                })
-            });
-        })
+        this.fetchComicBook();
     },
     data() {
         return {
@@ -345,7 +333,32 @@ export default {
         }
     },
     methods: {
-        fetchId() {
+        /**
+         * Fetch data for current comic book
+         *
+         * @return void
+         */
+        fetchComicBook: function () {
+            const id = this.fetchId();
+            axios.get(`/api/comics/${id}`)
+                .then(res => {
+                    const data = res.data.data;
+                    this.comic = data;
+                    this.comic.comic_issues.forEach(issue => {
+                        issue.characters.forEach(character => {
+                            this.characters.push(character);
+                        })
+                    });
+                })
+                .catch(e => console.error(e));
+        },
+
+        /**
+         * Fetch ID of current comic book instance
+         *
+         * @return integer
+         */
+        fetchId: function() {
             return window.location.href.split('/').pop();
         },
 
