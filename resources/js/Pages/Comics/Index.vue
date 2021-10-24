@@ -77,7 +77,7 @@
             </section>
 
             <div v-if="isCreateModalOpen">
-                <!-- <CreateModal @closeCreateModal="isCreateModalOpen = false" :phases="allPhases"></CreateModal> -->
+                <CreateModal @closeCreateModal="isCreateModalOpen = false"></CreateModal>
             </div>
 
         </div>
@@ -87,6 +87,7 @@
 <script>
 import AppLayout from '../../Layouts/AppLayout.vue';
 import ComicList from './ComicList.vue';
+import CreateModal from './Components/CreateModal.vue';
 import { SearchCircleIcon } from '@heroicons/vue/solid';
 import { ref } from 'vue';
 export default {
@@ -100,22 +101,19 @@ export default {
         return {
             allComics: [],
             allWriters: [],
-
             comics: [],
             comicSearchTerm: null,
 
             writers: [],
-
             writerFilter: 0,
 
             sortBy: 1,
-
             pagination: {},
         }
     },
     components: {
         AppLayout,
-        // CreateModal,
+        CreateModal,
         ComicList,
         SearchCircleIcon
     },

@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="col-span-1 bg-gray-300 flex-shrink-0 transition-all group-hover:bg-red-500">
-                <!-- <img class="min-h-full transition-all object-cover group-hover:my-1" v-if="comic.posters.length > 0" :src="comic.posters[0].image_url" alt="" /> -->
+                <img class="min-h-full transition-all object-cover group-hover:my-1" v-if="comic.covers.length > 0" :src="comic.covers[0].cover_url" alt="" />
             </div>
         </li>
   </ul>

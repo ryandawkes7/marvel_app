@@ -12,6 +12,15 @@ class Comic extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'comic_book_id',
+        'title',
+        'description',
+        'issue_number',
+        'volume_number',
+        'release_date'
+    ];
+
     protected $with = ['characters', 'covers'];
 
     public function covers() :HasMany

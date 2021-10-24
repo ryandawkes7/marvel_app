@@ -4,6 +4,7 @@ use App\Http\Controllers\CharactersController;
 use App\Http\Controllers\CharacterTraitsPivotController;
 use App\Http\Controllers\CharacterTypesController;
 use App\Http\Controllers\ComicBooksController;
+use App\Http\Controllers\ComicsController;
 use App\Http\Controllers\ComicWritersController;
 use App\Http\Controllers\DirectorsController;
 use App\Http\Controllers\McuPhaseController;
@@ -45,5 +46,20 @@ Route::apiResource('posters', MoviePostersController::class);
 Route::apiResource('phases', McuPhaseController::class);
 Route::apiResource('sagas', SagasController::class);
 
-Route::apiResource('comics', ComicBooksController::class);
+Route::prefix('comics')->group(function () {
+    Route::get('/', [ComicBooksController::class, 'index']);
+    Route::get('/{id}', [ComicBooksController::class, 'show']);
+    Route::post('/', [ComicBooksController::class, 'store']);
+    Route::put('/{id}', [ComicBooksController::class, 'update']);
+    Route::delete('/{id}', [ComicBooksController::class, 'destroy']);
+
+    Route::prefix('/{comic_id}/issues')->group(function() {
+        Route::get('/', [ComicsController::class, 'index']);
+        Route::get('/{issue_id}', [ComicsController::class, 'show']);
+        Route::post('/', [ComicsController::class, 'store']);
+        Route::put('/{issue_id}', [ComicsController::class, 'update']);
+        Route::delete('/{issue_id}', [ComicsController::class, 'destroy']);
+    });
+});
+
 Route::apiResource('comic-writers', ComicWritersController::class);
