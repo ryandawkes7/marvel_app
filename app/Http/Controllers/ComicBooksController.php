@@ -6,7 +6,7 @@ use App\Http\Requests\StoreComicBookRequest;
 use App\Models\Comic;
 use App\Models\ComicBook;
 use App\Models\ComicCover;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ComicBooksController extends Controller
@@ -146,7 +146,7 @@ class ComicBooksController extends Controller
      * @param  integer  $comicBook
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $comic_book_id)
+    public function update(StoreComicBookRequest $request, $comic_book_id)
     {
         $data = $request->all();
         $comic = ComicBook::find($comic_book_id);
@@ -158,7 +158,6 @@ class ComicBooksController extends Controller
         ]);
 
         $writer_ids = [];
-        $issue_ids = [];
 
         if ($data['writers']) {
             foreach ($data['writers'] as $writer) {
@@ -166,7 +165,7 @@ class ComicBooksController extends Controller
             }
         }
 
-        if ($data['comic_issues']) {
+        if (array_key_exists('comic_issues', $data)) {
             foreach ($data['comic_issues'] as $issue) {
                 $comic->comicIssues()->create([
                     'title'         => $issue['title'],
@@ -180,9 +179,10 @@ class ComicBooksController extends Controller
 
         $comic->writers()->sync($writer_ids);
 
+        Log::info("Successfully updated comic book", ['comic_book' => $comic]);
         return response()->json([
             'data'      => $comic,
-            'message'   => 'Succesfully update movie'
+            'message'   => 'Succesfully update comic book'
         ]);
     }
 
