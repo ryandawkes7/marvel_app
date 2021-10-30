@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MovieSaga;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SagasController extends Controller
 {
@@ -11,6 +11,16 @@ class SagasController extends Controller
     {
         $sagas = MovieSaga::all();
 
+        // Error handling
+        if (count($sagas) <= 0) {
+            Log::warning("No sagas could be found in database", ["sagas" => null]);
+            return response()->json([
+                'data' => null,
+                'message' => "No sagas could be found"
+            ], 404);
+        }
+
+        // Success response
         return response()->json([
             'data'      => $sagas,
             'message'   => 'Successfully fetched all sagas'
