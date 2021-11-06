@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class StorePosterRequest extends FormRequest
+class StorePosterRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +23,11 @@ class StorePosterRequest extends FormRequest
     {
         return [
             'movie_id'  => 'integer|required',
-            'image_url' => 'image|url|required',
+            'image_url' => [
+                'required',
+                'url',
+                'regex:/^(.*)(\.png|\.jpe?g|\.gif)$/i'
+            ],
             'user_id'   => 'integer|nullable'
         ];
     }
