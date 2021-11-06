@@ -44,4 +44,9 @@ class Movie extends Model
     {
         return $this->belongsToMany(Movie::class, 'character_movie', 'movie_id', 'character_id');
     }
+
+    public function getPosterAttribute()
+    {
+        return $this->posters()->first();
+    }
 }
