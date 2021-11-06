@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Test;
 
-use Carbon\Carbon;
+use App\Models\Movie;
+use App\Models\MoviePoster;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class MovieSeeder extends Seeder
 {
@@ -15,19 +15,10 @@ class MovieSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('movies')->insert([
-            [
-                'title'         => 'Test Non-MCU Movie',
-                'release_date'  => Carbon::parse('1997-09-06'),
-                'in_mcu'        => 0,
-                'mcu_phase_id'  => null,
-            ],
-            [
-                'title'         => 'Test MCU Movie',
-                'release_date'  => Carbon::parse('1970-11-09'),
-                'in_mcu'        => 1,
-                'mcu_phase_id'  => 2
-            ],
-        ]);
+        Movie::factory()
+                ->create()
+                ->each(function ($movie) {
+                    $movie->posters()->saveMany(MoviePoster::factory()->count(1)->make());
+                });
     }
 }
