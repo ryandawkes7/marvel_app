@@ -1,11 +1,20 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Test;
 
+use App\Models\MoviePoster;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MoviePosterFactory extends Factory
 {
+
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = MoviePoster::class;
+
     /**
      * Define the model's default state.
      *
