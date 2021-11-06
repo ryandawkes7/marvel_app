@@ -2,11 +2,14 @@
 
 namespace Tests;
 
+use App\Models\Character;
 use App\Models\Director;
 use App\Models\Movie;
 use App\Models\MovieDirector;
 use App\Models\MovieMovieSaga;
+use App\Models\MoviePoster;
 use App\Models\MovieSaga;
+use App\Models\Skill;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -19,7 +22,10 @@ class ApiTest extends MarvelTest
     public $headers;
     public $trade_in;
     public $path_prefix;
+
     public $movie;
+    protected $poster;
+    protected $character;
 
     protected function setUp(): void
     {
@@ -67,6 +73,12 @@ class ApiTest extends MarvelTest
         ]);
     }
 
+    /**
+     * Creates movie instance  with a saga attached
+     *
+     * @param integer $saga_id
+     * @return \App\Models\Movie
+     */
     public function createMovieWithSaga($saga_id)
     {
         return $this->movie = Movie::create([
@@ -78,6 +90,20 @@ class ApiTest extends MarvelTest
                 "id" => $saga_id
             ]
         ]);
+    }
+
+    /**
+     * Creates a movie instance with an associated poster
+     *
+     * @return void
+     */
+    public function createMovieWithPoster()
+    {
+        $this->createMcuMovie();
+        $this->movie->posters()->create([
+            'image_url' => "https://oyster.ignimgs.com/wordpress/stg.ign.com/2021/04/Shang-Chi-Poster-Marvel.jpg"
+        ]);
+        return $this->poster = $this->movie->getPosterAttribute();
     }
 
     /**
@@ -121,6 +147,52 @@ class ApiTest extends MarvelTest
         
         foreach (MovieDirector::all() as $director) {
             $director->delete();
+        }
+    }
+
+    /**
+     * Deletes all posters from DB
+     *
+     * @return void
+     */
+    protected function flushPosters()
+    {
+        foreach (MoviePoster::all() as $poster) {
+            $poster->delete();
+        }
+    }
+
+    /**
+     * Creates a new character instance
+     *
+     * @return \App\Models\Character
+     */
+    protected function createCharacter()
+    {
+        $this->character = Character::create([
+            'alias'     => "Testing Alias",
+            'real_name' => "Testing Name",
+            'sex'       => "unknown",
+            'thumb_url' => "https://www.nicepng.com/png/detail/556-5566636_helen-romero-person-headshot-silhouette.png",
+            'morality'  => "neutral",
+            'type_id'   => 1
+        ]);
+
+        // Create skill instances for test character
+        foreach (Skill::all() as $skill) {
+            $this->character->skills()->attach($skill->id, ['value' => 1]);
+        }
+    }
+
+    /**
+     * Removes all character instances from the DB
+     *
+     * @return void
+     */
+    protected function flushCharacters()
+    {
+        foreach (Character::all() as $character) {
+            $character->delete();
         }
     }
 }
