@@ -32,7 +32,7 @@ class MoviesController extends Controller
     /**
      * Fetch all movies
      *
-     * @return JSON
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
