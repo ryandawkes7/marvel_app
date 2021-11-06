@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class StoreCharacterRequest extends FormRequest
+class StoreCharacterRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +22,15 @@ class StoreCharacterRequest extends FormRequest
     public function rules()
     {
         return [
-            //
             'alias'         => 'required|string',
             'real_name'     => 'string',
             'sex'           => 'required|string',
             'thumb_url'     => 'string',
             'morality'      => 'required',
-            'type_id'       => 'integer'
+            'type_id'       => 'integer',
+            'skills'        => 'required|array',
+            'movies'        => 'array',
+            'traits'        => 'array'
         ];
     }
 }
