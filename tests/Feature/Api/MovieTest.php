@@ -26,7 +26,7 @@ class MovieTest extends ApiTest
             "message"
         ]);
 
-        $this->assertDatabaseCount('movies', 2);
+        $this->assertDatabaseCount('movies', 1);
     }
 
     /**
