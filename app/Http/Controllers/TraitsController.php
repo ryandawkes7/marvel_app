@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTraitRequest;
+use App\Http\Requests\UpdateTraitRequest;
 use App\Http\Resources\TraitResource;
-use App\Models\Character;
 use App\Models\CharTrait;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TraitsController extends Controller
 {
@@ -17,122 +18,141 @@ class TraitsController extends Controller
     public function index()
     {
         $traits = CharTrait::all();
+
+        // No traits found
+        if (count($traits) == 0) {
+            Log::warning("No traits could be found in the database", ['traits' => []]);
+            return response()->json([
+                'data' => [],
+                'message' => "Could not find any traits in the database"
+            ], 404);
+        }
+
+        // Success response
+        Log::info("Successfully fetched all traits from the database");
         return response()->json([
             'data'      => TraitResource::collection($traits),
             'message'   => 'Successfully fetched all traits'
-        ], 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a new pivot entry for traits on a character
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $data = (object) $request->all();
-        $data_payload = (object) $data->payload;
-
-        $char = Character::whereId($data_payload->char_id)->first();
-        $existing_traits = $char->traits;
-
-        $array_traits       = [];
-        $array_trait_ids    = [];
-        foreach($data_payload->traits as $trait) {
-            $array_traits[]     = CharTrait::whereId($trait['id'])->first();
-            $array_trait_ids[]  = CharTrait::whereId($trait['id'])->first()->id;
-        }
-        
-        $existing_ids = [];
-        foreach($existing_traits as $trait) {
-            $existing_ids[] = $trait->id;
-        }
-
-        $results = array_diff($existing_ids, $array_trait_ids);
-        foreach($results as $result) {
-            if (!in_array($result, $array_trait_ids)) {
-                $char->traits()->detach($result);
-            }
-        }
-        
-        foreach ($array_traits as $trait) {            
-            $trait->characters()->syncWithoutDetaching((integer) $data_payload->char_id);
-        }
-
-        return response()->json([
-            'data'      => $data_payload->traits,
-            'message'   => 'Successfully added new trait on character'
         ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CharTrait  $charTrait
+     * @param  string $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $trait = CharTrait::whereId($id)->get();
+        if (!CharTrait::whereId($id)->exists()) {
+            // No matching trait
+            Log::warning("No matching trait could be found", ['trait' => null]);
+            return response()->json([
+                'data'      => null,
+                'message'   => "No trait matching ID {$id}"
+            ], 404);
+        }
+
+        // Successfully fetched trait
+        $trait = CharTrait::whereId($id)->first();
+        Log::info("Successfully fetched trait", ['trait' => $trait]);
         return response()->json([
-            'data'      => TraitResource::collection($trait),
-            'message'   => 'Successfully fetched specified character'
-        ], 200);
+            'data'      => $trait,
+            'message'   => "Successfully fetched trait"
+        ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Store a new pivot entry for traits on a character
      *
-     * @param  \App\Models\CharTrait  $charTrait
+     * @param  \Illuminate\Http\StoreTraitRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function edit(CharTrait $charTrait)
+    public function store(StoreTraitRequest $request)
     {
-        //
+        // Error handling
+        if (isset($request->validator) && $request->validator->fails()) {
+            Log::warning("Invalid data supplied when creating new type", ['type' => null]);
+            return response()->json([
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
+        }
+
+        $requested_trait = $request->validated();
+        $new_trait = CharTrait::create($requested_trait);
+
+        // Success response
+        Log::info("Succesfully created new trait", ['trait' => $new_trait]);
+        return response()->json([
+            'data'      => $new_trait,
+            'message'   => "Successfully created new trait"
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\CharTrait  $charTrait
+     * @param  \Illuminate\Http\UpdateTraitRequest  $request
+     * @param  integer  $trait_id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CharTrait $charTrait)
+    public function update(UpdateTraitRequest $request, $trait_id)
     {
-        //
-        $input = $request->all();
-        $charTrait->fill($input)->save();
+        // No matching type found
+        if (!CharTrait::whereId($trait_id)->exists()) {
+            Log::warning("Could not find matching trait to update", ['type' => null]);
+            return response()->json([
+                'data'      => null,
+                'message'   => "No trait found matching ID {$trait_id}"
+            ], 404);
+        }
+
+        // Error handling
+        if (isset($request->validator) && $request->validator->fails()) {
+            Log::warning("Invalid data supplied when updating trait", ['type' => null]);
+            return response()->json([
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
+        }
+
+        $trait = CharTrait::whereId($trait_id)->first();
+        $trait->update($request->validated());
+
+        // Success response
+        Log::info("Successfully updated trait", ['type' => $trait]);
         return response()->json([
-            'data'      => $charTrait,
-            'messgae'   => 'Successfully updated trait' 
+            'data'      => $trait,
+            'message'   => "Successfully updated trait"
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CharTrait  $charTrait
+     * @param  integer  $trait_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CharTrait $charTrait)
+    public function destroy($trait_id)
     {
-        //
-        $charTrait->delete();
+        if (!CharTrait::whereId($trait_id)->exists()) {
+            // No matching trait
+            Log::warning("No matching trait found", ['type' => null]);
+            return response()->json([
+                'data'      => null,
+                'message'   => "Could not find trait matching ID {$trait_id}"
+            ], 404);
+        }
+
+        $trait = CharTrait::whereId($trait_id)->first();
+        $trait->delete();
+
+        // Success response
+        Log::info("Successfully deleted character trait", ['trait' => null]);
         return response()->json([
-            'data'      => TraitResource::collection($charTrait),
-            'message'   => 'Successfully deleted trait record'
+            'data' => null,
+            'message' => "Successfully deleted trait"
         ]);
     }
 }
