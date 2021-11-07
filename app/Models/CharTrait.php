@@ -9,7 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class CharTrait extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     protected $table = 'traits';
+
+    protected $fillable = [
+        'name',
+        'description'
+    ];
 
     public function characters() :BelongsToMany
     {
