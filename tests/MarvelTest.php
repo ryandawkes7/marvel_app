@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\User;
+use Database\Seeders\Test\CharacterTypeSeeder;
 use Database\Seeders\Test\MovieSeeder;
 use Database\Seeders\Test\DirectorSeeder;
 use Database\Seeders\Test\MovieSagaSeeder;
@@ -25,7 +26,8 @@ class MarvelTest extends TestCase {
         $this->seed([
             MovieSeeder::class,
             MovieSagaSeeder::class,
-            DirectorSeeder::class
+            DirectorSeeder::class,
+            CharacterTypeSeeder::class
         ]);
 
         $this->user = User::factory()->create();
