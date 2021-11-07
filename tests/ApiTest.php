@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\Character;
+use App\Models\CharacterType;
 use App\Models\Director;
 use App\Models\Movie;
 use App\Models\MovieDirector;
@@ -26,6 +27,7 @@ class ApiTest extends MarvelTest
     public $movie;
     protected $poster;
     protected $character;
+    protected $type;
 
     protected function setUp(): void
     {
@@ -193,6 +195,26 @@ class ApiTest extends MarvelTest
     {
         foreach (Character::all() as $character) {
             $character->delete();
+        }
+    }
+
+    protected function createCharacterType()
+    {
+        return $this->type = CharacterType::create([
+            'key'   => 'testing',
+            'type'  => 'Testing'
+        ]);
+    }
+
+    /**
+     * Deletes all character type instances
+     *
+     * @return void
+     */
+    protected function flushCharacterTypes()
+    {
+        foreach (CharacterType::all() as $type) {
+            $type->delete();
         }
     }
 }
