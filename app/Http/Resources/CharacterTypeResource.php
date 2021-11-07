@@ -15,8 +15,9 @@ class CharacterTypeResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'type' => $this->type,
+            'id'    => $this->id,
+            'key'   => $this->key,
+            'type'  => $this->type,
         ];
     }
 }
