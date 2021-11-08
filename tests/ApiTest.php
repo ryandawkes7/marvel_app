@@ -244,4 +244,16 @@ class ApiTest extends MarvelTest
             $trait->delete();
         }
     }
+
+    /**
+     * Flushes the skills table
+     *
+     * @return void
+     */
+    protected function flushSkills()
+    {
+        foreach (Skill::all() as $skill) {
+            $skill->delete();
+        }
+    }
 }
