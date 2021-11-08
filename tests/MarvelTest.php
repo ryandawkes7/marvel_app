@@ -25,10 +25,10 @@ class MarvelTest extends TestCase {
         parent::setUp();
 
         $this->seed([
-            MovieSeeder::class,
-            MovieSagaSeeder::class,
-            DirectorSeeder::class,
             CharacterTypeSeeder::class,
+            DirectorSeeder::class,
+            MovieSagaSeeder::class,
+            MovieSeeder::class,
             TraitSeeder::class
         ]);
 
