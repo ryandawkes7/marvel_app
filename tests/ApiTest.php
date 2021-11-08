@@ -30,6 +30,7 @@ class ApiTest extends MarvelTest
     protected $character;
     protected $type;
     protected $trait;
+    protected $director;
 
     protected function setUp(): void
     {
@@ -136,6 +137,20 @@ class ApiTest extends MarvelTest
         foreach (MovieMovieSaga::all() as $saga) {
             $saga->delete();
         }
+    }
+
+    /**
+     * Creates a director instance
+     *
+     * @return \App\Models\Director
+     */
+    protected function createDirector()
+    {
+        return $this->director = Director::create([
+            'name'  => "Test Director",
+            'dob'   => date('Y-m-d', strtotime(now())),
+            'image' => "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/James_Gunn_%2828557194032%29_%28cropped%29.jpg/1024px-James_Gunn_%2828557194032%29_%28cropped%29.jpg"
+        ]);
     }
     
     /**
