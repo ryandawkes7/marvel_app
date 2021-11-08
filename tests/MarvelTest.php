@@ -7,6 +7,7 @@ use Database\Seeders\Test\CharacterTypeSeeder;
 use Database\Seeders\Test\MovieSeeder;
 use Database\Seeders\Test\DirectorSeeder;
 use Database\Seeders\Test\MovieSagaSeeder;
+use Database\Seeders\Test\TraitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MarvelTest extends TestCase {
@@ -27,7 +28,8 @@ class MarvelTest extends TestCase {
             MovieSeeder::class,
             MovieSagaSeeder::class,
             DirectorSeeder::class,
-            CharacterTypeSeeder::class
+            CharacterTypeSeeder::class,
+            TraitSeeder::class
         ]);
 
         $this->user = User::factory()->create();
