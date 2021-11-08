@@ -24,6 +24,8 @@ Route::apiResource('characters', CharactersController::class);
 Route::apiResource('character-types', CharacterTypesController::class);
 
 Route::apiResource('traits', TraitsController::class);
+
+// TODO: Is this necessary?
 Route::apiResource('character-traits', CharacterTraitsPivotController::class);
 
 Route::apiResource('skills', SkillsController::class);
