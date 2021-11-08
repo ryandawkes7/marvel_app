@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\Character;
 use App\Models\CharacterType;
+use App\Models\CharTrait;
 use App\Models\Director;
 use App\Models\Movie;
 use App\Models\MovieDirector;
@@ -28,6 +29,7 @@ class ApiTest extends MarvelTest
     protected $poster;
     protected $character;
     protected $type;
+    protected $trait;
 
     protected function setUp(): void
     {
@@ -215,6 +217,31 @@ class ApiTest extends MarvelTest
     {
         foreach (CharacterType::all() as $type) {
             $type->delete();
+        }
+    }
+
+    /**
+     * Creates a new trait instance
+     *
+     * @return \App\Models\CharTrait
+     */
+    protected function createTrait()
+    {
+        return $this->trait = CharTrait::create([
+            'name'          => "Testing",
+            'description'   => "Testing description"
+        ]);
+    }
+
+    /**
+     * Flushes the traits table
+     *
+     * @return void
+     */
+    protected function flushTraits()
+    {
+        foreach (CharTrait::all() as $trait) {
+            $trait->delete();
         }
     }
 }
