@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\User;
 use Database\Seeders\ComicBooksSeeder;
+use Database\Seeders\ComicWritersSeeder;
 use Database\Seeders\McuPhaseSeeder;
 use Database\Seeders\Test\CharacterTypeSeeder;
 use Database\Seeders\Test\MovieSeeder;
@@ -29,6 +30,7 @@ class MarvelTest extends TestCase {
         $this->seed([
             CharacterTypeSeeder::class,
             ComicBooksSeeder::class,
+            ComicWritersSeeder::class,
             DirectorSeeder::class,
             McuPhaseSeeder::class,
             MovieSagaSeeder::class,
