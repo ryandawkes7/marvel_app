@@ -6,6 +6,7 @@ use App\Models\Character;
 use App\Models\CharacterType;
 use App\Models\CharTrait;
 use App\Models\Director;
+use App\Models\McuPhase;
 use App\Models\Movie;
 use App\Models\MovieDirector;
 use App\Models\MovieMovieSaga;
@@ -25,12 +26,13 @@ class ApiTest extends MarvelTest
     public $trade_in;
     public $path_prefix;
 
-    public $movie;
-    protected $poster;
     protected $character;
-    protected $type;
-    protected $trait;
     protected $director;
+    protected $movie;
+    protected $phase;
+    protected $poster;
+    protected $trait;
+    protected $type;
 
     protected function setUp(): void
     {
@@ -269,6 +271,30 @@ class ApiTest extends MarvelTest
     {
         foreach (Skill::all() as $skill) {
             $skill->delete();
+        }
+    }
+
+    /**
+     * Creates a new phase instance
+     *
+     * @return \App\Models\McuPhase
+     */
+    protected function createPhase()
+    {
+        return $this->phase = McuPhase::create([
+            'title' => "Testing Phase"
+        ]);
+    }
+
+    /**
+     * Flushes the traits table
+     *
+     * @return void
+     */
+    protected function flushPhases()
+    {
+        foreach (McuPhase::all() as $phase) {
+            $phase->delete();
         }
     }
 }
