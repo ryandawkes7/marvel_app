@@ -164,6 +164,7 @@ class ComicBooksController extends Controller
     {
         // Error handling - invalid data
         if (isset($request->validator) && $request->validator->fails()) {
+            Log::info("Invalid data submitted when trying to update comic book", ['comic_book' => null]);
             return response()->json([
                 'data'      => null,
                 'message'   => $request->validator->messages()
@@ -193,14 +194,14 @@ class ComicBooksController extends Controller
         ]);
         
         // Attach writers against comic book
-        if ($comic_book_data['writers']) {
+        if (array_key_exists('writers', $comic_book_data)) {
             foreach ($comic_book_data['writers'] as $writer) {
                 $comic_book->writers()->sync($writer['id']);
             }
         }
 
         // Update or create comic book with new issues
-        if ($comic_book_data['comic_issues']) {
+        if (array_key_exists('comic_issues', $comic_book_data)) {
             foreach ($comic_book_data['comic_issues'] as $issue ) {
                 if (!array_key_exists('id', $issue)) $issue['id'] = null;
                 $comic_book->comicIssues()->updateOrCreate(
