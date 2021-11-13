@@ -17,11 +17,10 @@ class ComicBooksSeeder extends Seeder
     public function run()
     {
         // Seed comic books
-        DB::table('comic_books')->truncate();
         DB::table('comic_books')->insert([
             [
                 'title' => 'The Amazing Spider-Man',
-                'description' => '',
+                'description' => 'The first ever Spider-Man comic book',
                 'release_date' => Carbon::parse('1964-10-01')
             ],
             [
