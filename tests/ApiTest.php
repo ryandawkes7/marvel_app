@@ -6,6 +6,7 @@ use App\Models\Character;
 use App\Models\CharacterType;
 use App\Models\CharTrait;
 use App\Models\ComicBook;
+use App\Models\ComicWriter;
 use App\Models\Director;
 use App\Models\McuPhase;
 use App\Models\Movie;
@@ -29,6 +30,7 @@ class ApiTest extends MarvelTest
 
     protected $character;
     protected $comic_book;
+    protected $comic_writer;
     protected $director;
     protected $movie;
     protected $phase;
@@ -347,6 +349,32 @@ class ApiTest extends MarvelTest
     {
         foreach (ComicBook::all() as $comic) {
             $comic->delete();
+        }
+    }
+
+    /**
+     * Creates a comic writer isntance
+     *
+     * @return \App\Models\ComicWriter
+     */
+    protected function createComicWriter()
+    {
+        return $this->comic_writer = ComicWriter::create([
+            'name'  => "Testing Writer",
+            'dob'   => date("Y-m-d", strtotime("1997-09-06")),
+            'image' => "https://upload.wikimedia.org/wikipedia/commons/7/7b/Stan_Lee_by_Gage_Skidmore_3.jpg"
+        ]);
+    }
+
+    /**
+     * Flushes the comic book table
+     *
+     * @return void
+     */
+    protected function flushComicWriters()
+    {
+        foreach (ComicWriter::all() as $writer) {
+            $writer->delete();
         }
     }
 }
