@@ -32,7 +32,7 @@ class DirectorsController extends Controller
         Log::info("Successfully fetched all directors", ['directors' => $directors]);
         return response()->json([
             'data' => $directors,
-            'message' => 'Successfully fetched all characters'
+            'message' => 'Successfully fetched all directors'
         ]);
     }
 
@@ -58,7 +58,7 @@ class DirectorsController extends Controller
         Log::info("Successfully fetched matching director");
         return response()->json([
             'data'      => $director,
-            'message'   => 'Successfully fetched specified character'
+            'message'   => 'Successfully fetched specified director'
         ]);
     }
 
