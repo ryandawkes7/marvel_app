@@ -41,7 +41,7 @@ class DirectorTest extends ApiTest
                 'dob'   => date('Y-m-d', strtotime($this->director->dob)),
                 'image' => $this->director->image
             ],
-            'message'   => 'Successfully fetched specified character'
+            'message'   => 'Successfully fetched specified director'
         ]);
     }
 
