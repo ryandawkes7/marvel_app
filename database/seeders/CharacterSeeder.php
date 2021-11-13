@@ -23,7 +23,6 @@ class CharacterSeeder extends Seeder
      */
     public function run()
     {
-        // characters seeder
         Character::truncate();
         DB::table('characters')->insert([
             [

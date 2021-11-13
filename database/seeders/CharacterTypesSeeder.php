@@ -18,13 +18,16 @@ class CharacterTypesSeeder extends Seeder
         DB::table('character_types')->truncate();
         DB::table('character_types')->insert([
             [
-                'type' => 'human',
+                'key'   => 'human',
+                'type'  => 'Human'
             ],
             [
-                'type' => 'robot',
+                'key'   => 'robot',
+                'type'  => 'Robot',
             ],
             [
-                'type' => 'unknown',
+                'key' => 'unknown',
+                'type' => 'Unknown',
             ],
         ]);
     }

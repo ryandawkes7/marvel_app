@@ -10,6 +10,12 @@ class ComicWriter extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'dob',
+        'image'
+    ];
+
     public function comic_books() :BelongsToMany
     {
         return $this->belongsToMany(ComicBook::class, 'comic_writer_pivot', 'comic_writer_id', 'comic_book_id');

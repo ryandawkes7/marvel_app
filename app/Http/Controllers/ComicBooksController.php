@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreComicBookRequest;
-use App\Models\Comic;
+use App\Http\Requests\UpdateComicBookRequest;
 use App\Models\ComicBook;
-use App\Models\ComicCover;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -39,6 +38,17 @@ class ComicBooksController extends Controller
                             ->with('covers')
                             ->get();
 
+        // No comics in DB
+        if (count($comics) <= 0) {
+            Log::warning("No comics found in the database");
+            return response()->json([
+                'data' => [],
+                'message' => "No comics could be found in the database"
+            ], 404);
+        }
+
+        // Success response
+        Log::info("Succesfully returned all comics in the database");
         return response()->json([
             'data' => $comics,
             'message' => 'Successfully fetched all comics'
@@ -46,12 +56,34 @@ class ComicBooksController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
+     * Show a specific comic
+     * 
+     * @param integer $comic_id
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function show($comic_id)
     {
+        // No matching comic book
+        if (!ComicBook::whereId($comic_id)->exists()) {
+            Log::error("Failed to find matching comic book", ['comic_book' => null]);
+            return response()->json([
+                'data'      =>  null,
+                'message'   => "Failed to find a comic book matching ID {$comic_id}"
+            ], 404);
+        }
+
+        $comic_book = ComicBook::whereId($comic_id)
+                            ->with('writers')
+                            ->with('comicIssues')
+                            ->with('covers')
+                            ->first();
+
+        // Success response
+        Log::info("Successfully found matching comic book", ['comic_book' => $comic_book]);
+        return response()->json([
+            'data'      => $comic_book,
+            'message'   => 'Successfully fetched matching comic book'
+        ], 200);
     }
 
     /**
@@ -62,8 +94,15 @@ class ComicBooksController extends Controller
      */
     public function store(StoreComicBookRequest $request)
     {
-        $requested_comic = $request->validated();
-        $new_comic = ComicBook::create($requested_comic);
+        // Error handling - invalid data
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->json([
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
+        }
+
+        $new_comic = ComicBook::create($request->validated());
 
         // Attach writer instance(s)
         if ($request->writers) {
@@ -73,139 +112,144 @@ class ComicBooksController extends Controller
         }
 
         // Create comic issue instance(s) against this comic book
+
         if ($request->comic_issues) {
             foreach ($request->comic_issues as $issue) {
-                $comic = new Comic();
-                $comic->comic_book_id   = $new_comic->id;
-                $comic->title           = $issue['title'];
-                $comic->description     = $issue['description'];
-                $comic->issue_number    = $issue['issue_number'];
-                $comic->volume_number   = $issue['volume_number'];
-                $comic->release_date    = $issue['release_date'];
-                $comic->save();
-
-                // Attach character instance(s) to this issue
-                foreach ($issue['characters'] as $character) {
-                    $comic->characters()->attach($character['id']);
-                }
-
-                // Create cover instance(s) against this issue
-                foreach ($issue['covers'] as $cover) {
-                    $comic_cover = new ComicCover();
-                    $comic_cover->comic_id        = $comic->id;
-                    $comic_cover->cover_url       = $cover['cover_url'];
-                    $comic_cover->is_variant      = $cover['is_variant'];
-                    $comic_cover->variant_issue   = $cover['variant_issue'];
-                    $comic_cover->save();
-                }
-            }
-        }
-
-        return response()->json([
-            'data'      => $new_comic,
-            'message'   => 'Successfully created new comic'
-        ]);
-    }
-
-    /**
-     * Show a specific comic
-     * 
-     * @param integer $comic_id to lookup
-     * @return JSON
-     */
-    public function show($comic_id)
-    {
-        $movie = ComicBook::whereId($comic_id)
-            ->with('writers')
-            ->with('comicIssues')
-            ->with('covers')
-            ->first()
-            ->toArray();
-
-        return response()->json([
-            'data'      => $movie,
-            'message'   => 'Successfully fetched specified comic'
-        ], 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ComicBook  $comicBook
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ComicBook $comicBook)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreComicBookRequest $request
-     * @param  integer  $comicBook
-     * @return \Illuminate\Http\Response
-     */
-    public function update(StoreComicBookRequest $request, $comic_book_id)
-    {
-        $data = $request->all();
-        $comic = ComicBook::find($comic_book_id);
-
-        $comic->update([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'release_date' => $data['release_date'],
-        ]);
-
-        $writer_ids = [];
-
-        if ($data['writers']) {
-            foreach ($data['writers'] as $writer) {
-                $writer_ids[] = $writer['id'];
-            }
-        }
-
-        if (array_key_exists('comic_issues', $data)) {
-            foreach ($data['comic_issues'] as $issue) {
-                $comic->comicIssues()->create([
+                $new_issue = $new_comic->comicIssues()->create([
                     'title'         => $issue['title'],
                     'description'   => $issue['description'],
                     'issue_number'  => $issue['issue_number'],
                     'volume_number' => $issue['volume_number'],
                     'release_date'  => $issue['release_date'],
                 ]);
+
+                // Attach character instance(s) to this issue
+                if (!empty($issue['characters'])) {
+                    foreach ($issue['characters'] as $character) {
+                        $new_issue->characters()->attach($character['id']);
+                    }
+                }
+
+                // Create cover instance(s) against this issue
+                if (!empty($issue['covers'])) {
+                    foreach ($issue['covers'] as $cover) {
+                        $new_issue->covers()->create($cover);
+                    }
+                }
             }
         }
 
-        $comic->writers()->sync($writer_ids);
+        $created_comic_book = ComicBook::whereId($new_comic->id)
+                                        ->with('comicIssues')
+                                        ->with('covers')
+                                        ->with('writers')
+                                        ->get();
 
-        Log::info("Successfully updated comic book", ['comic_book' => $comic]);
+        // Success response
+        Log::info("Successfully created new comic book instance", ['comic_book' => $created_comic_book]);
         return response()->json([
-            'data'      => $comic,
-            'message'   => 'Succesfully update comic book'
+            'data'      => $created_comic_book,
+            'message'   => 'Successfully created new comic book'
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\UpdateComicBookRequest $request
+     * @param  integer  $comic_book_id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdateComicBookRequest $request, $comic_book_id)
+    {
+        // Error handling - invalid data
+        if (isset($request->validator) && $request->validator->fails()) {
+            Log::info("Invalid data submitted when trying to update comic book", ['comic_book' => null]);
+            return response()->json([
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
+        }
+
+        // No matching comic book
+        if (!ComicBook::whereId($comic_book_id)->exists()) {
+            Log::error("Could not find matching comic book", ['comic_book_id' => $comic_book_id]);
+            return response()->json([
+                'data'      => null,
+                'message'   => "Could not find comic book matching ID {$comic_book_id}"
+            ], 404);
+        }
+
+        $comic_book_data = $request->validated();
+        $comic_book = ComicBook::whereId($comic_book_id)
+                                ->with('comicIssues')
+                                ->with('covers')
+                                ->with('writers')
+                                ->first();
+                                
+        $comic_book->update([
+            'title'         => $comic_book_data['title'],
+            'description'   => $comic_book_data['description'],
+            'release_date'  => $comic_book_data['release_date'],
+        ]);
+        
+        // Attach writers against comic book
+        if (array_key_exists('writers', $comic_book_data)) {
+            foreach ($comic_book_data['writers'] as $writer) {
+                $comic_book->writers()->sync($writer['id']);
+            }
+        }
+
+        // Update or create comic book with new issues
+        if (array_key_exists('comic_issues', $comic_book_data)) {
+            foreach ($comic_book_data['comic_issues'] as $issue ) {
+                if (!array_key_exists('id', $issue)) $issue['id'] = null;
+                $comic_book->comicIssues()->updateOrCreate(
+                    ['id' => $issue['id']],
+                    [
+                        'title'         => $issue['title'],
+                        'description'   => $issue['description'],
+                        'issue_number'  => $issue['issue_number'],
+                        'volume_number' => $issue['volume_number'],
+                        'release_date'  => $issue['release_date'],
+                    ]
+                );
+            }
+        }
+
+        // Success response
+        Log::info("Successfully updated comic book", ['comic_book' => $comic_book]);
+        return response()->json([
+            'data'      => $comic_book,
+            'message'   => 'Succesfully updated comic book'
         ]);
     }
 
     /**
      * Remove the specified comic book from the DB.
      *
-     * @param integer  $comicBook
+     * @param integer  $comic_book_id
      * @return \Illuminate\Http\Response
      */
     public function destroy($comic_book_id)
     {
-        $comic = ComicBook::find($comic_book_id);
-
-        if (!$comic) {
+        // No comic book found
+        if (!ComicBook::whereId($comic_book_id)->exists()) {
+            Log::error("No comic book found for deletion", ['comic_book_id' => $comic_book_id]);
             return response()->json([
-                'data' => null,
-                'message' => 'Comic not found'
-            ]);
+                'data'      => null,
+                'message'   => "No comic book found matching ID {$comic_book_id}"
+            ], 404);
         }
+
+        $comic = ComicBook::find($comic_book_id);
         $comic->delete();
+
+        // Success response
+        Log::info("Successfully deleted comic book", ['comic_book_id' => $comic_book_id]);
         return response()->json([
             'data' => null,
-            'message' => 'Successfully deleted comic'
+            'message' => 'Successfully deleted comic book'
         ]);
     }
 }

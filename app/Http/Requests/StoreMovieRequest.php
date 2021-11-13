@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMovieRequest extends FormRequest
+class StoreMovieRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +27,18 @@ class StoreMovieRequest extends FormRequest
             'director'      => 'string|nullable',
             'release_date'  => 'date|nullable',
             'in_mcu'        => 'boolean',
-            'mcu_phase_id'  => 'integer|nullable'
+            'mcu_phase_id'  => 'integer|nullable',
+
+            'sagas'         => 'array',
+            'sagas.id'      => 'integer',
+
+            'posters.*'        => [
+                'url',
+                'regex:/^(.*)(\.png|\.jpe?g|\.gif)$/i'
+            ],
+
+            'directors'     => 'array',
+            'director.id'   => 'integer'
         ];
     }
 }

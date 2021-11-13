@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMovieRequest;
+use App\Models\Director;
 use Inertia\Inertia;
 use App\Models\Movie;
-use App\Models\MoviePoster;
+use App\Models\MovieSaga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MoviesController extends Controller
 {
@@ -30,7 +32,7 @@ class MoviesController extends Controller
     /**
      * Fetch all movies
      *
-     * @return JSON
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -40,6 +42,17 @@ class MoviesController extends Controller
             ->with('directors')
             ->get();
 
+            // Error handling
+        if (count($movies) == 0) {
+            Log::error("No movies could be found", ["movies" => null]);
+            return response()->json([
+                'data'      => null,
+                'message' => "No movies found"
+            ], 404);
+        }
+
+        // Success response
+        Log::info("Successfully fetched all movies", ["movies" => $movies]);
         return response()->json([
             'data' => $movies,
             'message' => 'Successfully fetched all characters'
@@ -50,17 +63,29 @@ class MoviesController extends Controller
     /**
      * Show a specific movie
      * 
+     * @param $movie_id
      * @return JSON
      */
-    public function show($id)
+    public function show($movie_id)
     {
-        $movie = Movie::whereId($id)
-            ->with('sagas')
-            ->with('posters')
-            ->with('phase')
-            ->with('directors')
-            ->first()->toArray();
+        // Error handling
+        if (!Movie::whereId($movie_id)->exists()) {
+            Log::error("Could not find the movie from the ID provided", ["movie_id" => $movie_id]);
+            return response()->json([
+                'data' => null,
+                'message' => "Could not find a movie matching ID {$movie_id}"
+            ], 404);
+        }
+        
+        $movie = Movie::whereId($movie_id)
+                        ->with('sagas')
+                        ->with('posters')
+                        ->with('phase')
+                        ->with('directors')
+                        ->first()->toArray();
 
+        // Success response
+        Log::info("Successfully fetched specified movie", ["movie" => $movie]);
         return response()->json([
             'data'      => $movie,
             'message'   => 'Successfully fetched specified character'
@@ -76,37 +101,60 @@ class MoviesController extends Controller
      */
     public function store(StoreMovieRequest $request)
     {
+        // Error handling
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->json([
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
+        }
+
         $requested_movie = $request->validated();
         $new_movie = Movie::create($requested_movie);
 
         // Attach saga instance(s)
         if ($request->sagas) {
             foreach ($request->sagas as $saga) {
+                // Error handling
+                if (!MovieSaga::where('id', $saga['id'])->exists()) {
+                    Log::error("Could not find specified saga", ['saga_id' => $saga['id']]);
+                    return response()->json([
+                        'data' => null,
+                        'message' => "Could not find saga matching ID {$saga['id']}"
+                    ], 404);
+                }
                 $new_movie->sagas()->attach($saga['id']);
             }
         }
 
-        // Attach poster instance(s)
+
+        // Create poster instance(s)
         if ($request->posters) {
             foreach ($request->posters as $poster) {
-                $val = strval($poster);
-
-                $poster = new MoviePoster();
-                $poster->movie_id = $new_movie->id;
-                $poster->image_url = $val;
-                $poster->user_id = Auth::id();
-                $poster->save();
+                $new_movie->posters()->create([
+                    'image_url' => strval($poster),
+                    'user_id'   => Auth::id()
+                ]);
             }
         }
 
         // Attach director instance(s)
         if ($request->directors) {
             foreach ($request->directors as $director) {
+                // Error handling
+                if (!Director::where('id', $director['id'])->exists()) {
+                    Log::error("Could not find specified director", ['director_id' => $director['id']]);
+                    return response()->json([
+                        'data' => null,
+                        'message' => "Could not find director matching ID {$director['id']}"
+                    ], 404);
+                }
                 $new_movie->directors()->attach($director['id']);
             }
         }
 
         // Attach character instances
+        // TODO Testing for characters in MovieTest
         if ($request->characters) {
             foreach ($request->characters as $character) {
                 $new_movie->characters()->attach($character['id']);
@@ -119,10 +167,33 @@ class MoviesController extends Controller
         ]);
     }
 
-    public function update(Request $request, $movie_id)
+    public function update(StoreMovieRequest $request, $movie_id)
     {
+        // Error handling - invalid data
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->json([
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
+        }
+
         $data = $request->all();
-        $movie = Movie::whereId($movie_id)->first();
+
+        // Error handling
+        if (!Movie::whereId($movie_id)->exists()) {
+            Log::error("Could not find a matching movie to update", ['movie_id' => $movie_id]);
+            return response()->json([
+                'data' => null,
+                'message' => "Could not find movie matching ID {$movie_id}"
+            ], 404);
+        }
+
+        $movie = Movie::whereId($movie_id)
+                        ->with('sagas')
+                        ->with('posters')
+                        ->with('phase')
+                        ->with('directors')
+                        ->first();
 
         $movie->update([
             'title'         => $data['title'],
@@ -134,20 +205,72 @@ class MoviesController extends Controller
         $saga_ids = [];
         $director_ids = [];
 
-        foreach ($data['sagas'] as $saga) {
-            $saga_ids[] = $saga['id'];
+        if ($request->sagas) {
+            foreach ($request->sagas as $saga) {
+                // Error handling
+                if (!MovieSaga::where('id', $saga['id'])->exists()) {
+                    Log::error("Could not find specified saga", ['saga_id' => $saga['id']]);
+                    return response()->json([
+                        'data' => null,
+                        'message' => "Could not find saga matching ID {$saga['id']}"
+                    ], 404);
+                }
+
+                // Success = add to array
+                $saga_ids = $saga['id'];
+            }
         }
 
-        foreach ($data['directors'] as $director) {
-            $director_ids[] = $director['id'];
+        if ($request->directors) {
+            foreach ($request->directors as $director) {
+                // Error handling
+                if (!Director::where('id', $director['id'])->exists()) {
+                    Log::error("Could not find specified director", ['director_id' => $director['id']]);
+                    return response()->json([
+                        'data' => null,
+                        'message' => "Could not find director matching ID {$director['id']}"
+                    ], 404);
+                }
+
+                // Success = add to array
+                $director_ids = $director['id'];
+            }
         }
+
+        // TODO Ability to update movie with new posters
 
         $movie->sagas()->sync($saga_ids);
         $movie->directors()->sync($director_ids);
 
+        // Success response
+        Log::info("Successfully updated movie instance", ["movie" => $movie]);
         return response()->json([
             'data'      => $movie,
             'message'   => 'Succesfully update movie'
+        ]);
+    }
+
+    public function destroy(Request $request, $movie_id)
+    {
+        $movie = Movie::whereId($movie_id)->first();
+
+        // Error handling
+        if (!$movie) {
+            Log::error("Could not find movie to delete", ["movie_id" => $movie_id]);
+            return response()->json([
+                'data' => null,
+                'message' => "Could not find movie with ID {$movie_id}"
+            ], 404);
+        }
+
+        // Delete movie
+        $movie->delete();
+
+        // Success response
+        Log::info("Successfully deleted movie instance", ["movie_id" => $movie_id]);
+        return response()->json([
+            'data'      => null,
+            'message'   => 'Successfully deleted movie instance'
         ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Resources\CharacterResource;
 use App\Models\Character;
 use App\Http\Traits\EnumTrait;
 use App\Models\Skill;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class CharactersController extends Controller
@@ -36,10 +37,56 @@ class CharactersController extends Controller
     public function index()
     {
         $characters = Character::all();
+        
+        // Error handling
+        if (count($characters) == 0) {
+            Log::warning("No characters found in database", ['characters' => []]);
+            return response()->json([
+                'data' => null,
+                'message' => 'No characters found in database'
+            ], 404);
+        }
+
+        // Success response
+        Log::info("Successfully fetched all characters", ['characters' => $characters]);
         return response()->json([
             'data' => CharacterResource::collection($characters),
             'message' => 'Successfully fetched all characters'
         ], 200);
+    }
+
+    /**
+     * Show a specific character
+     */
+    public function show($id)
+    {
+        // No character found
+        if (!Character::whereId($id)->exists()) {
+            Log::error("No matching character found", ['character' => null]);
+            return response()->json([
+                'data' => null,
+                'message' => "No character found matching ID {$id}"
+            ], 404);
+        }
+
+        $character = Character::whereId($id)
+                                ->with('skills')
+                                ->with('type')
+                                ->first();
+
+        $morality_options = EnumTrait::fetchValues('characters', 'morality');
+        $sex_options = EnumTrait::fetchValues('characters', 'sex');
+
+        // Success response
+        Log::info("Successfully fetched character", ['character' => $character]);;
+        return response()->json([
+            'data' => [
+                'character' => $character,
+                'morality'  => $morality_options,
+                'sex'       => $sex_options,
+            ],
+            'message' => 'Successfully fetched specified character'
+        ]);
     }
 
     /**
@@ -65,25 +112,39 @@ class CharactersController extends Controller
      */
     public function store(StoreCharacterRequest $request)
     {
+        // Failed validation
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->json([
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
+        }
+        
         // New character instance
         $requested_character = $request->validated();
         $new_character = Character::create($requested_character);
 
         // Attaches skill instances to character with values
-        $all_skills = Skill::all();
-        foreach($all_skills as $skill) {
-            $current_skill = null;
-            foreach ($request->skills as $character_skill) {
-                if ($skill->id == $character_skill['id']){ 
-                    $current_skill = $character_skill;
+        if ($request->skills) {   
+            foreach ($request->skills as $requested_skill) {
+                $skill = Skill::where('key', $requested_skill['key'])->first();
+
+                // Skip over non-matching key
+                if (!$skill) {
+                    Log::warning("Could not find a matching skill key", ['skill_key' => $requested_skill['key']]);
+                    continue;
                 }
+
+                // Successful attachment
+                Log::info("Adding {$skill->name} value to new character", ['skills' => $new_character->skills]);
+                $new_character->skills()->attach($skill->id, ['value' => $requested_skill['value']]);
             }
-            $new_character->skills()->attach($skill->id, ['value' => $current_skill['value']]);
         }
 
         // Attaches specified trait instances
         if ($request->traits) {
             foreach ($request->traits as $trait) {
+                Log::info("Successfully attached trait to new character", ['trait' => $trait]);
                 $new_character->traits()->attach($trait['id']);
             }
         }
@@ -91,32 +152,23 @@ class CharactersController extends Controller
         // Attaches specified movie istances
         if ($request->movies) {
             foreach ($request->movies as $movie) {
+                Log::info("Successfully attached movie to new character", ['movie' => $movie]);
                 $new_character->movies()->attach($movie['id']);
             }
         }
 
+        $created_character = Character::whereId($new_character->id)
+                                        ->with('skills')
+                                        ->with('traits')
+                                        ->with('movies')
+                                        ->first();
+
+        // Success response
+        Log::info("Successfully created new character", ['character' => $created_character]);
         return response()->json([
-            'data' => $new_character,
+            'data' => $created_character,
             'message' => 'Successfully created character'
         ]);
-    }
-
-    /**
-     * Show a specific character
-     */
-    public function show($id)
-    {
-        $character = Character::whereId($id)->with('skills')->with('type')->first()->toArray();
-        $morality_options = EnumTrait::fetchValues('characters', 'morality');
-        $sex_options = EnumTrait::fetchValues('characters', 'sex');
-        return response()->json([
-            'data' => [
-                'character' => $character,
-                'morality'  => $morality_options,
-                'sex'       => $sex_options,
-            ],
-            'message' => 'Successfully fetched specified character'
-        ], 200);
     }
 
     /**
@@ -124,19 +176,36 @@ class CharactersController extends Controller
      */
     public function update(StoreCharacterRequest $request, $character_id)
     {
-        $character = Character::where('id', $character_id)->first();
-        $requested_character = $request->validated();
-
-        if (!$character) {
+        // Failed validation
+        if (isset($request->validator) && $request->validator->fails()) {
             return response()->json([
-                'data' => null,
-                'message' => 'Character not found'
-            ]);
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
         }
 
-        $updated_character = $character->update($requested_character);
+        // No character found
+        if (!Character::where('id', $character_id)->exists()) {
+            Log::error("Could not find a matching character to update", ['character' => null]);
+            return response()->json([
+                'data'      => null,
+                'message'   => "Could not find a matching character"
+            ], 404);
+        }
+
+        // Update & fetch character instance
+        $character = Character::where('id', $character_id)->first();
+        $character->update($request->validated());
+        $updated_character = Character::whereId($character_id)
+                                        ->with('skills')
+                                        ->with('movies')
+                                        ->with('traits')
+                                        ->first();
+           
+        // Success response
+        Log::info("Successfuly updated character", ['character' => $updated_character]);
         return response()->json([
-            'data' => $character,
+            'data' => $updated_character,
             'message' => 'Successfully updated character'
         ]);
 
@@ -147,15 +216,19 @@ class CharactersController extends Controller
      */
     public function destroy($id)
     {
-        $character = Character::where('id', $id)->first();
-
-        if (!$character) {
+        // No matching character
+        if (!Character::whereId($id)->exists()) {
+            Log::warning("No matching character found", ['character' => null]);
             return response()->json([
-                'data' => null,
-                'message' => 'Character not found'
-            ]);
+                'data'      => null,
+                'message'   => "Could not find character matching ID {$id}"
+            ], 404);
         }
-        $character->delete();
+
+        Character::where('id', $id)->first()->delete();
+        
+        // Succesful response
+        Log::info("Successfully deleted character", ['character' => null]);
         return response()->json([
             'data' => null,
             'message' => 'Successfully deleted character'

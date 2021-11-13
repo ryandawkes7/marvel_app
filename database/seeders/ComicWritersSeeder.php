@@ -16,7 +16,6 @@ class ComicWritersSeeder extends Seeder
     public function run()
     {
         // Seed writers
-        DB::table('comic_writers')->truncate();
         DB::table('comic_writers')->insert([
             [
                 'name' => 'Stan Lee',
