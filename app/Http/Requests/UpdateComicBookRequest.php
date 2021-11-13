@@ -27,7 +27,7 @@ class UpdateComicBookRequest extends ApiFormRequest
             'release_date'  => 'date|nullable',
 
             'writers'       => 'array|nullable',
-            'writers.*.id'  => 'integer|nullable|required_with:writers',
+            'writers.*.id'  => 'integer|required_with:writers',
 
             'comic_issues'                  => 'array',
             'comic_issues.*.title'          => 'string|nullable',
