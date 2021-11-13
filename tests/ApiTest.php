@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\Character;
 use App\Models\CharacterType;
 use App\Models\CharTrait;
+use App\Models\ComicBook;
 use App\Models\Director;
 use App\Models\McuPhase;
 use App\Models\Movie;
@@ -27,6 +28,7 @@ class ApiTest extends MarvelTest
     public $path_prefix;
 
     protected $character;
+    protected $comic_book;
     protected $director;
     protected $movie;
     protected $phase;
@@ -295,6 +297,56 @@ class ApiTest extends MarvelTest
     {
         foreach (McuPhase::all() as $phase) {
             $phase->delete();
+        }
+    }
+
+    /**
+     * Create a new comic book instance
+     *
+     * @return \App\Models\ComicBook
+     */
+    protected function createComicBook()
+    {
+        return $this->comic_book = ComicBook::create([
+            "title"         => "Testing Comic",
+            "description"   => "Testing Comic Description",
+            "release_date"  => date("Y-m-d", strtotime(date(now()))),
+            "writers"       => [
+                ["id"       => 1]
+            ],
+            "comic_issues"  => [
+                [
+                    "title"         => "Test Issue",
+                    "description"   => "Test Issue Description",
+                    "issue_number"  => 1,
+                    "volume_number" => 1,
+                    "release_date"  => date("Y-m-d", strtotime(date(now()))),
+                    "characters"    => [
+                        ["id" => 1]
+                    ],
+                    "covers"        => [
+                        [
+                            "id"            => 1,
+                            "comic_id"      => 1,
+                            "cover_url"     => "https://upload.wikimedia.org/wikipedia/en/4/47/Iron_Man_%28circa_2018%29.png",
+                            "is_variant"    => 0,
+                            "variant_issue" => null
+                        ]
+                    ],
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * Flushes the comic book table
+     *
+     * @return void
+     */
+    protected function flushComicBooks()
+    {
+        foreach (ComicBook::all() as $comic) {
+            $comic->delete();
         }
     }
 }
