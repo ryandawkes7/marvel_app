@@ -278,12 +278,12 @@
                     morality: 0,
                     type_id: 0,
                     skills: [
-                        {id: 1, title: "Durability", value: 0},
-                        {id: 2, title: "Energy Projection", value: 0},
-                        {id: 3, title: "Fighting Skills", value: 0},
-                        {id: 4, title: "Intelligence", value: 0},
-                        {id: 5, title: "Speed", value: 0},
-                        {id: 6, title: "Strength", value: 0},
+                        {id: 1, title: "Durability", value: 0, key: 'durability'},
+                        {id: 2, title: "Energy Projection", value: 0, key: 'energy_projection'},
+                        {id: 3, title: "Fighting Skills", value: 0, key: 'fighting_skills'},
+                        {id: 4, title: "Intelligence", value: 0, key: 'intelligence'},
+                        {id: 5, title: "Speed", value: 0, key: 'speed'},
+                        {id: 6, title: "Strength", value: 0, key: 'strength'},
                     ],
                     movies: [],
                     traits: []

@@ -36980,7 +36980,7 @@ module.exports = {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_args":[["axios@0.21.2","/Users/ryandawkes/Documents/Personal/marvel_app/feature/comics_crud/marvel_app"]],"_development":true,"_from":"axios@0.21.2","_id":"axios@0.21.2","_inBundle":false,"_integrity":"sha512-87otirqUw3e8CzHTMO+/9kh/FSgXt/eVDvipijwDtEuwbkySWZ9SBm6VEubmJ/kLKEoLQV/POhxXFb66bfekfg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.2","name":"axios","escapedName":"axios","rawSpec":"0.21.2","saveSpec":null,"fetchSpec":"0.21.2"},"_requiredBy":["#DEV:/","/@inertiajs/inertia"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.2.tgz","_spec":"0.21.2","_where":"/Users/ryandawkes/Documents/Personal/marvel_app/feature/comics_crud/marvel_app","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.2"}');
+module.exports = JSON.parse('{"_args":[["axios@0.21.2","/Users/ryandawkes/Documents/Personal/marvel_app/fix/unit_test_fixes/marvel_app"]],"_development":true,"_from":"axios@0.21.2","_id":"axios@0.21.2","_inBundle":false,"_integrity":"sha512-87otirqUw3e8CzHTMO+/9kh/FSgXt/eVDvipijwDtEuwbkySWZ9SBm6VEubmJ/kLKEoLQV/POhxXFb66bfekfg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.2","name":"axios","escapedName":"axios","rawSpec":"0.21.2","saveSpec":null,"fetchSpec":"0.21.2"},"_requiredBy":["#DEV:/","/@inertiajs/inertia"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.2.tgz","_spec":"0.21.2","_where":"/Users/ryandawkes/Documents/Personal/marvel_app/fix/unit_test_fixes/marvel_app","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.2"}');
 
 /***/ }),
 
@@ -38327,27 +38327,33 @@ __webpack_require__.r(__webpack_exports__);
         skills: [{
           id: 1,
           title: "Durability",
-          value: 0
+          value: 0,
+          key: 'durability'
         }, {
           id: 2,
           title: "Energy Projection",
-          value: 0
+          value: 0,
+          key: 'energy_projection'
         }, {
           id: 3,
           title: "Fighting Skills",
-          value: 0
+          value: 0,
+          key: 'fighting_skills'
         }, {
           id: 4,
           title: "Intelligence",
-          value: 0
+          value: 0,
+          key: 'intelligence'
         }, {
           id: 5,
           title: "Speed",
-          value: 0
+          value: 0,
+          key: 'speed'
         }, {
           id: 6,
           title: "Strength",
-          value: 0
+          value: 0,
+          key: 'strength'
         }],
         movies: [],
         traits: []
@@ -38698,13 +38704,14 @@ __webpack_require__.r(__webpack_exports__);
         current: false
       }],
       character: {
-        alias: String,
-        real_name: String,
-        sex: String,
-        thumb_url: String,
-        morality: String,
-        type_id: Number.toString(),
-        type: String
+        alias: "",
+        real_name: "",
+        sex: "",
+        thumb_url: "",
+        morality: "",
+        type_id: null,
+        type: "",
+        traits: []
       },
       character_id: '',
       edit: false,
@@ -38780,10 +38787,22 @@ __webpack_require__.r(__webpack_exports__);
           break;
       }
     },
+
+    /**
+     * Fetches the ID of the current character instance
+     *
+     * @return integer
+     */
     fetchId: function fetchId() {
       return window.location.href.split('/').pop();
     },
     // Character Methods 
+
+    /**
+     * Fetches all data for this character
+     *
+     * @return void
+     */
     fetchCharacter: function fetchCharacter() {
       var _this = this;
 
@@ -38801,14 +38820,26 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
+
+    /**
+     * Toggles delete modal
+     *
+     * @return void
+     */
     toggleDeleteModal: function toggleDeleteModal() {
       this.$refs.deleteCharacterModal.toggleModal();
     },
+
+    /**
+     * Submits the edit profile form data
+     *
+     * @return void
+     */
     submitProfileForm: function submitProfileForm() {
       var _this2 = this;
 
       var id = this.fetchId();
-      this.$refs.multiSelectRef.saveTraits();
+      this.character.traits = this.$refs.multiSelectRef.getSelectedTraits();
       axios__WEBPACK_IMPORTED_MODULE_9___default().put("/api/characters/".concat(id), this.character).then(function (res) {
         _this2.isEditModalOpen = false;
 
@@ -39926,8 +39957,11 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     deleteCharacter: function deleteCharacter(id) {
       this.isDeleteModalOpen = false;
-      axios["delete"]("/api/characters/".concat(id));
-      return window.location.href = "/characters";
+      axios["delete"]("/api/characters/".concat(id)).then(function () {
+        return window.location.href = '/characters';
+      })["catch"](function (e) {
+        return console.alert("Error deleting character: ".concat(e));
+      });
     },
     toggleModal: function toggleModal() {
       this.isDeleteModalOpen ? this.isDeleteModalOpen = false : this.isDeleteModalOpen = true;
@@ -39973,7 +40007,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     return {
       value: null,
       selected: [],
-      traits: []
+      traits: [],
+      characterId: this.char_id
     };
   },
   emits: ['setSelectedTraits'],
@@ -40070,6 +40105,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       existing.includes(sel) ? existing.splice(existing.indexOf(sel), 1) : existing.push(sel);
       this.sortArray([selected, existing]);
     },
+
+    /**
+     * Saves all of the current traits
+     *
+     * @return void
+     */
     saveTraits: function saveTraits() {
       var traitPayload = {
         traits: this.selected,
@@ -40082,6 +40123,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         return console.log("Error: ".concat(e));
       });
+    },
+
+    /**
+     * Returns all selected traits
+     *
+     * @return array
+     */
+    getSelectedTraits: function getSelectedTraits() {
+      return this.selected;
     },
     //======================================================================
     // HELPER FUNCTIONS
@@ -40949,7 +40999,7 @@ __webpack_require__.r(__webpack_exports__);
           movieDirectors.push(_this.movie.directors[i]);
         }
       })["catch"](function (e) {
-        return console.log(e);
+        return console.log("Error fetching directors: ".concat(e));
       });
     },
 
@@ -40963,7 +41013,7 @@ __webpack_require__.r(__webpack_exports__);
         _this2.phases = res.data.data;
         _this2.selectedPhase = _this2.movie.phase.id;
       })["catch"](function (e) {
-        return console.log(e);
+        return console.log("Error fetching phases: ".concat(e));
       });
     },
 
@@ -40980,7 +41030,7 @@ __webpack_require__.r(__webpack_exports__);
         _this3.allSagas = res.data.data;
         _this3.sagas = res.data.data;
       })["catch"](function (e) {
-        return console.log(e);
+        return console.log("Erro fetching sagas: ".concat(e));
       });
     },
 
@@ -40990,6 +41040,7 @@ __webpack_require__.r(__webpack_exports__);
     updateMovie: function updateMovie() {
       var _this4 = this;
 
+      console.log(this.selectedDirectors);
       this.movie.directors = this.selectedDirectors;
       this.movie.mcu_phase_id = this.selectedPhase;
       this.movie.in_mcu = this.in_mcu;
@@ -40998,7 +41049,7 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (e) {
         if (e.response && e.response.status == 422) {
           _this4.validationErrors = e.response.data.errors;
-        } else console.log(e);
+        } else console.log("Error updating movie: ".concat(e));
       });
     }
   },
@@ -41072,7 +41123,7 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Changes the section in the Edit Modal
      *
-     * @param {Object} section 
+     * @param object section 
      */
     changeEditSection: function changeEditSection(section) {
       var activeSection = '';
@@ -41098,7 +41149,7 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Emit up to parent to close edit modal
      * 
-     * @return {String}
+     * @return string
      */
     closeEditModal: function closeEditModal() {
       return this.$emit('closeEditModal');
@@ -41107,7 +41158,7 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Emit up to parent to re-fetch movie model instance
      * 
-     * @return {String}
+     * @return string
      */
     fetchMovie: function fetchMovie() {
       return this.$emit('fetchMovie');
@@ -41754,17 +41805,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
+    /**
+     * Fetches the ID of the current movie instance
+     *
+     * @return integer
+     */
     fetchId: function fetchId() {
       return window.location.href.split('/').pop();
     },
+
+    /**
+     * Fetches the data for the current movie instance
+     *
+     * @return void
+     */
     fetchMovie: function fetchMovie() {
       var _this2 = this;
 
-      var id = this.fetchId(); // Fetch character data
-
-      axios.get("/api/movies/".concat(id)).then(function (res) {
+      axios.get("/api/movies/".concat(this.fetchId())).then(function (res) {
         var data = res.data.data;
         _this2.movie = data;
+      })["catch"](function (e) {
+        return console.alert("Error fetching character data: ".concat(e));
       });
     }
   },
@@ -46241,7 +46303,7 @@ var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
   "class": "px-6 py-5 text-sm font-medium text-center"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
   "class": "text-gray-900"
-}, "Stat Vaule"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(' ') + " "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
+}, "Stat Value"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(' ') + " "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
   "class": "text-gray-600"
 }, "Stat Label")])], -1
 /* HOISTED */

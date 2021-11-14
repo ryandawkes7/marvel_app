@@ -71,7 +71,8 @@ export default {
     deleteCharacter(id) {
       this.isDeleteModalOpen = false;
       axios.delete(`/api/characters/${id}`)
-      return window.location.href = `/characters`;
+        .then(() => window.location.href = '/characters')
+        .catch(e => console.alert(`Error deleting character: ${e}`));
     },
     toggleModal() {
       this.isDeleteModalOpen 

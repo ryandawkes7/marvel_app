@@ -151,7 +151,7 @@ class CharacterTest extends ApiTest
         $this->createCharacter();
 
         $update_data = [
-            'alias'     => 'Updated Character',
+            'alias'     => 1234,
         ];
 
         $response = $this->putJson(

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreComicBookRequest;
 use App\Http\Requests\UpdateComicBookRequest;
 use App\Models\ComicBook;
+use App\Models\ComicWriter;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -196,8 +197,17 @@ class ComicBooksController extends Controller
         // Attach writers against comic book
         if (array_key_exists('writers', $comic_book_data)) {
             foreach ($comic_book_data['writers'] as $writer) {
-                $comic_book->writers()->sync($writer['id']);
+                // Error handling
+                if (!ComicWriter::where('id', $writer['id'])->exists()) {
+                    Log::error("Could not find specified writer", ['writer_id' => $writer['id']]);
+                    return response()->json([
+                        'data' => null,
+                        'message' => "Could not find writer matching ID {$writer['id']}"
+                    ], 404);
+                }
             }
+
+            $comic_book->writers()->sync(array_column($comic_book_data['writers'], 'id'));
         }
 
         // Update or create comic book with new issues

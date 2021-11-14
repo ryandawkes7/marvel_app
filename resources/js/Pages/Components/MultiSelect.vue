@@ -51,6 +51,7 @@
         value: null,
         selected: [],
         traits: [],
+        characterId: this.char_id
       }
     },
     emits: ['setSelectedTraits'],
@@ -118,12 +119,26 @@
         this.sortArray([selected, existing]);
       },
 
-      saveTraits() {
+      /**
+       * Saves all of the current traits
+       *
+       * @return void
+       */
+      saveTraits: function() {
         let traitPayload = { traits: this.selected, char_id: this.char_id }
 
         axios.post(`/api/traits`, { payload: traitPayload })
           .then(res => console.log(res))
           .catch(e => console.log(`Error: ${e}`))
+      },
+
+      /**
+       * Returns all selected traits
+       *
+       * @return array
+       */
+      getSelectedTraits: function() {
+        return this.selected;
       },
 
       //======================================================================

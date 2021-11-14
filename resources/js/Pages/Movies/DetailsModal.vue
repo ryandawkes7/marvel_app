@@ -256,7 +256,7 @@ export default {
                     }
 
                 })
-                .catch(e => console.log(e));
+                .catch(e => console.log(`Error fetching directors: ${e}`));
         },
 
         /**
@@ -268,7 +268,7 @@ export default {
                     this.phases = res.data.data;
                     this.selectedPhase = this.movie.phase.id;
                 })
-                .catch(e => console.log(e))
+                .catch(e => console.log(`Error fetching phases: ${e}`));
         },
 
         /**
@@ -283,13 +283,14 @@ export default {
                     this.allSagas = res.data.data;
                     this.sagas = res.data.data;
                 })
-                .catch(e => console.log(e))
+                .catch(e => console.log(`Erro fetching sagas: ${e}`));
         },
 
         /**
          * Updates movie instance
          */
         updateMovie: function() {
+            console.log(this.selectedDirectors);
             this.movie.directors = this.selectedDirectors;
             this.movie.mcu_phase_id = this.selectedPhase;
             this.movie.in_mcu = this.in_mcu;
@@ -299,8 +300,9 @@ export default {
                     this.$emit('closeEditModal');
                 })
                 .catch(e => {
-                    if (e.response && e.response.status == 422) { this.validationErrors = e.response.data.errors }
-                    else console.log(e);
+                    if (e.response && e.response.status == 422) { 
+                        this.validationErrors = e.response.data.errors;
+                    } else console.log(`Error updating movie: ${e}`);
                 })
         }
 

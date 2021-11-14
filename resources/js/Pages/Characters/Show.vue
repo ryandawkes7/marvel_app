@@ -71,7 +71,7 @@
                 </div>
                 <div class="border-t border-gray-200 bg-gray-50 grid grid-cols-1 divide-y divide-gray-200 sm:grid-cols-3 sm:divide-y-0 sm:divide-x">
                   <div  class="px-6 py-5 text-sm font-medium text-center">
-                    <span class="text-gray-900">Stat Vaule</span>
+                    <span class="text-gray-900">Stat Value</span>
                     {{ ' ' }}
                     <span class="text-gray-600">Stat Label</span>
                   </div>
@@ -549,13 +549,14 @@
                 { id: 4, name: 'Movies', icon: FilmIcon, current: false}
                 ],
                 character: {
-                    alias: String,
-                    real_name: String,
-                    sex: String,
-                    thumb_url: String,
-                    morality: String,
-                    type_id: Number.toString(),
-                    type: String
+                    alias: "",
+                    real_name: "",
+                    sex: "",
+                    thumb_url: "",
+                    morality: "",
+                    type_id: null,
+                    type: "",
+                    traits: []
                 },
                 character_id: '',
                 edit: false,
@@ -629,11 +630,21 @@
                 }
             },
 
+            /**
+             * Fetches the ID of the current character instance
+             *
+             * @return integer
+             */
             fetchId() {
                 return window.location.href.split('/').pop();
             },
 
             // Character Methods 
+            /**
+             * Fetches all data for this character
+             *
+             * @return void
+             */
             fetchCharacter() {
                 const id = this.fetchId();
 
@@ -653,25 +664,36 @@
                     });
                 })
             },
+
+            /**
+             * Toggles delete modal
+             *
+             * @return void
+             */
             toggleDeleteModal: function() {
                 this.$refs.deleteCharacterModal.toggleModal();
             },
 
-            submitProfileForm() {
+            /**
+             * Submits the edit profile form data
+             *
+             * @return void
+             */
+            submitProfileForm: function() {
                 const id = this.fetchId();
-                this.$refs.multiSelectRef.saveTraits();
+                this.character.traits = this.$refs.multiSelectRef.getSelectedTraits();
 
                 axios.put(`/api/characters/${id}`, this.character)
-                .then(res => {
-                    this.isEditModalOpen = false;
-                    this.$refs.successBanner.toggle();
-                    return res.status;
-                })
-                .catch(e => {
-                    if (e.response)     { return e.status } 
-                    else if (e.request) { return e.status } 
-                    else                { return e.status }
-                })
+                  .then(res => {
+                      this.isEditModalOpen = false;
+                      this.$refs.successBanner.toggle();
+                      return res.status;
+                  })
+                  .catch(e => {
+                      if (e.response)     { return e.status } 
+                      else if (e.request) { return e.status } 
+                      else                { return e.status }
+                  })
             },
         },
     }

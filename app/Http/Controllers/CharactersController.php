@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCharacterRequest;
+use App\Http\Requests\UpdateCharacterRequest;
 use App\Http\Resources\CharacterResource;
 use App\Models\Character;
 use App\Http\Traits\EnumTrait;
@@ -72,6 +73,7 @@ class CharactersController extends Controller
         $character = Character::whereId($id)
                                 ->with('skills')
                                 ->with('type')
+                                ->with('traits')
                                 ->first();
 
         $morality_options = EnumTrait::fetchValues('characters', 'morality');
@@ -174,7 +176,7 @@ class CharactersController extends Controller
     /**
      * Update a specific character
      */
-    public function update(StoreCharacterRequest $request, $character_id)
+    public function update(UpdateCharacterRequest $request, $character_id)
     {
         // Failed validation
         if (isset($request->validator) && $request->validator->fails()) {
@@ -194,8 +196,17 @@ class CharactersController extends Controller
         }
 
         // Update & fetch character instance
+        $character_data = $request->validated();
         $character = Character::where('id', $character_id)->first();
-        $character->update($request->validated());
+        $character->update($character_data);
+
+        // Attach traits against character
+        if (array_key_exists('traits', $character_data)) {
+            $character->traits()->sync(array_column($character_data['traits'], 'id'));
+        }
+
+        // TODO: Support for skills and movies against character
+
         $updated_character = Character::whereId($character_id)
                                         ->with('skills')
                                         ->with('movies')
