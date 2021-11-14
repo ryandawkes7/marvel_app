@@ -255,19 +255,27 @@ export default {
         }
     },
     methods: {
-        fetchId() {
+        /**
+         * Fetches the ID of the current movie instance
+         *
+         * @return integer
+         */
+        fetchId: function() {
             return window.location.href.split('/').pop();
         },
 
-        fetchMovie() {
-            const id = this.fetchId();
-
-            // Fetch character data
-            axios.get(`/api/movies/${id}`)
-            .then(res => {
-                const data = res.data.data;
-                this.movie = data;
-            })
+        /**
+         * Fetches the data for the current movie instance
+         *
+         * @return void
+         */
+        fetchMovie: function() {
+            axios.get(`/api/movies/${this.fetchId()}`)
+                .then(res => {
+                    const data = res.data.data;
+                    this.movie = data;
+                })
+                .catch(e => console.alert(`Error fetching character data: ${e}`));
         },
     },
     setup() {
