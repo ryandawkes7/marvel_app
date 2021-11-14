@@ -182,7 +182,7 @@ export default {
         /**
          * Changes the section in the Edit Modal
          *
-         * @param {Object} section 
+         * @param object section 
          */
         changeEditSection(section) {
             let activeSection = '';
@@ -208,15 +208,15 @@ export default {
         /**
          * Emit up to parent to close edit modal
          * 
-         * @return {String}
+         * @return string
          */
-        closeEditModal() {
+        closeEditModal: function() {
             return this.$emit('closeEditModal');
         },
         /**
          * Emit up to parent to re-fetch movie model instance
          * 
-         * @return {String}
+         * @return string
          */
         fetchMovie() {
             return this.$emit('fetchMovie');
