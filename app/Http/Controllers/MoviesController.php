@@ -177,7 +177,7 @@ class MoviesController extends Controller
             ], 400);
         }
 
-        $data = $request->all();
+        $movie_data = $request->validated();
 
         // Error handling
         if (!Movie::whereId($movie_id)->exists()) {
@@ -196,17 +196,18 @@ class MoviesController extends Controller
                         ->first();
 
         $movie->update([
-            'title'         => $data['title'],
-            'release_date'  => $data['release_date'],
-            'in_mcu'        => $data['in_mcu'],
-            'mcu_phase_id'  => $data['mcu_phase_id'],
+            'title'         => $movie_data['title'],
+            'release_date'  => $movie_data['release_date'],
+            'in_mcu'        => $movie_data['in_mcu'],
+            'mcu_phase_id'  => $movie_data['mcu_phase_id'],
         ]);
 
         $saga_ids = [];
         $director_ids = [];
 
-        if ($request->sagas) {
-            foreach ($request->sagas as $saga) {
+        // Sync sagas against movie
+        if (array_key_exists('sagas', $movie_data)) {
+            foreach ($movie_data['sagas'] as $saga) {
                 // Error handling
                 if (!MovieSaga::where('id', $saga['id'])->exists()) {
                     Log::error("Could not find specified saga", ['saga_id' => $saga['id']]);
@@ -215,14 +216,14 @@ class MoviesController extends Controller
                         'message' => "Could not find saga matching ID {$saga['id']}"
                     ], 404);
                 }
-
-                // Success = add to array
-                $saga_ids = $saga['id'];
             }
+
+            $movie->sagas()->sync(array_column($movie_data['sagas'], 'id'));
         }
 
-        if ($request->directors) {
-            foreach ($request->directors as $director) {
+        // Sync directors against movie
+        if (array_key_exists('directors', $movie_data)) {
+            foreach ($movie_data['directors'] as $director) {
                 // Error handling
                 if (!Director::where('id', $director['id'])->exists()) {
                     Log::error("Could not find specified director", ['director_id' => $director['id']]);
@@ -231,22 +232,18 @@ class MoviesController extends Controller
                         'message' => "Could not find director matching ID {$director['id']}"
                     ], 404);
                 }
-
-                // Success = add to array
-                $director_ids = $director['id'];
             }
+
+            $movie->directors()->sync(array_column($movie_data['directors'], 'id'));
         }
 
         // TODO Ability to update movie with new posters
-
-        $movie->sagas()->sync($saga_ids);
-        $movie->directors()->sync($director_ids);
 
         // Success response
         Log::info("Successfully updated movie instance", ["movie" => $movie]);
         return response()->json([
             'data'      => $movie,
-            'message'   => 'Succesfully update movie'
+            'message'   => 'Succesfully updated movie'
         ]);
     }
 
