@@ -38704,13 +38704,14 @@ __webpack_require__.r(__webpack_exports__);
         current: false
       }],
       character: {
-        alias: String,
-        real_name: String,
-        sex: String,
-        thumb_url: String,
-        morality: String,
-        type_id: Number.toString(),
-        type: String
+        alias: "",
+        real_name: "",
+        sex: "",
+        thumb_url: "",
+        morality: "",
+        type_id: null,
+        type: "",
+        traits: []
       },
       character_id: '',
       edit: false,
@@ -38786,10 +38787,22 @@ __webpack_require__.r(__webpack_exports__);
           break;
       }
     },
+
+    /**
+     * Fetches the ID of the current character instance
+     *
+     * @return integer
+     */
     fetchId: function fetchId() {
       return window.location.href.split('/').pop();
     },
     // Character Methods 
+
+    /**
+     * Fetches all data for this character
+     *
+     * @return void
+     */
     fetchCharacter: function fetchCharacter() {
       var _this = this;
 
@@ -38807,14 +38820,26 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
+
+    /**
+     * Toggles delete modal
+     *
+     * @return void
+     */
     toggleDeleteModal: function toggleDeleteModal() {
       this.$refs.deleteCharacterModal.toggleModal();
     },
+
+    /**
+     * Submits the edit profile form data
+     *
+     * @return void
+     */
     submitProfileForm: function submitProfileForm() {
       var _this2 = this;
 
       var id = this.fetchId();
-      this.$refs.multiSelectRef.saveTraits();
+      this.character.traits = this.$refs.multiSelectRef.getSelectedTraits();
       axios__WEBPACK_IMPORTED_MODULE_9___default().put("/api/characters/".concat(id), this.character).then(function (res) {
         _this2.isEditModalOpen = false;
 
@@ -39932,8 +39957,11 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     deleteCharacter: function deleteCharacter(id) {
       this.isDeleteModalOpen = false;
-      axios["delete"]("/api/characters/".concat(id));
-      return window.location.href = "/characters";
+      axios["delete"]("/api/characters/".concat(id)).then(function () {
+        return window.location.href = '/characters';
+      })["catch"](function (e) {
+        return console.alert("Error deleting character: ".concat(e));
+      });
     },
     toggleModal: function toggleModal() {
       this.isDeleteModalOpen ? this.isDeleteModalOpen = false : this.isDeleteModalOpen = true;
@@ -39979,7 +40007,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     return {
       value: null,
       selected: [],
-      traits: []
+      traits: [],
+      characterId: this.char_id
     };
   },
   emits: ['setSelectedTraits'],
@@ -40076,6 +40105,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       existing.includes(sel) ? existing.splice(existing.indexOf(sel), 1) : existing.push(sel);
       this.sortArray([selected, existing]);
     },
+
+    /**
+     * Saves all of the current traits
+     *
+     * @return void
+     */
     saveTraits: function saveTraits() {
       var traitPayload = {
         traits: this.selected,
@@ -40088,6 +40123,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         return console.log("Error: ".concat(e));
       });
+    },
+
+    /**
+     * Returns all selected traits
+     *
+     * @return array
+     */
+    getSelectedTraits: function getSelectedTraits() {
+      return this.selected;
     },
     //======================================================================
     // HELPER FUNCTIONS
@@ -40955,7 +40999,7 @@ __webpack_require__.r(__webpack_exports__);
           movieDirectors.push(_this.movie.directors[i]);
         }
       })["catch"](function (e) {
-        return console.log(e);
+        return console.log("Error fetching directors: ".concat(e));
       });
     },
 
@@ -40969,7 +41013,7 @@ __webpack_require__.r(__webpack_exports__);
         _this2.phases = res.data.data;
         _this2.selectedPhase = _this2.movie.phase.id;
       })["catch"](function (e) {
-        return console.log(e);
+        return console.log("Error fetching phases: ".concat(e));
       });
     },
 
@@ -40986,7 +41030,7 @@ __webpack_require__.r(__webpack_exports__);
         _this3.allSagas = res.data.data;
         _this3.sagas = res.data.data;
       })["catch"](function (e) {
-        return console.log(e);
+        return console.log("Erro fetching sagas: ".concat(e));
       });
     },
 
@@ -40996,6 +41040,7 @@ __webpack_require__.r(__webpack_exports__);
     updateMovie: function updateMovie() {
       var _this4 = this;
 
+      console.log(this.selectedDirectors);
       this.movie.directors = this.selectedDirectors;
       this.movie.mcu_phase_id = this.selectedPhase;
       this.movie.in_mcu = this.in_mcu;
@@ -41004,7 +41049,7 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (e) {
         if (e.response && e.response.status == 422) {
           _this4.validationErrors = e.response.data.errors;
-        } else console.log(e);
+        } else console.log("Error updating movie: ".concat(e));
       });
     }
   },
@@ -41078,7 +41123,7 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Changes the section in the Edit Modal
      *
-     * @param {Object} section 
+     * @param object section 
      */
     changeEditSection: function changeEditSection(section) {
       var activeSection = '';
@@ -41104,7 +41149,7 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Emit up to parent to close edit modal
      * 
-     * @return {String}
+     * @return string
      */
     closeEditModal: function closeEditModal() {
       return this.$emit('closeEditModal');
@@ -41113,7 +41158,7 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Emit up to parent to re-fetch movie model instance
      * 
-     * @return {String}
+     * @return string
      */
     fetchMovie: function fetchMovie() {
       return this.$emit('fetchMovie');
@@ -41760,17 +41805,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
+    /**
+     * Fetches the ID of the current movie instance
+     *
+     * @return integer
+     */
     fetchId: function fetchId() {
       return window.location.href.split('/').pop();
     },
+
+    /**
+     * Fetches the data for the current movie instance
+     *
+     * @return void
+     */
     fetchMovie: function fetchMovie() {
       var _this2 = this;
 
-      var id = this.fetchId(); // Fetch character data
-
-      axios.get("/api/movies/".concat(id)).then(function (res) {
+      axios.get("/api/movies/".concat(this.fetchId())).then(function (res) {
         var data = res.data.data;
         _this2.movie = data;
+      })["catch"](function (e) {
+        return console.alert("Error fetching character data: ".concat(e));
       });
     }
   },
@@ -46247,7 +46303,7 @@ var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(
   "class": "px-6 py-5 text-sm font-medium text-center"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
   "class": "text-gray-900"
-}, "Stat Vaule"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(' ') + " "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
+}, "Stat Value"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(' ') + " "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("span", {
   "class": "text-gray-600"
 }, "Stat Label")])], -1
 /* HOISTED */
