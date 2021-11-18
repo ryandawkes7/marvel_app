@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActorsController;
 use App\Http\Controllers\CharactersController;
 use App\Http\Controllers\CharacterTraitsPivotController;
 use App\Http\Controllers\CharacterTypesController;
@@ -51,6 +52,10 @@ Route::prefix('comics')->group(function () {
         Route::put('/{issue_id}', [ComicsController::class, 'update']);
         Route::delete('/{issue_id}', [ComicsController::class, 'destroy']);
     });
+});
+
+Route::prefix('actors')->group(function () {
+    Route::apiResource('/', ActorsController::class);
 });
 
 Route::apiResource('comic-writers', ComicWritersController::class);
