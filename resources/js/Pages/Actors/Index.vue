@@ -5,7 +5,7 @@
         <section class="flex justify-between items-center">
             <!-- Title -->
             <div class="font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-                <h1>Characters</h1>
+                <h1>Actors</h1>
             </div>
 
             <!-- Create Character -->
@@ -17,8 +17,18 @@
             </div>
         </section>
 
-        <ContentGrid></ContentGrid>
+        <!-- Character List -->
+        <ContentGrid
+            :actors="actors"
+        ></ContentGrid>
 
+        <!-- Create Character Modal -->
+        <CreateModal 
+            v-if="isCreateModalOpen" 
+            @closeCreateModal="isCreateModalOpen = false"
+            @createdActor="fetchActors()"
+        >
+        </CreateModal>
     </div>
   </app-layout>
 </template>
@@ -26,9 +36,13 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout';
 import { ref } from 'vue';
-import { ContentGrid } from './ContentGrid.vue';
+import ContentGrid from './ContentGrid.vue';
+import CreateModal from './CreateModal.vue';
 
 export default {
+    created() {
+        this.fetchActors();
+    },
     setup() {
         const isCreateModalOpen = ref(false);
 
@@ -38,13 +52,29 @@ export default {
     },
     data() {
         return {
-            
+            actors: []
         }
     },
     components: {
         AppLayout,
-        ContentGrid
-    }
+        ContentGrid,
+        CreateModal
+    },
+    methods: {
+        /**
+         * Fetches all actor instances
+         * 
+         * @return void
+         */
+        fetchActors: function() {
+            axios.get(`/api/actors`)
+                .then(res => {
+                    this.actors = res.data.data
+                    if (this.isCreateModalOpen) this.isCreateModalOpen = false; 
+                })
+                .catch(e => console.error(`Error fetching actors - ${e}`));
+        }
+    },
 }
 </script>
 
