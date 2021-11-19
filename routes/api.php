@@ -54,8 +54,6 @@ Route::prefix('comics')->group(function () {
     });
 });
 
-Route::prefix('actors')->group(function () {
-    Route::apiResource('/', ActorsController::class);
-});
+Route::apiResource('/actors', ActorsController::class);
 
 Route::apiResource('comic-writers', ComicWritersController::class);
