@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Actor;
 use App\Models\Character;
 use App\Models\CharacterType;
 use App\Models\CharTrait;
@@ -28,6 +29,7 @@ class ApiTest extends MarvelTest
     public $trade_in;
     public $path_prefix;
 
+    protected $actor;
     protected $character;
     protected $comic_book;
     protected $comic_writer;
@@ -375,6 +377,28 @@ class ApiTest extends MarvelTest
     {
         foreach (ComicWriter::all() as $writer) {
             $writer->delete();
+        }
+    }
+
+    /**
+     * Creates new actor instance
+     *
+     * @return \App\Models\Actor
+     */
+    protected function createActor()
+    {
+        return $this->actor = Actor::factory()->create();
+    }
+
+    /**
+     * Flushes actors table
+     *
+     * @return void
+     */
+    protected function flushActors()
+    {
+        foreach(Actor::all() as $actor) {
+            $actor->delete();
         }
     }
 }
