@@ -57,7 +57,7 @@ class ActorsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Actor  $actor
+     * @param  int $actor
      * @return \Illuminate\Http\Response
      */
     public function show(int $actor_id)
@@ -110,22 +110,61 @@ class ActorsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Actor  $actor
+     * @param  int $actor_id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreActorRequest $request, Actor $actor)
+    public function update(StoreActorRequest $request, int $actor_id)
     {
-        //
+        // Error handling
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->json([
+                'data'      => null,
+                'message'   => $request->validator->messages()
+            ], 400);
+        }
+
+        // No actor found
+        if (!Actor::whereId($actor_id)->exists()) {
+            Log::error("Could not find a matching actor to update", ['actor_id' => $actor_id]);
+            return response()->json([
+                'data'      => null,
+                'message'   => "No actor found matching ID {$actor_id}"
+            ], 404);
+        }
+
+        $requested_actor = $request->validated();
+        $updated_actor = Actor::find($actor_id);
+        $updated_actor->update($requested_actor);
+
+        // Success response
+        Log::info("Successfully updated actor instance", ['actor' => $updated_actor]);
+        return response()->json([
+            'data'      => $updated_actor,
+            'message'   => "Successfully updated actor"
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Actor  $actor
+     * @param  int $actor_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Actor $actor)
+    public function destroy(int $actor_id)
     {
-        //
+        if (!Actor::whereId($actor_id)->exists()) {
+            Log::error("No actor found to delete", ['actor_id' => $actor_id]);
+            return response()->json([
+                'data'      => null,
+                'message'   => "No actor found matching ID {$actor_id}"
+            ], 404);
+        }
+
+        Actor::find($actor_id)->delete();
+        Log::info("Successfully deleted actor instance", ['actor_id' => $actor_id]);
+        return response()->json([
+            'data'      => null,
+            'message'   => "Successfully deleted actor matching ID {$actor_id}"
+        ]);
     }
 }
