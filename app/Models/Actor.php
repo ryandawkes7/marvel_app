@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Actor extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+
+    protected $fillable = [ 
+        'name',
+        'dob',
+        'image_url'
+    ];
 }
