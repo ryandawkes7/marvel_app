@@ -34,27 +34,10 @@
 
 <script>
 export default {
-    data() {
-        return {
-            actors: this.actors
-        }
-    },
     props: [
         'actors'
     ],
     methods: {
-        /**
-         * Fetches all actors
-         *
-         * @return void
-         */
-        fetchActors: function() {
-            axios.get('/api/actors')
-                .then(res => {
-                    this.actors = res.data.data;
-                })
-                .catch(e => console.log(e));
-        }
         /**
          * Redirects to show page
          *
