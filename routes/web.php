@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActorsController;
 use App\Http\Controllers\CharactersController;
 use App\Http\Controllers\ComicBooksController;
 use App\Http\Controllers\MoviesController;
@@ -29,32 +30,34 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     })->name('dashboard');
 
     /**
-     * Characters Page
+     * Characters
      */
-    Route::get('/characters', [CharactersController::class, 'main_page'])->name('characters');
+    Route::prefix('/characters')->group(function () {
+        Route::get('/', [CharactersController::class, 'main_page'])->name('characters');
+        Route::get('/{id}', [CharactersController::class, 'show_page'])->name('characters.show');
+    });  
 
     /**
-     * Specific Character
+     * Movies
      */
-    Route::get('/characters/{id}', [CharactersController::class, 'show_page'])->name('character');
+    Route::prefix('/movies')->group(function () {
+        Route::get('/', [MoviesController::class, 'main_page'])->name('movies');
+        Route::get('/{id}', [MoviesController::class, 'show_page'])->name('movies.show');
+    });
 
     /**
-     * Movies Page
+     * Comics
      */
-    Route::get('/movies', [MoviesController::class, 'main_page'])->name('movies');
+    Route::prefix('/comics')->group(function () {
+        Route::get('/', [ComicBooksController::class, 'main_page'])->name('comics');
+        Route::get('/{id}', [ComicBooksController::class, 'show_page'])->name('comics.show');
+    });
 
     /**
-     * Specific Movie
+     * Actor
      */
-    Route::get('/movies/{id}', [MoviesController::class, 'show_page'])->name('movie');
-
-    /**
-     * Comics Index Page
-     */
-    Route::get('/comics', [ComicBooksController::class, 'main_page'])->name('comics');
-
-    /**
-     * Comics Show Page
-     */
-    Route::get('/comics/{id}', [ComicBooksController::class, 'show_page'])->name('comics.show');
+    Route::prefix('/actors')->group(function () {
+        Route::get('/', [ActorsController::class, 'main_page'])->name('actors');
+        Route::get('/{id}', [ActorsController::class, 'show_page'])->name('actors.show');
+    });
 });

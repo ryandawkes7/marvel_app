@@ -29,6 +29,9 @@
                                 <jet-nav-link :href="route('comics')" :active="route().current('comics')">
                                     Comics
                                 </jet-nav-link>
+                                <jet-nav-link :href="route('actors')" :active="route().current('actors')">
+                                    Actors
+                                </jet-nav-link>
                             </div>
                         </div>
 
