@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TvShow extends Model
 {
@@ -24,5 +25,10 @@ class TvShow extends Model
     public function phase() :BelongsTo
     {
         return $this->belongsTo(McuPhase::class, 'mcu_phase_id', 'id');
+    }
+
+    public function actors() :BelongsToMany
+    {
+        return $this->belongsToMany(Actor::class, 'tv_show_actor', 'tv_show_id', 'actor_id');
     }
 }
