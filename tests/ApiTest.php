@@ -16,6 +16,7 @@ use App\Models\MovieMovieSaga;
 use App\Models\MoviePoster;
 use App\Models\MovieSaga;
 use App\Models\Skill;
+use App\Models\TvShow;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -38,6 +39,7 @@ class ApiTest extends MarvelTest
     protected $phase;
     protected $poster;
     protected $trait;
+    protected $tv_show;
     protected $type;
 
     protected function setUp(): void
@@ -399,6 +401,37 @@ class ApiTest extends MarvelTest
     {
         foreach(Actor::all() as $actor) {
             $actor->delete();
+        }
+    }
+
+    /**
+     * Creates a new TV Show instance
+     *
+     * @return \App\Models\TvShow
+     */
+    protected function createTvShow()
+    {
+        return $this->tv_show = TvShow::create([
+            'title'         => 'Testing TV Show',
+            'episode_count' => 6,
+            'season_count'  => 1,
+            'logo_url'      => "https://static.wikia.nocookie.net/logopedia/images/c/cd/Marvel_Entertainment_Logo_%282012%29.jpg",
+            'description'   => "Test show",
+            'in_mcu'        => 1,
+            'mcu_phase_id'  => 2,
+            'release_date'  => date('Y-m-d', strtotime("2021-09-06"))
+        ]);
+    }
+
+    /**
+     * Fluhes the tv_shows table
+     *
+     * @return void
+     */
+    protected function flushTvShows()
+    {
+        foreach (TvShow::all() as $show) {
+            $show->delete();
         }
     }
 }
