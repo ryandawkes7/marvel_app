@@ -4,6 +4,7 @@ use App\Http\Controllers\ActorsController;
 use App\Http\Controllers\CharactersController;
 use App\Http\Controllers\ComicBooksController;
 use App\Http\Controllers\MoviesController;
+use App\Http\Controllers\TvShowsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -59,5 +60,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::prefix('/actors')->group(function () {
         Route::get('/', [ActorsController::class, 'main_page'])->name('actors');
         Route::get('/{id}', [ActorsController::class, 'show_page'])->name('actors.show');
+    });
+
+    /**
+     * TV Shows
+     */
+    Route::prefix('/tv-shows')->group(function () {
+        Route::get('/', [TvShowsController::class, 'main_page'])->name('tv_shows');
+        Route::get('/{id}', [TvShowsController::class, 'show_page'])->name('tv_shows.show');
     });
 });
