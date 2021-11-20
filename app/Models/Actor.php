@@ -21,4 +21,9 @@ class Actor extends Model
     {
         return $this->belongsToMany(Movie::class, 'movie_actor', 'actor_id', 'movie_id');
     }
+
+    public function tv_shows() :BelongsToMany
+    {
+        return $this->belongsToMany(TvShow::class, 'tv_show_actor', 'actor_id', 'tv_show_id');
+    }
 }

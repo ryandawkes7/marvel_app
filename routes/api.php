@@ -14,6 +14,7 @@ use App\Http\Controllers\MoviesController;
 use App\Http\Controllers\SagasController;
 use App\Http\Controllers\SkillsController;
 use App\Http\Controllers\TraitsController;
+use App\Http\Controllers\TvShowsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,3 +58,5 @@ Route::prefix('comics')->group(function () {
 Route::apiResource('/actors', ActorsController::class);
 
 Route::apiResource('comic-writers', ComicWritersController::class);
+
+Route::apiResource('/tv-shows', TvShowsController::class);
