@@ -36,11 +36,7 @@ class MoviesController extends Controller
      */
     public function index()
     {
-        $movies = Movie::with('sagas')
-            ->with('posters')
-            ->with('phase')
-            ->with('directors')
-            ->get();
+        $movies = Movie::get();
 
             // Error handling
         if (count($movies) == 0) {
@@ -77,12 +73,7 @@ class MoviesController extends Controller
             ], 404);
         }
         
-        $movie = Movie::whereId($movie_id)
-                        ->with('sagas')
-                        ->with('posters')
-                        ->with('phase')
-                        ->with('directors')
-                        ->first()->toArray();
+        $movie = Movie::whereId($movie_id)->first()->toArray();
 
         // Success response
         Log::info("Successfully fetched specified movie", ["movie" => $movie]);
@@ -188,12 +179,7 @@ class MoviesController extends Controller
             ], 404);
         }
 
-        $movie = Movie::whereId($movie_id)
-                        ->with('sagas')
-                        ->with('posters')
-                        ->with('phase')
-                        ->with('directors')
-                        ->first();
+        $movie = Movie::whereId($movie_id)->first();
 
         $movie->update([
             'title'         => $movie_data['title'],

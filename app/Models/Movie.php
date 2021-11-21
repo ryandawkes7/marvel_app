@@ -20,6 +20,14 @@ class Movie extends Model
         'mcu_phase_id'
     ];
 
+    protected $with = [
+        'actors',
+        'characters',
+        'phase',
+        'posters',
+        'sagas'
+    ];
+
     public function phase() :BelongsTo
     {
         return $this->belongsTo(McuPhase::class, 'mcu_phase_id', 'id');
