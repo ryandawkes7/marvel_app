@@ -73,7 +73,9 @@
                                         <!-- Headings -->
                                         <div class="mt-4 sm:mt-0 sm:pt-1 sm:text-left flex flex-col justify-center">
                                             <p class="text-xl font-bold text-gray-900 sm:text-2xl">{{movie.title}}</p>
-                                            <p class="text-gray-400 font-light sm:text-md">Director: {{movie.director}}</p>
+                                            <p class="text-gray-400 font-light sm:text-md">
+                                                Released {{ new Date(movie.release_date).toLocaleDateString("en-GB") }}
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="mt-5 flex justify-center sm:mt-0">
@@ -92,9 +94,32 @@
                             </div>
                         </div>
                     </section>
+                    
+                    <!-- Character List -->
+                    <section aria-labelledby="character-list-overview">
+                        <div class="rounded-lg bg-white overflow-hidden shadow">
 
-                    <!-- Skill Grid -->
-                    <!-- <SkillGrid :alias="character.alias" :skills="character.skills"></SkillGrid> -->
+                            <!-- Header -->
+                            <div class="bg-gray-50 px-4 py-2">
+                                <!-- Header Area -->
+                                <div class="sm:flex sm:items-center sm:justify-between">
+
+                                    <!-- Image & Headings -->
+                                    <div class="sm:flex sm:space-x-5">
+                                        <!-- Headings -->
+                                        <div class="mt-4 sm:mt-0 sm:pt-1 sm:text-left flex flex-col justify-center">
+                                            <h2 class="text-xl font-bold text-gray-900 sm:text-2xl">Characters</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Body -->
+                            <div class="border-t border-gray-200 bg-white px-4 py-2 flex items-center justify-center">
+                                <Carousel></Carousel>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- Right column -->
@@ -210,12 +235,14 @@ import { BookOpenIcon, ChevronDownIcon, FilmIcon, PencilIcon, TrashIcon, UserCir
 import { ArrowsExpandIcon } from '@heroicons/vue/solid'
 import EditModal from './EditModal.vue';
 import SuccessBanner from '../Components/SuccessBanner.vue';
+import Carousel from './Carousel.vue';
 
 export default {
     components: {
         AppLayout,
         ArrowsExpandIcon,
         BookOpenIcon, 
+        Carousel,
         ChevronDownIcon,
         Dialog,
         DialogOverlay,
@@ -235,22 +262,21 @@ export default {
         UserGroupIcon
     },
     async created() {
-        const id = this.fetchId();
-
-        // Fetch character data
-        axios.get(`/api/movies/${id}`)
-        .then(res => {
-            const data = res.data.data;
-            this.movie = data;
-
-            if (data.posters.length > 0) {
-                this.poster = data.posters[0].image_url;
-            }
-        })
+        this.fetchMovie();
     },
     data() {
         return {
-            movie: Object,
+            movie: {
+                title: null,
+                release_date: null,
+                in_mcu: 0,
+                mcu_phase_id: null,
+                actors: [],
+                characters: [],
+                phase: null,
+                posters: [],
+                sagas: []
+            },
             poster: null
         }
     },
@@ -272,8 +298,7 @@ export default {
         fetchMovie: function() {
             axios.get(`/api/movies/${this.fetchId()}`)
                 .then(res => {
-                    const data = res.data.data;
-                    this.movie = data;
+                    this.movie = res.data.data;
                 })
                 .catch(e => console.alert(`Error fetching character data: ${e}`));
         },
