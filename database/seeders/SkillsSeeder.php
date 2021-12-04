@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Skill;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,7 @@ class SkillsSeeder extends Seeder
      */
     public function run()
     {
+        Skill::truncate();
         DB::table('skills')->insert([
             [
                 'key'           => 'durability',

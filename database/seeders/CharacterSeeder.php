@@ -24,6 +24,7 @@ class CharacterSeeder extends Seeder
     public function run()
     {
         Character::truncate();
+        
         DB::table('characters')->insert([
             [
                 'alias'      => 'Mr. Fantastic',

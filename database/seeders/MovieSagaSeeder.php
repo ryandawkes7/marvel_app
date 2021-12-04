@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\MovieSaga;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ class MovieSagaSeeder extends Seeder
      */
     public function run()
     {
+        MovieSaga::truncate();
         DB::table('movie_sagas')->insert([
             [
                 'title' => 'Spider-Man (Raimi)',

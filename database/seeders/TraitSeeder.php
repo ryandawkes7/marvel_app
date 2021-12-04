@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CharTrait;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,7 @@ class TraitSeeder extends Seeder
      */
     public function run()
     {
+        CharTrait::truncate();
         DB::table('traits')->insert([
             [
                 'name'          => 'Superhuman Agility',

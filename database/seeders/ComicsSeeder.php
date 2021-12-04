@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comic;
+use App\Models\ComicBook;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ComicsSeeder extends Seeder
 {
@@ -15,43 +16,40 @@ class ComicsSeeder extends Seeder
     public function run()
     {
         // comics seeder
-        DB::table('comics')->truncate();
-        DB::table('comics')->insert([
-            [
-                'comic_book_id' => 1,
-                'title'         => null,
-                'description'   => null,
-                'issue_number'  => 1,
-                'volume_number' => 1
-            ],
-            [
-                'comic_book_id' => 2,
-                'title'         => null,
-                'description'   => null,
-                'issue_number'  => 1,
-                'volume_number' => 1
-            ],
-            [
-                'comic_book_id' => 3,
-                'title'         => null,
-                'description'   => null,
-                'issue_number'  => 1,
-                'volume_number' => 1
-            ],
-            [
-                'comic_book_id' => 4,
-                'title'         => null,
-                'description'   => null,
-                'issue_number'  => 1,
-                'volume_number' => 1
-            ],
-            [
-                'comic_book_id' => 5,
-                'title'         => null,
-                'description'   => null,
-                'issue_number'  => 1,
-                'volume_number' => 1
-            ],
+        Comic::truncate();
+        ComicBook::find(1)->comicIssues()->create([
+            'title'         => null,
+            'description'   => null,
+            'issue_number'  => 1,
+            'volume_number' => 1
+        ]);
+        
+        ComicBook::find(2)->comicIssues()->create([
+            'title'         => null,
+            'description'   => null,
+            'issue_number'  => 1,
+            'volume_number' => 1
+        ]);
+        
+        ComicBook::find(3)->comicIssues()->create([
+            'title'         => null,
+            'description'   => null,
+            'issue_number'  => 1,
+            'volume_number' => 1
+        ]);
+
+        ComicBook::find(4)->comicIssues()->create([
+            'title'         => null,
+            'description'   => null,
+            'issue_number'  => 1,
+            'volume_number' => 1
+        ]);
+
+        ComicBook::find(5)->comicIssues()->create([
+            'title'         => null,
+            'description'   => null,
+            'issue_number'  => 1,
+            'volume_number' => 1
         ]);
     }
 }

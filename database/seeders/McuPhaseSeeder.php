@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\McuPhase;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ class McuPhaseSeeder extends Seeder
      */
     public function run()
     {
+        McuPhase::truncate();
         DB::table('mcu_phases')->insert([
             [
                 'title'         => 'Phase 1',

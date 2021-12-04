@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\MovieDirector;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,7 @@ class MovieDirectorsSeeder extends Seeder
      */
     public function run()
     {
+        MovieDirector::truncate();
         DB::table('movie_director')->insert([
             [
                 'movie_id'      => 1,

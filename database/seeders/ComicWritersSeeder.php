@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ComicWriter;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ class ComicWritersSeeder extends Seeder
      */
     public function run()
     {
+        ComicWriter::truncate();
         // Seed writers
         DB::table('comic_writers')->insert([
             [

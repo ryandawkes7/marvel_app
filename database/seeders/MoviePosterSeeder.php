@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Actor;
+use App\Models\MoviePoster;
 use Illuminate\Database\Seeder;
 
-class ActorSeeder extends Seeder
+class MoviePosterSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,6 @@ class ActorSeeder extends Seeder
      */
     public function run()
     {
-        Actor::truncate();
-        Actor::factory()->count(3)->create();
+        MoviePoster::truncate();
     }
 }

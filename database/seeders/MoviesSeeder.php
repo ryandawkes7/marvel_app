@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Movie;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ class MoviesSeeder extends Seeder
      */
     public function run()
     {
+        Movie::truncate();
         DB::table('movies')->insert([
             [
                 'title'         => 'Iron Man',

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\MovieMovieSaga;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ class MovieSagaMoviePivotSeeder extends Seeder
      */
     public function run()
     {
+        MovieMovieSaga::truncate();
         DB::table('movie_movie_saga')->insert([
             [
                 'movie_saga_id' => 1,

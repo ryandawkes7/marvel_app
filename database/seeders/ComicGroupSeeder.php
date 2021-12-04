@@ -14,12 +14,10 @@ class ComicGroupSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         $this->call(ComicBooksSeeder::class);
-        $this->call(ComicCoversSeeder::class);
         $this->call(ComicsSeeder::class);
+        $this->call(ComicCoversSeeder::class);
         $this->call(ComicWritersSeeder::class);
         $this->call(ComicWriterPivotSeeder::class);
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }

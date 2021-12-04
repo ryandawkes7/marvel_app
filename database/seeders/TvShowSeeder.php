@@ -14,6 +14,7 @@ class TvShowSeeder extends Seeder
      */
     public function run()
     {
+        TvShow::truncate();
         TvShow::factory()->count(3)->create();
     }
 }

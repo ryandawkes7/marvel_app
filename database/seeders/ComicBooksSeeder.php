@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comic;
 use App\Models\ComicBook;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -17,6 +18,7 @@ class ComicBooksSeeder extends Seeder
     public function run()
     {
         // Seed comic books
+        ComicBook::truncate();
         DB::table('comic_books')->insert([
             [
                 'title' => 'The Amazing Spider-Man',

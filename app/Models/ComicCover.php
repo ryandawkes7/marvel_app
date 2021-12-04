@@ -10,7 +10,6 @@ class ComicCover extends Model
     use HasFactory;
 
     protected $fillable = [
-        'comic_id',
         'cover_url',
         'is_variant',
         'variant_issue'
